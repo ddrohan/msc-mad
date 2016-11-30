@@ -122,10 +122,6 @@ h3
       07
     </a>
     
-    <a class="item" data-tab="08">
-      08
-    </a>
-    
     <a class="item" data-tab="Exercises">
       Exercises
     </a>
@@ -188,1027 +184,389 @@ h3
       
       <div  class="ui tab segment lab" data-tab="Lab-03">
         <h1>Objectives</h1>
-<p>This lab continues our Case Study <b>CoffeeMate</b> with a look at some of the more common (slightly more advanced) features we can implement in an Android App.</p>
+<p>In this Lab, you will be required to refactor our CoffeeMate Case Study, called <b>CoffeeMate.2.0</b>. We will build on the previous lab and add in some new features and UI Design. In this version we will add in a few more activities and some extra layouts. On completion of this lab you&#39;ll be able to</p>
+<ul>
+<li><p>use &#39;Bundles&#39; to pass data between activities</p>
+</li>
+<li><p>use Custom Layouts</p>
+</li>
+<li><p>use Custom Adapters</p>
+</li>
+<li><p>use Fragments</p>
+</li>
+</ul>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="01">
-        <h1>Step 01 - Create Project</h1>
-<p>Create a new Android application, as demonstrated in the following 5 screenshots:</p>
-<p><img src="img/firstrun.png" alt=""></p>
-<p><img src="img/lab2s101.png" alt=""></p>
-<p><img src="img/lab2s102.png" alt=""></p>
-<p>Note the &#39;Minimum Required SDK&#39; which may be different from the default (as above).</p>
-<p><img src="img/lab2s103.png" alt=""></p>
-<p><img src="img/lab2s104.png" alt=""></p>
-<p>The opening project perspective is shown below, with the <em>content_donate</em> layout open in the visual designer:</p>
-<p><img src="img/lab2s105.png" alt=""></p>
-<p>The project will look like this</p>
-<p><img src="img/lab2s106.png" alt=""></p>
-<p>It is important to become familiar with the structure and purpose of the three panes surrounding the Donation &#39;canvas&#39;:</p>
-<h2>Pallette:</h2>
-<p><img src="img/lab2s107.png" alt=""></p>
-<h2>Outline</h2>
-<p><img src="img/lab2s108.png" alt=""></p>
-<h2>Properties</h2>
-<p><img src="img/lab2s109.png" alt=""></p>
-<p>These views are closely related - and you will need to monitor the information displayed there continually as you evolve the appearance of your activities screens.</p>
-<p>Also, take a quick look at your <b>build.gradle</b> file to see the configuration and dependencies of your app.</p>
-<p><img src="img/lab2s110.png" alt=""></p>
+        <h1>Setup - Starter Code</h1>
+<p>As with the previous lab, you can download some starter code for this lab here - <a href="archives/CoffeeMate.2.0.Starter.zip">CoffeeMate.2.0.Starter</a>. It contains all the resources you&#39;ll need to complete this lab along with some of the code.</p>
+<p>To open this in Android Studio, first extract the archive somewhere on our hard disk and select &#39;File-&gt;Open&#39; etc. like you did in Lab 02.</p>
+<p>Once you open/import the <b>CoffeeMate 2.0 Starter</b> Project it should looks as follows:</p>
+<p><img src="img/starter.png" alt=""></p>
+<p>Take some time to familiarise yourself with the <b>new (highlighted)</b> classes in your project and explore the resources that you will be referring to throughout the lab, especially the layouts in both &#39;Graphical Layout&#39; view and &#39;XML&#39; view. It&#39;s also probably a good idea to run the App at this stage too, so you can set up your AVD (if you haven&#39;t done so already) and confirm that the starter app is configured properly and running (so basically it&#39;s Version 1 with a few style changes).</p>
+<p>In this lab, you are required to do the following:</p>
+<ul>
+<li><p>Display the list of Coffees in a visually appealing list.</p>
+</li>
+<li><p>Allow Coffees in the list to be updated (edited) and/or deleted from the list.</p>
+</li>
+</ul>
+<p>The following steps will guide you through these requirements, so we&#39;ll start with displaying the Coffees in a nice list.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="02">
-        <h1>Step 02 - Donate Layout &amp; Resources</h1>
-<p>On completion of this lab you&#39;ll be able to</p>
-<ul>
-<li><p>design an initial layout for the app.</p>
-</li>
-<li><p>add different widgets (such as a button, text and picker) to a layout.</p>
-</li>
-<li><p>implement basic event handling to cause some action on the click of a button.</p>
-</li>
-<li><p>be able to &#39;filter&#39; Log messages for testing and debugging.</p>
-</li>
-</ul>
-<p>So, for this lab, our objective is to produce an Android App that looks something like this:</p>
-<p><img src="img/completeappv1.png" alt=""></p>
-<p>In your <b>content_donate.xml</b>, delete the current &#39;Hello World&#39; text, and drag and drop a new &#39;LargeText&#39; form widget onto the canvas, and &#39;stretch&#39; the widget to fill the canvas (like below). Look closely at the following:</p>
-<p><img src="img/lab2s201.png" alt=""></p>
-<p>Now, Double-Click the widget and you will be presented with the following:</p>
-<p><img src="img/lab2s202.png" alt=""></p>
-<p>Select the elipse (on the right hand side, indicated below)</p>
-<p><img src="img/lab2s203.png" alt=""></p>
-<p>and you will be presented with the Resources Menu</p>
-<p><img src="img/lab2s204.png" alt=""></p>
-<p>Select a &#39;New Resource-&gt;New String Value, and fill in the values as below</p>
-<p><img src="img/lab2s205.png" alt=""></p>
-<p>Double-Click the widget again and enter <b>donteTitle</b> for the <b>id</b> and hit return.</p>
-<p><img src="img/lab2s205a.png" alt=""></p>
-<p>Once completed, you&#39;ll have something like this</p>
-<p><img src="img/lab2s206.png" alt=""></p>
-<p>Note carefully the following features:</p>
-<ul>
-<li>the guides tying the text to the left, top and right corner</li>
-<li>in Outline - the name of the control has been changed from a default to &#39;donateTitle&#39;.</li>
-<li>in Properties - check the value for &#39;text&#39; and notice we have a string reference linking to our <b>strings.xml</b> (below)</li>
-</ul>
-<p><img src="img/lab2s207.png" alt=""></p>
-<p>Locate the following two files and inspect them closely:</p>
-<h2>res/layout/content_dontate.xml</h2>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
-    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot; android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;match_parent&quot; android:paddingLeft=&quot;@dimen/activity_horizontal_margin&quot;
-    android:paddingRight=&quot;@dimen/activity_horizontal_margin&quot;
-    android:paddingTop=&quot;@dimen/activity_vertical_margin&quot;
-    android:paddingBottom=&quot;@dimen/activity_vertical_margin&quot;
-    app:layout_behavior=&quot;@string/appbar_scrolling_view_behavior&quot;
-    tools:showIn=&quot;@layout/activity_donate&quot; tools:context=&quot;.Donate&quot;&gt;
+        <h1>Our &#39;new look&#39; Home Screen</h1>
+<p>When we&#39;re finsihed this lab, we&#39;ll have something like this</p>
+<p><img src="img/lab0301.png" alt="">
+So, first of all, have a quick look again at the resource layout (home.xml). We&#39;re using a <b><i>FrameLayout</i></b> as the container for our List of Coffees, which ultimately holds a <b>Fragment</b>, but we&#39;ll talk more about that later.</p>
+<p>Once you&#39;ve had a look at the layout, open your <b>Base.java</b> Activity class and familiarize yourself with the new variables this class now has.</p>
+<p>There&#39;s two new instance variables</p>
+<pre><code class="lang-java">  protected Bundle            activityInfo; // Used for persistence (of sorts)
+  protected CoffeeFragment    coffeeFragment; // How we&#39;ll &#39;share&#39; our List of Coffees between Activities</code></pre>
+<p>The first thing to do is refactor the Home Screen <b><i>onCreate()</i></b> method to make use of a helper method, (<b><i>setupCoffees()</i></b>) so make sure your new <b><i>onCreate()</i></b> method looks something like this:</p>
+<pre><code class="lang-java">  protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.home);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setLogo(R.drawable.ic_launcher1);
 
-    &lt;TextView
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:textAppearance=&quot;?android:attr/textAppearanceLarge&quot;
-        android:text=&quot;@string/donateTitle&quot;
-        android:id=&quot;@+id/donateTitle&quot;
-        android:layout_alignParentTop=&quot;true&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:layout_alignParentEnd=&quot;true&quot; /&gt;
-&lt;/RelativeLayout&gt;</code></pre>
-<h2>res/values/strings.xml</h2>
-<pre><code>&lt;resources&gt;
-    &lt;string name=&quot;app_name&quot;&gt;Donation&lt;/string&gt;
-    &lt;string name=&quot;action_settings&quot;&gt;Settings&lt;/string&gt;
-    &lt;string name=&quot;donateTitle&quot;&gt;Welcome Homer&lt;/string&gt;
-&lt;/resources&gt;</code></pre>
-<p>Note the relationship between &#39;donateTitle&#39; in both files.</p>
-<p>Bring in the following string into the donate activity now - (medium text) - and follow the same procedure as above. The designer should look like this:</p>
-<p><img src="img/lab2s208.png" alt=""></p>
-<p>and our XML files will look something like this:</p>
-<h2>content_dontate.xml</h2>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
-    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot; android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;match_parent&quot; android:paddingLeft=&quot;@dimen/activity_horizontal_margin&quot;
-    android:paddingRight=&quot;@dimen/activity_horizontal_margin&quot;
-    android:paddingTop=&quot;@dimen/activity_vertical_margin&quot;
-    android:paddingBottom=&quot;@dimen/activity_vertical_margin&quot;
-    app:layout_behavior=&quot;@string/appbar_scrolling_view_behavior&quot;
-    tools:showIn=&quot;@layout/activity_donate&quot; tools:context=&quot;.Donate&quot;&gt;
+        recentList = (TextView) findViewById(R.id.recentlyAddedListEmpty);
 
-    &lt;TextView
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:textAppearance=&quot;?android:attr/textAppearanceLarge&quot;
-        android:text=&quot;@string/donateTitle&quot;
-        android:id=&quot;@+id/donateTitle&quot;
-        android:layout_alignParentTop=&quot;true&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:layout_alignParentEnd=&quot;true&quot; /&gt;
-
-    &lt;TextView
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:textAppearance=&quot;?android:attr/textAppearanceMedium&quot;
-        android:text=&quot;@string/donateSubtitle&quot;
-        android:id=&quot;@+id/donateSubtitle&quot;
-        android:layout_below=&quot;@+id/donateTitle&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:layout_marginTop=&quot;27dp&quot;
-        android:layout_alignEnd=&quot;@+id/donateTitle&quot; /&gt;
-&lt;/RelativeLayout&gt;</code></pre>
-<h2>strings.xml</h2>
-<pre><code>&lt;resources&gt;
-    &lt;string name=&quot;app_name&quot;&gt;Donation.1.0&lt;/string&gt;
-    &lt;string name=&quot;action_settings&quot;&gt;Settings&lt;/string&gt;
-    &lt;string name=&quot;donateTitle&quot;&gt;Welcome Homer&lt;/string&gt;
-    &lt;string name=&quot;donateSubtitle&quot;&gt;Please Give Generously&lt;/string&gt;
-&lt;/resources&gt;</code></pre>
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, &quot;Information&quot;, Snackbar.LENGTH_LONG)
+                        .setAction(&quot;More Info...&quot;, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                openInfoDialog(Home.this);
+                            }
+                        }).show();
+            }
+        });
+        setupCoffees();
+    }</code></pre>
+<p>Note that we have removed any Eventlistener settings - we now handle <b><i>onClick()</i></b> events in the layout (via the xml).</p>
+<p>The <b><i>setupCoffees()</i></b> method adds a few Coffee objects to our static <b><i>coffeeList</i></b>, so maybe run the App again just to confirm you&#39;re not seeing a blank screen anymore, but your coffees.</p>
+<p>Next we&#39;ll start with the task of displaying our Coffees in a custom ListView.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="03">
-        <h1>Step 03 - The &#39;Donate&#39; Button</h1>
-<p>Place a button directly on to the activity - attached to the bottom of the screen as shown:</p>
-<p><img src="img/lab2s301.png" alt=""></p>
-<p>Following a similar procedure as in the previous step, rename the button and add an id, both called <b>donateButton</b> If all goes as expected, your xml files should be like this:</p>
-<h2>activity_donate.xml</h2>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
-    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot; android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;match_parent&quot; android:paddingLeft=&quot;@dimen/activity_horizontal_margin&quot;
-    android:paddingRight=&quot;@dimen/activity_horizontal_margin&quot;
-    android:paddingTop=&quot;@dimen/activity_vertical_margin&quot;
-    android:paddingBottom=&quot;@dimen/activity_vertical_margin&quot;
-    app:layout_behavior=&quot;@string/appbar_scrolling_view_behavior&quot;
-    tools:showIn=&quot;@layout/activity_donate&quot; tools:context=&quot;.Donate&quot;&gt;
+        <h1>Our &#39;new look&#39; Home Screen - Displaying the List of Coffees</h1>
+<p>There are 3 major components (classes) involved in implementing this feature:</p>
+<ul>
+<li><p><i>CoffeeItem</i></p>
+</li>
+<li><p><i>CoffeeListAdapter</i></p>
+</li>
+<li><p><i>CoffeeFragment</i></p>
+</li>
+</ul>
+<p>We&#39;ll take each class in turn and insert the necessary code to complete this feature of the App.</p>
+<h1>CoffeeItem</h1>
+<p>The main purpose of this class is to represent a single coffee row in our custom list, so the first thing we need to do is decide how the row should actually look - the associated layout (coffeerow.xml) is already supplied:</p>
+<p><img src="img/lab0302.png" alt=""></p>
+<p>but familarise yourself with the widgets (the &#39;fields&#39; or Views) as you will need to access them in your code.</p>
+<p>Inside <b>CoffeeItem.java</b> you will need to finish the <b><i>updateControls()</i></b> method to ensure all the coffee data is displayed correctly. This will involve &quot;binding&quot; to each of the widgets (Views) on the layout and setting their value.  You can see how the coffee name widget is set below:</p>
+<pre><code class="lang-java">private void updateControls(Coffee coffee) {
+        ((TextView) view.findViewById(R.id.rowCoffeeName)).setText(coffee.name);
 
-    &lt;TextView
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:textAppearance=&quot;?android:attr/textAppearanceLarge&quot;
-        android:text=&quot;@string/donateTitle&quot;
-        android:id=&quot;@+id/donateTitle&quot;
-        android:layout_alignParentTop=&quot;true&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:layout_alignParentEnd=&quot;true&quot; /&gt;
+        // Do the same for shop, rating, price &amp; the favourite image here
+        // and set the favourite on/off depending on the coffees favourite value
+    }</code></pre>
+<h1>CoffeeListAdapter</h1>
+<p>The main purpose of this class is to bind our coffeeList data to a particular view (a ListView in our case) and ultimately display it like so:</p>
+<p><img src="img/lab0303.png" alt=""></p>
+<p>It&#39;s worth noting that this class is a <i><u>custom</u></i> adapter class, and it&#39;s the only way we get to display or coffee data in the &quot;custom&quot; format we want (ie our CoffeeItem rows) - if we were to use a standard Adapter, we would only be able to display our coffees in a very basic fashion.</p>
+<p>To &quot;customise&quot; our adapter, we first say that it will manage Coffee Objects (already done) :</p>
+<pre><code class="lang-Java">public class CoffeeListAdapter extends ArrayAdapter&lt;Coffee&gt;
+{
+...</code></pre>
+<p>and then override a number of methods:</p>
+<pre><code class="lang-Java">  @Override
+  public View getView(int position, View convertView, ViewGroup parent)
+  {
+    return null;
+  }
 
-    &lt;TextView
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:textAppearance=&quot;?android:attr/textAppearanceMedium&quot;
-        android:text=&quot;@string/donateSubtitle&quot;
-        android:id=&quot;@+id/donateSubtitle&quot;
-        android:layout_below=&quot;@+id/donateTitle&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:layout_marginTop=&quot;27dp&quot;
-        android:layout_alignEnd=&quot;@+id/donateTitle&quot; /&gt;
+  @Override
+  public int getCount()
+  {
+    return 0;
+  }
 
-    &lt;Button
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:text=&quot;@string/donateButton&quot;
-        android:id=&quot;@+id/donateButton&quot;
-        android:layout_alignParentBottom=&quot;true&quot;
-        android:layout_centerHorizontal=&quot;true&quot;
-        android:layout_marginBottom=&quot;47dp&quot; /&gt;
-&lt;/RelativeLayout&gt;</code></pre>
-<h2>strings.xml</h2>
-<pre><code>&lt;resources&gt;
-    &lt;string name=&quot;app_name&quot;&gt;Donation.1.0&lt;/string&gt;
-    &lt;string name=&quot;action_settings&quot;&gt;Settings&lt;/string&gt;
-    &lt;string name=&quot;donateTitle&quot;&gt;Welcome Homer&lt;/string&gt;
-    &lt;string name=&quot;donateSubtitle&quot;&gt;Please Give Generously&lt;/string&gt;
-    &lt;string name=&quot;donateButton&quot;&gt;Donate&lt;/string&gt;
-&lt;/resources&gt;</code></pre>
-<p>If there is a deviation from the above - retrace your steps (delete the button) until you can match the above.</p>
-<p>We can now switch our attention to the <strong>Donate</strong> Activity class :</p>
-<pre><code>package ie.app;
+  @Override
+  public Coffee getItem(int position)
+  {
+      return null;
+  }
 
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+  @Override
+  public long getItemId(int position)
+  {
+    return 0;
+  }
 
-public class Donate extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_donate);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, &quot;Replace with your own action&quot;, Snackbar.LENGTH_LONG)
-                        .setAction(&quot;Action&quot;, null).show();
-            }
-        });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_donate, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+  @Override
+  public int getPosition(Coffee c)
+  {
+    return 0;
+  }
 }</code></pre>
-<p>For any &#39;controls&#39; a user can interact with we usually find it useful to associate a class member with that object. Currently we only have one - a Button. The text fields we don&#39;t consider &#39;interactive&#39; as such, so we will not include those.</p>
-<p>Insert the following new field into the class:</p>
-<pre><code>  private Button donateButton;</code></pre>
-<p>The class will have to be imported. The class name will always match the name in the Palette:</p>
-<p><img src="img/lab2s302.png" alt=""></p>
-<p>We are free to call the variable anything we like. However, in order to keep confusion to a minimum, always call the variable by the same name you used in the Outline view:</p>
-<p><img src="img/lab2s303.png" alt=""></p>
-<p>In <strong><em>onCreate()</em></strong> - we need to initialise this variable:</p>
-<pre><code>    donateButton = (Button) findViewById(R.id.donateButton);</code></pre>
-<p>We might also add a logging message so we can have some feedback as the app launches:</p>
-<pre><code>    if (donateButton != null)
-        {
-            Log.v(&quot;Donate&quot;, &quot;Really got the donate button&quot;);
-        }</code></pre>
-<p>This is the complete activity class:</p>
-<pre><code>package ie.app;
-
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
-
-public class Donate extends AppCompatActivity {
-
-    private Button donateButton;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_donate);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, &quot;Replace with your own action&quot;, Snackbar.LENGTH_LONG)
-                        .setAction(&quot;Action&quot;, null).show();
-            }
-        });
-
-        donateButton = (Button) findViewById(R.id.donateButton);
-
-        if (donateButton != null)
-        {
-            Log.v(&quot;Donate&quot;, &quot;Really got the donate button&quot;);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_donate, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-}</code></pre>
-<p>Finding the log message can be very difficult, unless you set a filter. In the &#39;LogCat&#39; view in Android Studio, create a filter like this:</p>
-<p>Choose &quot;Edit Filter Configuration&quot; on the right-hand-side of the LogCat View</p>
-<p><img src="img/lab2s304.png" alt=""></p>
-<p>Enter the name and filter as below</p>
-<p><img src="img/lab2s305.png" alt=""></p>
-<p>and if you then select the filter, we should see our message:</p>
-<p><img src="img/lab2s306.png" alt=""></p>
-<p>Run the app again, and verify the above message appears.</p>
+<p>Remember, the <b><i>getView()</i></b> method is automatically called for every object that exists in the underlying data (ie our coffeeList) so you should be returning a <b>CoffeeItem</b> reference here - try and have a go at this without referring to the notes.</p>
+<p>The remaining methods are all related to the coffeeList itself, so again, give it a go without the notes!</p>
+<h1>CoffeeFragment</h1>
+<p>The main purpose of this class is to allow us to reuse a component (the Fragment) which contains our list of coffees:</p>
+<p><img src="img/lab0306.png" alt=""></p>
+<p>The only thing we need to do at this stage is create an instance of our custom adapter and associate it with our Fragment, so inside the <b><i>onCreate()</i></b> method of the fragment insert the following:</p>
+<pre><code class="lang-Java">    listAdapter = new CoffeeListAdapter(activity, this, Base.coffeeList);
+    setListAdapter (listAdapter);</code></pre>
+<hr>
+<p>The last thing we need to do is attach this Fragment to the Home Screen, so inside our <b><i>onResume()</i></b> method in <b><i>Home.java</i></b> you need to insert the following:</p>
+<pre><code class="lang-Java">      coffeeFragment = CoffeeFragment.newInstance(); //get a new Fragment instance
+      getFragmentManager().beginTransaction().add(R.id.fragment_layout, coffeeFragment).commit(); // add it to the current activity</code></pre>
+<p>You&#39;ll get an error on <i>R.id.fragment_layout</i> so you need to replace the <b>ListView</b> element in <b>content_home.xml</b> with the following:</p>
+<pre><code class="lang-xml">&lt;FrameLayout
+            android:id=&quot;@+id/fragment_layout&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:layout_above=&quot;@+id/footerLinearLayout&quot;
+            android:layout_alignParentLeft=&quot;true&quot;
+            android:layout_alignParentRight=&quot;true&quot;
+            android:layout_alignParentTop=&quot;true&quot; /&gt;</code></pre>
+<p>Build your project and if you run your app again you should see your list displayed on the Home Screen like so (with a small bug to fix!) :</p>
+<p><img src="img/lab0301.png" alt=""></p>
+<p>and you should be able to &quot;Add a Coffee&quot; so make sure to check this functionality. On a related note, you&#39;ve probably noticed your list &#39;duplicates&#39; the data, so it&#39;s worth removing the <b>setupCoffees()</b> method, now we know our &#39;Add&#39; works.</p>
+<p>However, if you select a row in the list, or select the &#39;delete&#39; button, nothing happens - that&#39;s the next step.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="04">
-        <h1>Step 04 - Documentation</h1>
-<p>The android documentation is particularly helpful and well designed. These are the two key starting points:</p>
-<ul>
-<li><a href="http://developer.android.com/guide/components/index.html">http://developer.android.com/guide/components/index.html</a></li>
-<li><a href="http://developer.android.com/reference/packages.html">http://developer.android.com/reference/packages.html</a></li>
-</ul>
-<p>The first is designed to be read though as a guide, perhaps independent of any work in Android Studio. You should get into the habit of devoting an hour or two a week just reading this section.</p>
-<p>The Reference guide should always be open as you are working on labs or projects, and you should make a serious effort to get to grips with at least some of the information here.</p>
-<p>Taking the <strong>Button</strong> class we have just started using. We can immediately find the reference just by knowing the import statement in our Activity class:</p>
-<pre><code>import android.widget.Button;</code></pre>
-<p>.. translates to</p>
-<ul>
-<li><a href="http://developer.android.com/reference/android/widget/Button.html">http://developer.android.com/reference/android/widget/Button.html</a></li>
-</ul>
-<p>(note the last three segments match the package name). Open this page now. Read just as far as the &quot;Button Style&quot; heading. There seems to be two ways of learning when an button event occurs. The first method is using the event handler/listener - but a second easier method is also available.</p>
-<p>Try this now. Bring in a new method into the <strong>Donate</strong> class:</p>
-<pre><code>  public void donateButtonPressed (View view)
+        <h1>Our &#39;new look&#39; Home Screen - Delete a Coffee</h1>
+<p>Having a nice custom list isn&#39;t really much use unless the user can interact with the list by clicking on a row (or an element within the row). Over the next few steps we&#39;ll build in the ability to both edit a coffee&#39;s details, and if the user wishes, delete it from the list.</p>
+<h1>Deleting a Coffee</h1>
+<p>To give the user the option of deleting a coffee (by pressing the &#39;X&#39; button) we first need to &quot;listen&quot; for such an event, so we should attach some kind of Listener to that button. If you have a closer look at our <b>CoffeeItem</b> constructor, you&#39;ll see that we already have that setup:</p>
+<pre><code class="lang-java">    ImageView imgDelete = (ImageView) view.findViewById(R.id.imgDelete);
+    imgDelete.setTag(coffee);
+    imgDelete.setOnClickListener(deleteListener);</code></pre>
+<p>Be clear about what is going on here as the <b><i>setTag()</i></b> method is important in the overall scheme of things.</p>
+<p>The rest of the work we need to do is carried out in the <b>CoffeeFragment</b> class so firstly, look again at how we create our <b>CoffeeListAdapter</b> instance, <i>listAdapter</i>:</p>
+<pre><code class="lang-java">listAdapter = new CoffeeListAdapter(activity, this, Base.coffeeList);</code></pre>
+<p>Notice that the <b>OnClickListener</b> parameter, is a reference to the class itself (<i>this</i>) so the <b>CoffeeFragment</b> class needs to implement this interface as follows:</p>
+<p>You completed <b><i>onClick()</i></b> method should look something like this:</p>
+<pre><code class="lang-java">@Override
+  public void onClick(View view)
   {
-    Log.v(&quot;Donate&quot;, &quot;Donate Pressed!&quot;);
-   }</code></pre>
-<p>Then, edit the <b>content_donate.xml</b> file - and add a new &#39;onClick&#39; <em>attribute</em> into the Button xml fragment:</p>
-<p>(the very last entry)</p>
-<pre><code>    &lt;Button
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:text=&quot;@string/donateButton&quot;
-        android:id=&quot;@+id/donateButton&quot;
-        android:layout_alignParentBottom=&quot;true&quot;
-        android:layout_centerHorizontal=&quot;true&quot;
-        android:layout_marginBottom=&quot;47dp&quot;
-        android:onClick=&quot;donateButtonPressed&quot;/&gt;</code></pre>
-<p>Save everything and execute the app, and monitor the log as you press the button:</p>
-<p><img src="img/lab2s401.png" alt=""></p>
-<p>We now have our first interaction working!</p>
+    if (view.getTag() instanceof Coffee)
+    {
+      onCoffeeDelete ((Coffee) view.getTag());
+    }
+  }</code></pre>
+<p>Here we use the Views &#39;Tag&#39; to see if it&#39;s a coffee, and if it is, that&#39;s the one we delete. You can just copy &amp; paste the following code for the <b><i>onCoffeeDelete()</i></b> method:</p>
+<pre><code class="lang-java">public void onCoffeeDelete(final Coffee coffee)
+  {
+    String stringName = coffee.getCoffeeName();
+    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+    builder.setMessage(&quot;Are you sure you want to Delete the \&#39;Coffee\&#39; &quot; + stringName + &quot;?&quot;);
+    builder.setCancelable(false);
+
+    builder.setPositiveButton(&quot;Yes&quot;, new DialogInterface.OnClickListener()
+    {
+      public void onClick(DialogInterface dialog, int id)
+      {
+        Base.coffeeList.remove(coffee); // remove from our list
+        listAdapter.coffeeList.remove(coffee); // update adapters data
+        listAdapter.notifyDataSetChanged(); // refresh adapter
+      }
+    }).setNegativeButton(&quot;No&quot;, new DialogInterface.OnClickListener()
+    {
+      public void onClick(DialogInterface dialog, int id)
+      {
+        dialog.cancel();
+      }
+    });
+    AlertDialog alert = builder.create();
+    alert.show();
+  }</code></pre>
+<p>Pay particular attention to the following:</p>
+<pre><code class="lang-java">public void onClick(DialogInterface dialog, int id)
+      {
+        Base.coffeeList.remove(coffee); // remove from our list
+        listAdapter.coffeeList.remove(coffee); // update adapters data
+        listAdapter.notifyDataSetChanged(); // refresh adapter
+      }</code></pre>
+<p>and understand what is happening here, as this is an important piece of the puzzle.</p>
+<p>So now, when you run the app and select the delete button, you should get something like this:</p>
+<p><img src="img/lab0307.png" alt=""></p>
+<p>and if you choose &#39;Yes&#39;, then the coffee should be removed from the list.</p>
+<p>Now, onto editing a coffee.....</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="05">
-        <h1>Step 05 - New Control Layout</h1>
-<p>Recall the UI we are trying to implement:</p>
-<p><img src="img/completeappv1.png" alt=""></p>
-<p>We need radio buttons, some sort of selection/combo box + a progress bar. These can be found in various locations in the pallette:</p>
-<p><img src="img/lab2s107.png" alt="">
-<img src="img/lab2s501.png" alt="">
-<img src="img/lab2s502.png" alt=""></p>
-<p>RadioGroup, ProgressBar and NumberPicker seem likely candidates. The names of these controls are exactly as advertised, and we can expect them to be in the &#39;widgets&#39; package. To verify this, try importing them at the top of the <strong>Donate</strong> activity class:</p>
-<pre><code>import android.widget.RadioGroup;
-import android.widget.NumberPicker;
-import android.widget.ProgressBar;</code></pre>
-<p>... and we can bring in three fields into the class:</p>
-<pre><code>  private RadioGroup   paymentMethod;
-  private ProgressBar  progressBar;
-  private NumberPicker amountPicker;</code></pre>
-<p>We can also open up three pages of documentation - which we can reverse engineer from the package/class names:</p>
+        <h1>Our &#39;new look&#39; Home Screen - Edit a Coffee</h1>
+<p>The user now has the ability to delete (or remove) a coffee from the list of coffees displayed. But what if the user wants to update some of the coffees details? Maybe make it one of his or hers favourite coffees? That&#39;s what this step is about, so we&#39;ll be taking a similar approach as the previous step, but implementing a slightly different kind of Listener.</p>
+<h1>Editing a Coffee</h1>
+<p>To give the user the option of Editing a coffee (by pressing the full row) we first need to &quot;listen&quot; for such an event, so we need to attach a Listener that &#39;listens&#39; for individual row click events, and not just an element of the row.</p>
+<p>If you remember from the previous step, our <b>CoffeeFragment</b> was responsible for handling &#39;delete&#39; events, so naturally, this class will also manage any updates or edits the user wants to make.</p>
+<p>Open your <b>CoffeeFragment.java</b> and override the <b><i>onListItemClick()</i></b> method - this will execute every time a user selects a single row (or listItem) in the list, so this is where you need to</p>
 <ul>
-<li><a href="http://developer.android.com/reference/android/widget/RadioGroup.html">http://developer.android.com/reference/android/widget/RadioGroup.html</a></li>
-<li><a href="http://developer.android.com/reference/android/widget/ProgressBar.html">http://developer.android.com/reference/android/widget/ProgressBar.html</a></li>
-<li><a href="http://developer.android.com/reference/android/widget/NumberPicker.html">http://developer.android.com/reference/android/widget/NumberPicker.html</a></li>
+<li><p>find out which coffee was selected (and it&#39;s &#39;ID&#39;)</p>
+</li>
+<li><p>launch another activity so we can update the selected coffee</p>
+</li>
+<li><p>make sure the change to our coffee is reflected in our coffeeList</p>
+</li>
 </ul>
-<p>Note this time we have gone to the Activity class before actually creating the controls. We should do this now - and remember to use the same names (for the IDs) as we create the controls.</p>
-<p><img src="img/lab2s503.png" alt=""></p>
-<p>and</p>
-<p><img src="img/lab2s504.png" alt=""></p>
-<p>Getting the layout +id names as shown above may take some practice. However, it is an essential skill to get on top of, even it it takes a lot of trial and error.</p>
-<p>For reference purposes (try to do it yourself first!), these are the relevant generated xml files:</p>
-<h2>content_donate.xml</h2>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
-    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot; android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;match_parent&quot; android:paddingLeft=&quot;@dimen/activity_horizontal_margin&quot;
-    android:paddingRight=&quot;@dimen/activity_horizontal_margin&quot;
-    android:paddingTop=&quot;@dimen/activity_vertical_margin&quot;
-    android:paddingBottom=&quot;@dimen/activity_vertical_margin&quot;
-    app:layout_behavior=&quot;@string/appbar_scrolling_view_behavior&quot;
-    tools:showIn=&quot;@layout/activity_donate&quot; tools:context=&quot;.Donate&quot;&gt;
+<p>We need to use <b>Bundles</b> and <b>Intents</b> and specifically, the first two parts are partially achieved as follows:</p>
+<pre><code class="lang-java">    Bundle activityInfo = new Bundle(); // Creates a new Bundle object
+    activityInfo.putInt(&quot;coffeeID&quot;, /* pass in the coffees id here */);
 
-    &lt;TextView
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:textAppearance=&quot;?android:attr/textAppearanceLarge&quot;
-        android:text=&quot;@string/donateTitle&quot;
-        android:id=&quot;@+id/donateTitle&quot;
-        android:layout_alignParentTop=&quot;true&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:layout_alignParentEnd=&quot;true&quot; /&gt;
+    Intent goEdit = new Intent(getActivity(), Edit.class); // Creates a new Intent
+    /* Add the bundle to the intent here */
+    getActivity().startActivity(goEdit); // Launch the Intent</code></pre>
+<p>Have a go at completing the above as best you can.</p>
+<p>Once you have that done, the rest of the work we need to do is carried out in the <b>Edit</b> Activity class so firstly, have a look at the <b><i>onCreate()</i></b> method - there&#39;s some code already in there, but if you try and run the app, it&#39;ll crash.</p>
+<p>Any ideas why??</p>
+<p>Next thing to do is setup the correct view for the activity - this is done using the <b><i>setContentView()</i></b> method, so see can you implement that, without referring to the solution below.</p>
+<p>Also you need to &#39;bind&#39; to and setup event handling on <i>favouriteImage</i> in the xml to avoid a NullPointerException, as follows:</p>
+<pre><code class="lang-xml">android:onClick=&quot;toggle&quot;</code></pre>
+<pre><code class="lang-java">favouriteImage = (ImageView) findViewById(R.id.favouriteImageView);</code></pre>
+<p>and you need to retrieve the &#39;coffeeID&#39; from the Bundle, and get the coffee from our list using the <b><i>getCoffeeObject()</i></b> helper method - once again, try and have a go at this without referring to the solution code:</p>
+<p>(and here it is!)</p>
+<pre><code class="lang-java">  setContentView(R.layout.edit);
 
-    &lt;TextView
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:textAppearance=&quot;?android:attr/textAppearanceMedium&quot;
-        android:text=&quot;@string/donateSubtitle&quot;
-        android:id=&quot;@+id/donateSubtitle&quot;
-        android:layout_below=&quot;@+id/donateTitle&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:layout_marginTop=&quot;27dp&quot;
-        android:layout_alignEnd=&quot;@+id/donateTitle&quot; /&gt;
+  activityInfo = getIntent().getExtras();
+  aCoffee = getCoffeeObject(activityInfo.getInt(&quot;coffeeID&quot;));
 
-    &lt;Button
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:text=&quot;@string/donateButton&quot;
-        android:id=&quot;@+id/donateButton&quot;
-        android:layout_alignParentBottom=&quot;true&quot;
-        android:layout_centerHorizontal=&quot;true&quot;
-        android:layout_marginBottom=&quot;47dp&quot;
-        android:onClick=&quot;donateButtonPressed&quot;/&gt;
-
-    &lt;RadioGroup
-        android:layout_width=&quot;match_parent&quot;
-        android:layout_height=&quot;match_parent&quot;
-        android:layout_below=&quot;@+id/donateSubtitle&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:id=&quot;@+id/paymentMethod&quot;
-        android:layout_toStartOf=&quot;@+id/amountPicker&quot;
-        android:layout_above=&quot;@+id/progressBar&quot;&gt;
-
-        &lt;RadioButton
-            android:layout_width=&quot;wrap_content&quot;
-            android:layout_height=&quot;wrap_content&quot;
-            android:text=&quot;@string/paypal&quot;
-            android:id=&quot;@+id/PayPal&quot;
-            android:checked=&quot;false&quot; /&gt;
-
-        &lt;RadioButton
-            android:layout_width=&quot;wrap_content&quot;
-            android:layout_height=&quot;wrap_content&quot;
-            android:text=&quot;@string/direct&quot;
-            android:id=&quot;@+id/Direct&quot;
-            android:checked=&quot;false&quot; /&gt;
-    &lt;/RadioGroup&gt;
-
-    &lt;NumberPicker
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:id=&quot;@+id/amountPicker&quot;
-        android:layout_alignTop=&quot;@+id/paymentGroup&quot;
-        android:layout_alignEnd=&quot;@+id/donateSubtitle&quot; /&gt;
-
-    &lt;ProgressBar
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        style=&quot;?android:attr/progressBarStyleHorizontal&quot;
-        android:id=&quot;@+id/progressBar&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:layout_alignEnd=&quot;@+id/donateSubtitle&quot;
-        android:layout_above=&quot;@+id/donateButton&quot;
-        android:indeterminate=&quot;false&quot; /&gt;
-&lt;/RelativeLayout&gt;</code></pre>
-<h2>strings.xml</h2>
-<pre><code>&lt;resources&gt;
-    &lt;string name=&quot;app_name&quot;&gt;Donation.1.0&lt;/string&gt;
-    &lt;string name=&quot;action_settings&quot;&gt;Settings&lt;/string&gt;
-    &lt;string name=&quot;donateTitle&quot;&gt;Welcome Homer&lt;/string&gt;
-    &lt;string name=&quot;donateSubtitle&quot;&gt;Please Give Generously&lt;/string&gt;
-    &lt;string name=&quot;donateButton&quot;&gt;Donate&lt;/string&gt;
-    &lt;string name=&quot;paypal&quot;&gt;PayPal&lt;/string&gt;
-    &lt;string name=&quot;direct&quot;&gt;Direct&lt;/string&gt;
-&lt;/resources&gt;</code></pre>
-<p>If we have our naming conventions right - then we can bind to these new controls in <strong><em>onCreate()</em></strong>:</p>
-<pre><code>    paymentMethod = (RadioGroup)   findViewById(R.id.paymentMethod);
-    progressBar   = (ProgressBar)  findViewById(R.id.progressBar);
-    amountPicker  = (NumberPicker) findViewById(R.id.amountPicker);</code></pre>
-<p>This is the complete <strong>Donate</strong> class so far:</p>
-<pre><code>package ie.app;
-
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.ProgressBar;
-import android.widget.RadioGroup;
-
-public class Donate extends AppCompatActivity {
-
-    private Button          donateButton;
-    private RadioGroup      paymentMethod;
-    private ProgressBar     progressBar;
-    private NumberPicker    amountPicker;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_donate);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, &quot;Replace with your own action&quot;, Snackbar.LENGTH_LONG)
-                        .setAction(&quot;Action&quot;, null).show();
-            }
-        });
-
-        donateButton = (Button) findViewById(R.id.donateButton);
-
-        if (donateButton != null)
-        {
-            Log.v(&quot;Donate&quot;, &quot;Really got the donate button&quot;);
-        }
-
-        paymentMethod = (RadioGroup)   findViewById(R.id.paymentMethod);
-        progressBar   = (ProgressBar)  findViewById(R.id.progressBar);
-        amountPicker  = (NumberPicker) findViewById(R.id.amountPicker);
-
-        amountPicker.setMinValue(0);
-        amountPicker.setMaxValue(1000);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_donate, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void donateButtonPressed (View view)
-    {
-        Log.v(&quot;Donate&quot;, &quot;Donate Pressed!&quot;);
-    }
-}</code></pre>
+  favouriteImage = (ImageView) findViewById(R.id.favouriteImageView);</code></pre>
+<p>Now if you run your app, and select a row, you should launch the &#39;Edit&#39; Screen.</p>
+<p><img src="img/lab0308.png" alt=""></p>
+<p>However, there&#39;s nothing to edit - so that&#39;s the next step - displaying the coffee data so we can change it (like above).</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="06">
-        <h1>Step 06 - NumberPicker</h1>
-<p>This is our reference documentation:</p>
+        <h1>Our &#39;new look&#39; Home Screen - Edit a Coffee</h1>
+<p>We can now launch the Edit Screen, but nothing gets displayed, so there&#39;s nothing to edit. What we need to do now is</p>
 <ul>
-<li><a href="http://developer.android.com/reference/android/widget/NumberPicker.html">http://developer.android.com/reference/android/widget/NumberPicker.html</a></li>
+<li><p>&#39;bind&#39; the specific coffee data to the individual views/fields on the Edit Screen</p>
+</li>
+<li><p>if any changes are made, ensure these changes are reflected in the global coffeeList</p>
+</li>
 </ul>
-<p>which is a little overwhelming. Back in the guides:</p>
-<ul>
-<li><a href="http://developer.android.com/guide/components/index.html">http://developer.android.com/guide/components/index.html</a></li>
-</ul>
-<p>we might find some useful tutorial type introduction to this control - under &#39;User Interface&#39; - &#39;Input Controls&#39;</p>
-<ul>
-<li><a href="http://developer.android.com/guide/topics/ui/controls.html">http://developer.android.com/guide/topics/ui/controls.html</a></li>
-</ul>
-<p>.. and this is the page on &#39;pickers&#39;</p>
-<ul>
-<li><a href="http://developer.android.com/guide/topics/ui/controls/pickers.html">http://developer.android.com/guide/topics/ui/controls/pickers.html</a></li>
-</ul>
-<p>This documentation is concerned with Fragments - a concept that may be difficult to grasp initially, and also explores the usage of date and time pickers.</p>
-<p>We can get up and running without this much fuss. Returning to the documentation, these three methods should be sufficient initially:</p>
-<ul>
-<li><a href="http://developer.android.com/reference/android/widget/NumberPicker.html#setMaxValue(int)">http://developer.android.com/reference/android/widget/NumberPicker.html#setMaxValue(int)</a></li>
-<li><a href="http://developer.android.com/reference/android/widget/NumberPicker.html#setMinValue(int)">http://developer.android.com/reference/android/widget/NumberPicker.html#setMinValue(int)</a></li>
-<li><a href="http://developer.android.com/reference/android/widget/NumberPicker.html#getValue()">http://developer.android.com/reference/android/widget/NumberPicker.html#getValue()</a></li>
-</ul>
-<p>In <strong><em>onCreate()</em></strong>, initialise the values:</p>
-<pre><code>    amountPicker.setMinValue(0);
-    amountPicker.setMaxValue(1000);</code></pre>
-<p>And in <strong><em>donateButtonPressed()</em></strong>:</p>
-<pre><code>  public void donateButtonPressed (View view)
-  {
-    int amount = amountPicker.getValue();
-    Log.v(&quot;Donate&quot;, &quot;Donate Pressed! with amount &quot; + amount);
-   }</code></pre>
-<p>Run this now - and verify that it operates as expected (see the actual amounts in the log file, as below).</p>
-<p><img src="img/lab2s601.png" alt=""></p>
+<h1>Displaying the data for Update</h1>
+<p>First of all, open your <i>edit.xml</i> layout and familarise yourself with the &#39;names&#39; or id&#39;s of all the relevant views you need to access (<i><u>coffeeNameTextView</u></i> is highlighted in the screenshot below).</p>
+<p><img src="img/lab0309.png" alt=""></p>
+<p>And here&#39;s how we set the title &#39;field&#39; to the name of the coffee</p>
+<pre><code class="lang-java">((EditText)findViewById(R.id.nameEditText)).setText(aCoffee.name);</code></pre>
+<p>Run the app again, and see what you get - now have a go at the rest of the coffee data yourself.</p>
+<p>The completed section of missing code is as follows:</p>
+<pre><code class="lang-java">        setContentView(R.layout.edit);
+
+        activityInfo = getIntent().getExtras();
+        aCoffee = getCoffeeObject(activityInfo.getInt(&quot;coffeeID&quot;));
+
+        ((TextView)findViewById(R.id.coffeeNameTextView)).setText(aCoffee.name);
+        ((TextView)findViewById(R.id.coffeeShopTextView)).setText(aCoffee.shop);
+
+        ((EditText)findViewById(R.id.nameEditText)).setText(aCoffee.name);
+        ((EditText)findViewById(R.id.shopEditText)).setText(aCoffee.shop);
+        ((EditText)findViewById(R.id.priceEditText)).setText(&quot;&quot;+aCoffee.price);
+        ((RatingBar) findViewById(R.id.coffeeRatingBar)).setRating((float)aCoffee.rating);
+
+        favouriteImage = (ImageView) findViewById(R.id.favouriteImageView);
+
+        if (aCoffee.favourite == true) {
+            favouriteImage.setImageResource(R.drawable.ic_favourite_on);
+            isFavourite = true;
+        } else {
+            favouriteImage.setImageResource(R.drawable.ic_favourite_off);
+            isFavourite = false;
+        }</code></pre>
+<p>including attaching a listener to the &#39;Update&#39; Button, via xml.</p>
+<pre><code class="lang-xml">android:onClick=&quot;update&quot;</code></pre>
+<p>with our <b>toggle()</b> method looking something like this:</p>
+<pre><code class="lang-java">public void toggle(View arg0) {
+
+        if (isFavourite) {
+            aCoffee.favourite = false;
+            toastMessage(&quot;Removed From Favourites&quot;);
+            isFavourite = false;
+            favouriteImage.setImageResource(R.drawable.ic_favourite_off);
+        } else {
+            aCoffee.favourite = true;
+            toastMessage(&quot;Added to Favourites !!&quot;);
+            isFavourite = true;
+            favouriteImage.setImageResource(R.drawable.ic_favourite_on);
+        }
+    }</code></pre>
+<p>It&#39;s still not finished however - there&#39;s a small but significant bug in loading up the correct coffee to update on the edit screen and the <i><b>update()</b></i> method is nearly complete, but there&#39;s a few lines of (very important) code still to be added, so run the app once more and try and identify what needs to be done to fully implement this Edit/Update feature.</p>
+<p>You&#39;ll find the necessary code extracts in the the next step, but try and have a go before you proceed.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="07">
-        <h1>Step 07 - The Radio Buttons</h1>
-<p>In <strong><em>donateButtonPressed()</em></strong> we need to discover which payment method has been selected. Our RadioGroup documentation is here:</p>
-<ul>
-<li><a href="http://developer.android.com/reference/android/widget/RadioGroup.html">http://developer.android.com/reference/android/widget/RadioGroup.html</a></li>
-</ul>
-<p>This looks like the method we need:</p>
-<ul>
-<li><a href="http://developer.android.com/reference/android/widget/RadioGroup.html#getCheckedRadioButtonId(">getCheckedRadioButtonId()</a>)</li>
-</ul>
-<p>This is a revised version of <strong><em>donateButtonPressed()</em></strong></p>
-<pre><code>  public void donateButtonPressed (View view)
-  {
-    int amount = amountPicker.getValue();
-    int radioId = paymentMethod.getCheckedRadioButtonId();
-    String method = &quot;&quot;;
-    if (radioId == R.id.PayPal)
+        <h1>Our &#39;new look&#39; Home Screen - Edit a Coffee</h1>
+<h1>Updating the data in our coffeeList</h1>
+<p>The first issue was no matte which coffee we &#39;clicked&#39; on we always got the first coffee to edit - this is because the coffee id never gets set, so you need to refactor the <b>Coffee</b> model and add an autoincrement number to act as a unique id. It&#39;s a bit crude but it&#39;ll do the job until we move on to more sophisticated approaches in later labs.</p>
+<p>probably easiest to do something like this</p>
+<pre><code class="lang-java">public class Coffee implements Serializable
+{
+
+    public static int autoid = 1;
+    public int coffeeId;
+    public String name;
+    public String shop;
+    public double rating;
+    public double price;
+    public boolean favourite;
+
+
+    public Coffee() {}
+
+    public Coffee(String name, String shop, double rating, double price, boolean fav)
     {
-      method = &quot;PayPal&quot;;
-    }
-    else
-    {
-      method = &quot;Direct&quot;;
-    }
-    Log.v(&quot;Donate&quot;, &quot;Donate Pressed! with amount &quot; + amount + &quot;, method: &quot; + method);
-   }</code></pre>
-<p>Run it now and verify we are getting the correct logs.</p>
-<p>We can simplify it somewhat by reducing the if statement to a single line:</p>
-<pre><code>    String method = radioId == R.id.PayPal ? &quot;PayPal&quot; : &quot;Direct&quot;;</code></pre>
-<p>This is the Java ternary operator:</p>
-<ul>
-<li><a href="http://marxsoftware.blogspot.ie/2010/09/how-i-learned-to-stop-worrying-and-love.html">http://marxsoftware.blogspot.ie/2010/09/how-i-learned-to-stop-worrying-and-love.html</a></li>
-</ul>
-<p>This is the complete activity class so far:</p>
-<pre><code>package ie.app;
-
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.ProgressBar;
-import android.widget.RadioGroup;
-
-public class Donate extends AppCompatActivity {
-
-    private Button          donateButton;
-    private RadioGroup      paymentMethod;
-    private ProgressBar     progressBar;
-    private NumberPicker    amountPicker;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_donate);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, &quot;Replace with your own action&quot;, Snackbar.LENGTH_LONG)
-                        .setAction(&quot;Action&quot;, null).show();
-            }
-        });
-
-        donateButton = (Button) findViewById(R.id.donateButton);
-
-        if (donateButton != null)
-        {
-            Log.v(&quot;Donate&quot;, &quot;Really got the donate button&quot;);
-        }
-
-        paymentMethod = (RadioGroup)   findViewById(R.id.paymentMethod);
-        progressBar   = (ProgressBar)  findViewById(R.id.progressBar);
-        amountPicker  = (NumberPicker) findViewById(R.id.amountPicker);
-
-        amountPicker.setMinValue(0);
-        amountPicker.setMaxValue(1000);
+        this.coffeeId = autoid++;
+        this.name = name;
+        this.shop = shop;
+        this.rating = rating;
+        this.price = price;
+        this.favourite = fav;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_donate, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void donateButtonPressed (View view)
-    {
-        int amount = amountPicker.getValue();
-        int radioId = paymentMethod.getCheckedRadioButtonId();
-        String method = radioId == R.id.PayPal ? &quot;PayPal&quot; : &quot;Direct&quot;;
-        Log.v(&quot;Donate&quot;, &quot;Donate Pressed! with amount &quot; + amount + &quot;, method: &quot; + method);
+    public String toString() {
+        return &quot;Coffee [name=&quot; + name
+                + &quot;, shop =&quot; + shop + &quot;, rating=&quot; + rating + &quot;, price=&quot; + price
+                + &quot;, fav =&quot; + favourite + &quot;]&quot;;
     }
 }</code></pre>
-<p>So run your app again just to confirm the LogCat entries</p>
-<p><img src="img/lab2s701.png" alt=""></p>
-
-      </div>
-     
-      <div  class="ui tab segment lab" data-tab="08">
-        <h1>Step 08 - The Progress Bar</h1>
-<p>The progress bar documentation:</p>
-<ul>
-<li><a href="http://developer.android.com/reference/android/widget/ProgressBar.html">http://developer.android.com/reference/android/widget/ProgressBar.html</a></li>
-</ul>
-<p>offers us advice on using the progress bar in multi-threaded application. Not quite what we are ready for yet! (but file it away for future reference).</p>
-<p>These two methods are probably what we need:</p>
-<ul>
-<li><a href="http://developer.android.com/reference/android/widget/ProgressBar.html#setMax(int)">http://developer.android.com/reference/android/widget/ProgressBar.html#setMax(int)</a></li>
-<li><a href="http://developer.android.com/reference/android/widget/ProgressBar.html#setProgress(int)">http://developer.android.com/reference/android/widget/ProgressBar.html#setProgress(int)</a></li>
-</ul>
-<p>First we would need to equip our activity with the ability to remember the donation amounts:</p>
-<pre><code>  private int totalDonated = 0;</code></pre>
-<p>Lets set max progress bar to 10000 in <strong><em>onCreate()</em></strong>:</p>
-<pre><code>    progressBar.setMax(10000);</code></pre>
-<p>.. and set the progress in <strong><em>donateButtonPressed()</em></strong>:</p>
-<pre><code>    totalDonated = totalDonated + amount;
-    progressBar.setProgress(totalDonated);
-
-    Log.v(&quot;Donate&quot;, &quot;Donate Pressed! with amount &quot; + amount + &quot;, method: &quot; + method);
-    Log.v(&quot;Donate&quot;, &quot;Current total &quot; + totalDonated);</code></pre>
-<p>Try this now and observe the progress bar and logCat</p>
-<p><img src="img/lab2s801.png" alt=""></p>
-<p>This is the complete class so far:</p>
-<pre><code>package ie.app;
-
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.ProgressBar;
-import android.widget.RadioGroup;
-
-public class Donate extends AppCompatActivity {
-
-    private Button          donateButton;
-    private RadioGroup      paymentMethod;
-    private ProgressBar     progressBar;
-    private NumberPicker    amountPicker;
-
-    private int             totalDonated = 0;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_donate);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, &quot;Replace with your own action&quot;, Snackbar.LENGTH_LONG)
-                        .setAction(&quot;Action&quot;, null).show();
-            }
-        });
-
-        donateButton = (Button) findViewById(R.id.donateButton);
-
-        if (donateButton != null)
-        {
-            Log.v(&quot;Donate&quot;, &quot;Really got the donate button&quot;);
-        }
-
-        paymentMethod = (RadioGroup)   findViewById(R.id.paymentMethod);
-        progressBar   = (ProgressBar)  findViewById(R.id.progressBar);
-        amountPicker  = (NumberPicker) findViewById(R.id.amountPicker);
-
-        amountPicker.setMinValue(0);
-        amountPicker.setMaxValue(1000);
-        progressBar.setMax(10000);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_donate, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void donateButtonPressed (View view)
-    {
-        int amount = amountPicker.getValue();
-        int radioId = paymentMethod.getCheckedRadioButtonId();
-        String method = radioId == R.id.PayPal ? &quot;PayPal&quot; : &quot;Direct&quot;;
-
-        totalDonated = totalDonated + amount;
-        progressBar.setProgress(totalDonated);
-
-        Log.v(&quot;Donate&quot;, &quot;Donate Pressed! with amount &quot; + amount + &quot;, method: &quot; + method);
-        Log.v(&quot;Donate&quot;, &quot;Current total &quot; + totalDonated);
-    }
-}</code></pre>
-<p>Here is another version of exactly the same class:</p>
-<pre><code>package ie.app;
-
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.ProgressBar;
-import android.widget.RadioGroup;
-
-public class Donate extends AppCompatActivity {
-
-    private Button          donateButton;
-    private RadioGroup      paymentMethod;
-    private ProgressBar     progressBar;
-    private NumberPicker    amountPicker;
-
-    private int             totalDonated = 0;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_donate);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, &quot;Replace with your own action&quot;, Snackbar.LENGTH_LONG)
-                        .setAction(&quot;Action&quot;, null).show();
-            }
-        });
-
-        donateButton = (Button) findViewById(R.id.donateButton);
-
-        if (donateButton != null)
-        {
-            Log.v(&quot;Donate&quot;, &quot;Really got the donate button&quot;);
-        }
-
-        paymentMethod = (RadioGroup)   findViewById(R.id.paymentMethod);
-        progressBar   = (ProgressBar)  findViewById(R.id.progressBar);
-        amountPicker  = (NumberPicker) findViewById(R.id.amountPicker);
-
-        amountPicker.setMinValue(0);
-        amountPicker.setMaxValue(1000);
-        progressBar.setMax(10000);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_donate, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void donateButtonPressed (View view)
-    {
-    totalDonated  = totalDonated + amountPicker.getValue();
-    String method = paymentMethod.getCheckedRadioButtonId() == R.id.PayPal ? &quot;PayPal&quot; : &quot;Direct&quot;;
-    progressBar.setProgress(totalDonated);
-
-    Log.v(&quot;Donate&quot;, amountPicker.getValue() + &quot; donated by &quot; +  method + &quot;\nCurrent total &quot; + totalDonated);
-    }
-}</code></pre>
-<p>Examine them carefully. What are the differences? Why make these changes?</p>
-<p>Note also the careful attention to spacing and alignment in the code. Not just correct indentation, but continual attention to structuring each method carefully, removing duplication and unnecessary code and formatting/aligning the declarations and assignment statements in a table like structure:</p>
-<p>Visible here:</p>
-<pre><code>  private RadioGroup   paymentMethod;
-  private ProgressBar  progressBar;
-  private NumberPicker amountPicker;
-
-  private int          totalDonated = 0;</code></pre>
-<p>and here:</p>
-<pre><code>    paymentMethod = (RadioGroup)   findViewById(R.id.paymentMethod);
-    progressBar   = (ProgressBar)  findViewById(R.id.progressBar);
-    amountPicker  = (NumberPicker) findViewById(R.id.amountPicker);</code></pre>
-<p>and here:</p>
-<pre><code>    totalDonated  = totalDonated + amountPicker.getValue();
-    String method = paymentMethod.getCheckedRadioButtonId() == R.id.PayPal ? &quot;PayPal&quot; : &quot;Direct&quot;;</code></pre>
-<p>Android code can become very verbose and complex. Carefully formatting is essential if you are not to be overwhelmed.</p>
+<p>And you probably worked out that the problem was, even if we changed the data, it was only updated in our list of coffees if we clicked the &#39;Update&#39; Button, but nothing else happens - we&#39;d need to hit the &#39;back&#39; button to return to the previous screen.</p>
+<p>It&#39;s worth noting that we never actually &#39;put it back&#39; in the list after we updated it, but because our list is <i>static</i>, that&#39;s ok - any changes to a single coffee are updated in the global list. We might need to revisit this in later labs, but for now, it&#39;s all good.</p>
+<p>In the <i><b>update()</b></i> method we need something like this</p>
+<pre><code class="lang-java">goToActivity(this,Home.class, activityInfo);</code></pre>
+<p>so see if you can work out where this should be inserted.</p>
+<p>You should run you app once more and fully test it for the features now implemented.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="Exercises">
         <h1>Exercises</h1>
-<p>Archive of lab so far:</p>
+<h2>Solution</h2>
+<p>This is a solution to the lab:</p>
 <ul>
-<li><a href="archives/Donation.1.0.zip">Donation.1.0.zip</a></li>
+<li><a href="archives/CoffeeMate.2.0.Solution.zip">CoffeeMate.2.0.Solution</a></li>
 </ul>
-<h2>Exercise 1:</h2>
-<p>Consider an alternative to the NumberPicker - specifically one of the &quot;Text Fields&quot; controls:</p>
-<p>These are mostly EditView objects:</p>
+<h2>Exercise</h2>
+<p>In this lab you have experimented with Custom Adapters &amp; Fragments:</p>
 <ul>
-<li><a href="http://developer.android.com/reference/android/widget/EditText.html">http://developer.android.com/reference/android/widget/EditText.html</a></li>
-</ul>
-<p>Redesign the activity to take a value from the picker or directly from a text view and maintain a &quot;Total so Far&quot; Value:</p>
-<p><img src="img/lab2s902.png" alt=""></p>
-<p><img src="img/lab2s901.png" alt=""></p>
-<p><img src="img/lab2s903.png" alt=""></p>
-<p>If the number picker is set to zero, then attempt to get a number from the text view.</p>
-<p>Here is a hint (a version of <strong><em>donatButonPressed()</em></strong> that does what we want):</p>
-<pre><code>  public void donateButtonPressed (View view)
-  {
-    String method = paymentMethod.getCheckedRadioButtonId() == R.id.PayPal ? &quot;PayPal&quot; : &quot;Direct&quot;;
-    progressBar.setProgress(totalDonated);
-
-    int donatedAmount =  amountPicker.getValue();
-    if (donatedAmount == 0)
-    {
-      String text = amountText.getText().toString();
-      if (!text.equals(&quot;&quot;))
-        donatedAmount = Integer.parseInt(text);
-    }
-    totalDonated  = totalDonated + donatedAmount;
-    Log.v(&quot;Donate&quot;, amountPicker.getValue() + &quot; donated by &quot; +  method + &quot;\nCurrent total &quot; + totalDonated);
-   }</code></pre>
-<h2>Exercise 2:</h2>
-<p>Revise the app such that when the target is achieved (10000) - then no more donations accepted, and the user is made aware of this.</p>
-<p>Hint - here is how you can display a simple alert:</p>
-<pre><code>      Toast.makeText(this, &quot;Target Exceeded!&quot;, Toast.LENGTH_SHORT).show();</code></pre>
-<h2>Exercise 3:</h2>
-<p>Modify the colour scheme for our widgets..</p>
-<p>You will notice that the Floating Action Button, the Radio Buttons, the Progress Bar etc, are all a kind of pink - not really in line with our current colour scheme.</p>
-<p>Hint - have a look at your <b>colors.xml</b></p>
-<p><img src="img/lab2s904.png" alt=""></p>
-<p>Archive of lab with the above Exercises:</p>
-<ul>
-<li><a href="archives/Donation.1.5.zip">Donation.1.5.zip</a></li>
+<li>Experiment with modifying the custom layout of our Coffee Row in our List</li>
 </ul>
 
       </div>
