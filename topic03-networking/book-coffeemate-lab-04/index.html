@@ -142,10 +142,6 @@ h3
       Solution
     </a>
     
-    <a class="item" data-tab=".">
-      .
-    </a>
-    
     <a class="item" href="../../index.html">
       <i class="home icon"></i>
     </a>
@@ -930,28 +926,6 @@ public void toggle(View v) {
 <p>This is a solution to the lab:</p>
 <ul>
 <li><a href="../archives/CoffeeMate.4.0.Solution.zip">CoffeeMate.4.0.Solution</a></li>
-</ul>
-
-      </div>
-     
-      <div  class="ui tab segment lab" data-tab=".">
-        <h1>Adding a Login Screen</h1>
-<p>Now we&#39;ll add in a very basic level of security - we&#39;ll get the user to login before they can use the app. First thing to do is download the necessary resources in <a href="../archives/loginresources.zip">loginresources</a> and add them to the relevant packages/folders in your project. </p>
-<p>(You can literally drag-and-drop the files into eclipse! <b>NOTE : Make sure you drop in the images first or you&#39;ll get a number of errors in your resources file</b>)</p>
-<p>You may also get a resource error on the layout regarding a colour, so if you do, update your &#39;colors.xml&#39; with the following</p>
-<pre><code class="lang-java"> &lt;color name=&quot;bar_black_text&quot;&gt;#000000&lt;/color&gt;</code></pre>
-<p>The Login Screen looks like this:</p>
-<p> <img src="../img/lab504.png" alt=""></p>
-<p>so modify your <b>Splash.java</b> to load this Screen before any other Screens.</p>
-<p>If you now run the app and click the Login Button, you&#39;ll notice nothing happens, so the next thing to do is implement the <b><i>onClick()</i></b> event for this activity. The <i>SharedPreferences</i> are initially set up, so have a look at that, to see how it was done, to give you an idea on how to complete this step.</p>
-<p>The solution is on the next step, but try and have a go at completing it before you take a look. To help you along you need to do the following:</p>
-<ul>
-<li><p>Grab the email and password entered (you should use a <i>CharSequence</i> object for this)</p>
-</li>
-<li><p>Validate both for being empty and/or the correct combination (You can just hardcode in the correct details at this stage)</p>
-</li>
-<li><p>Once the details are correct, update your SharedPreferences to say the user is logged in, and launch the correct activity.</p>
-</li>
 </ul>
 
       </div>

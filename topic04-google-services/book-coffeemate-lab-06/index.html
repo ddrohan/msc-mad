@@ -130,6 +130,46 @@ h3
       Exercises
     </a>
     
+    <a class="item" data-tab=".">
+      .
+    </a>
+    
+    <a class="item" data-tab=".">
+      .
+    </a>
+    
+    <a class="item" data-tab=".">
+      .
+    </a>
+    
+    <a class="item" data-tab=".">
+      .
+    </a>
+    
+    <a class="item" data-tab=".">
+      .
+    </a>
+    
+    <a class="item" data-tab=".">
+      .
+    </a>
+    
+    <a class="item" data-tab=".">
+      .
+    </a>
+    
+    <a class="item" data-tab=".">
+      .
+    </a>
+    
+    <a class="item" data-tab=".">
+      .
+    </a>
+    
+    <a class="item" data-tab=".">
+      .
+    </a>
+    
     <a class="item" href="../../index.html">
       <i class="home icon"></i>
     </a>
@@ -1211,6 +1251,335 @@ public class Donate extends AppCompatActivity {
 <li><a href="archives/Donation.1.5.zip">Donation.1.5.zip</a></li>
 </ul>
 
+      </div>
+     
+      <div  class="ui tab segment lab" data-tab=".">
+        
+      </div>
+     
+      <div  class="ui tab segment lab" data-tab=".">
+        <h1>Objectives</h1>
+<p>In this Lab, you will continue to refactor our CoffeeMate Case Study, this version is called <b>CoffeeMate.6.0</b>. We will build on previous labs and add in Location and Map Support. In this version we will add in a few more classes and resources. On completion of this lab you&#39;ll be able to </p>
+<ul>
+<li>make CoffeeMate location aware</li>
+</ul>
+<p>and</p>
+<ul>
+<li>view individual coffee locations on a Map</li>
+</ul>
+
+      </div>
+     
+      <div  class="ui tab segment lab" data-tab=".">
+        <h1>Solution</h1>
+<p>This is a solution to the lab:</p>
+<ul>
+<li><a href="../archives/CoffeeMate.6.0.Solution.zip">CoffeeMate.6.0.Solution</a></li>
+</ul>
+
+      </div>
+     
+      <div  class="ui tab segment lab" data-tab=".">
+        <h1>Setup - Starter Code</h1>
+<p>As with the previous labs, you can download the starter code for this lab here - <a href="../archives/CoffeeMate.6.0.Starter.zip">CoffeeMate.6.0.Starter</a>. It&#39;s bacisally a copy of CoffeeMate.5.0, so if you wish, you could just continue on with your own version.</p>
+<p>Eitherway, It&#39;s probably still a good idea to run the App and confirm that the starter app (our your app) is configured properly and (still) running.</p>
+<p>In this lab, you are required to do the following:</p>
+<ul>
+<li><p>Add Location awareness to the App (via a custom MapsFragment class)</p>
+</li>
+<li><p>Add a Google Map, so the user can see their coffees displayed on a Map</p>
+</li>
+<li><p>Add Volley Support to CoffeeMate to manage our coffees and their locations on the server (our APi already does this)</p>
+</li>
+</ul>
+<p>The following steps will guide you through these requirements, but before we can do anything with the Google Maps, you need to obtain your own Google Maps Key to add to your manifest file. </p>
+
+      </div>
+     
+      <div  class="ui tab segment lab" data-tab=".">
+        <h1>Obtaining your Google Maps Key</h1>
+<p>First of all, you need to visit <a href="https://developers.google.com/maps/documentation/android-api/signup">Get an API Key</a> on the Android Developer site as it contains all the info you need to obtain your Key. You&#39;ll have some of the work done already (from the previous lab) but there&#39;s still a bit of work to do, so if you get stuck just ask!</p>
+<p>Once you have your key, the next thing to do is add the following to your strings.xml</p>
+<pre><code>&lt;string name=&quot;title_map&quot;&gt;Map&lt;/string&gt;
+&lt;string name=&quot;google_maps_key&quot;&gt;abcdefghijklmnopetcetcetc&lt;/string&gt;</code></pre>
+<p>where &#39;abcdefghijklmnopetcetcetc&#39; is your API Key.</p>
+<p>Next, open up your manifest file and add the following just before the <strong>closing</strong> &quot;application&quot; tag</p>
+<pre><code>&lt;meta-data
+    android:name=&quot;com.google.android.geo.API_KEY&quot;
+    android:value=&quot;@string/google_maps_key&quot; /&gt;</code></pre>
+<p>Also, in your manifest file add the following permissions</p>
+<pre><code>&lt;uses-permission android:name=&quot;ie.cm.permission.MAPS_RECEIVE&quot;/&gt;</code></pre>
+<p>and the following dependencies to you build.gradle</p>
+<pre><code>compile &#39;com.google.android.gms:play-services-maps:8.1.0&#39;
+compile &#39;com.google.android.gms:play-services-location:8.1.0&#39;</code></pre>
+<p>Then, go ahead and create a new <strong>Empty Activity</strong> but name the Layout <strong><em>fragment_map</em></strong> - this is important as we will be disgarding the activity in the next step but retaining the layout - we are just using it here to confirm we have configured our key etc. correctly.</p>
+<p><img src="/session07/lab/img/lab0701.png" alt=""></p>
+<p>now add the following to the layout</p>
+<pre><code>&lt;fragment android:name=&quot;com.google.android.gms.maps.MapFragment&quot; 
+        android:id=&quot;@+id/map&quot; 
+        android:layout_width=&quot;match_parent&quot; 
+        android:layout_height=&quot;match_parent&quot;/&gt;</code></pre>
+<p>Finally, (for this step) add the following to your Home Activity, to temporarily handle launching our new Map activity, if the user selects the menu option.</p>
+<pre><code>else if (id == R.id.nav_map) { 
+startActivity(new Intent(this, Map.class));
+}</code></pre>
+<p>Run your app and select &quot;View on Map&quot;</p>
+<p><img src="/session07/lab/img/lab0702.png" alt=""></p>
+<p>and if everything goes according to plan, you should get</p>
+<p><img src="/session07/lab/img/lab0703.png" alt=""></p>
+<p>Congratulations - you can now go ahead and build map based apps!</p>
+<p>You can download a version of this stage of CoffeeMate.6.0 on the next step, if you&#39;re still having issues.</p>
+
+      </div>
+     
+      <div  class="ui tab segment lab" data-tab=".">
+        <h1>View Users Current Location - Part I</h1>
+<p>Before you go any further, here&#39;s where we&#39;re at so far</p>
+<ul>
+<li><a href="../archives/CoffeeMate.7.0.sofar.zip">CoffeeMate.6.0.sofar</a></li>
+</ul>
+<p>At the moment, when the user selects the &#39;Map&#39; menu option, they get to see a standard map, but not their own location (or even their coffees locations), so this step (and the next) is about implementing that (we&#39;ll look at the coffees location in later steps).</p>
+<p>As we want to keep in line with the UI guidelines and approach, it makes sense to use a <i>Fragment</i> so first of all go ahead and create a new (Blank) Fragment called <strong>MapsFragment</strong> (NOT MapFragment) but DON&#39;T create a layout or include interface callbacks</p>
+<p><img src="/session07/lab/img/lab0704.png" alt=""></p>
+<p>Make sure it <strong><em>extends</em></strong> from <em>MapFragment</em> and <strong><em>implements</em></strong> the following interfaces, like so</p>
+<pre><code class="lang-java">public class MapsFragment extends MapFragment implements 
+    GoogleApiClient.ConnectionCallbacks, 
+    GoogleApiClient.OnConnectionFailedListener, 
+    GoogleMap.OnInfoWindowClickListener, 
+    GoogleMap.OnMapLongClickListener, 
+    GoogleMap.OnMapClickListener, 
+    GoogleMap.OnMarkerClickListener, 
+    LocationListener {
+...
+}</code></pre>
+<p>Fix the errors and replace the existing <strong><em>newInstance()</em></strong> method with this one</p>
+<pre><code class="lang-java">public static MapsFragment newInstance() { 
+    MapsFragment fragment = new MapsFragment(); 
+return fragment;
+}</code></pre>
+<p>Replace the existing instance variables with these</p>
+<pre><code class="lang-java">private GoogleApiClient mGoogleApiClient; 
+private Location mCurrentLocation; 
+private LocationRequest mLocationRequest; 
+private List&lt;Coffee&gt; mCoffeeList; 
+
+private long UPDATE_INTERVAL = 30000; /* 30 secs */ 
+private long FASTEST_INTERVAL = 1000; /* 5 secs */ 
+
+/** Define a request code to send to Google Play services This code is
+* returned in Activity.onActivityResult
+*/ 
+private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000; 
+
+private final int[] MAP_TYPES = { 
+    GoogleMap.MAP_TYPE_SATELLITE, 
+    GoogleMap.MAP_TYPE_NORMAL, 
+    GoogleMap.MAP_TYPE_HYBRID, 
+    GoogleMap.MAP_TYPE_TERRAIN, 
+    GoogleMap.MAP_TYPE_NONE 
+};
+
+private int curMapTypeIndex = 1;</code></pre>
+<p>Remove <strong><em>onCreate()</em></strong> and <strong><em>onCreateView()</em></strong> and replace with</p>
+<pre><code class="lang-java">@Override
+public void onViewCreated(View view, Bundle savedInstanceState) { 
+    super.onViewCreated(view, savedInstanceState); 
+    setHasOptionsMenu(true); 
+
+TextView titleBar = (TextView) getActivity().findViewById(R.id.recentAddedBarTextView);
+titleBar.setText(&quot;Coffee Map&quot;);
+
+    mGoogleApiClient = new GoogleApiClient.Builder( getActivity() ) 
+        .addConnectionCallbacks( this )     
+        .addOnConnectionFailedListener( this ) 
+        .addApi( LocationServices.API ) 
+        .build();
+
+    initListeners();
+}</code></pre>
+<p>Add the following methods</p>
+<pre><code class="lang-java">private void initListeners() { 
+    getMap().setOnMarkerClickListener(this); 
+    getMap().setOnMapLongClickListener(this); 
+    getMap().setOnInfoWindowClickListener(this); 
+    getMap().setOnMapClickListener(this);
+}
+
+@Override
+public void onStart() { 
+    super.onStart(); 
+    mGoogleApiClient.connect();
+  }
+
+@Override
+public void onStop() { 
+    super.onStop(); 
+        if( mGoogleApiClient != null &amp;&amp; mGoogleApiClient.isConnected() ) {             
+                mGoogleApiClient.disconnect(); 
+            }
+  }
+
+private void initCamera( Location location ) { 
+CameraPosition position = CameraPosition.builder() 
+    .target( new LatLng( location.getLatitude(), location.getLongitude() ) ) 
+    .zoom( 14f ) 
+    .bearing( 0.0f ) 
+    .tilt( 0.0f ) 
+    .build(); 
+
+    getMap().setMapType(MAP_TYPES[curMapTypeIndex]); 
+    getMap().setMyLocationEnabled(true); 
+    getMap().getUiSettings().setMapToolbarEnabled(true); 
+    getMap().getUiSettings().setCompassEnabled(true); 
+    getMap().getUiSettings().setMyLocationButtonEnabled(true); 
+    getMap().getUiSettings().setAllGesturesEnabled(true); 
+    getMap().setTrafficEnabled(true); 
+    getMap().setBuildingsEnabled(true); 
+    getMap().getUiSettings().setZoomControlsEnabled(true); 
+    getMap().animateCamera(CameraUpdateFactory.newCameraPosition(position), null);
+}</code></pre>
+<p>And replace the relevant methods with the following</p>
+<pre><code class="lang-java">@Override 
+public void onConnected(Bundle dataBundle) 
+{ 
+// Display the connection status 
+try { 
+mCurrentLocation = LocationServices .FusedLocationApi .getLastLocation(mGoogleApiClient); 
+} 
+catch(SecurityException se) { 
+Toast.makeText(getActivity(),&quot;Check Your Permissions&quot;,Toast.LENGTH_SHORT).show(); 
+} 
+if (mCurrentLocation != null) { 
+Toast.makeText(getActivity(), &quot;GPS location was found!&quot;, Toast.LENGTH_SHORT).show(); 
+//LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()); 
+} 
+else { 
+Toast.makeText(getActivity(), &quot;Current location was null, Setting Default Values!&quot;, Toast.LENGTH_SHORT).show(); 
+mCurrentLocation = new Location(&quot;Waterford City Default&quot;);
+mCurrentLocation.setLatitude(52.2462);
+mCurrentLocation.setLongitude(-7.1402); 
+} 
+
+initCamera(mCurrentLocation); 
+} 
+
+@Override 
+public void onConnectionSuspended(int i) { 
+if (i == CAUSE_SERVICE_DISCONNECTED) { 
+Toast.makeText(getActivity(), &quot;Disconnected. Please re-connect.&quot;, Toast.LENGTH_SHORT).show(); 
+} 
+else if (i == CAUSE_NETWORK_LOST) { 
+Toast.makeText(getActivity(), &quot;Network lost. Please re-connect.&quot;, Toast.LENGTH_SHORT).show(); 
+} 
+} 
+
+
+@Override 
+public void onConnectionFailed(ConnectionResult connectionResult) {
+/* * Google Play services can resolve some errors it detects. If the error * has a resolution, try sending an Intent to start a Google Play * services activity that can resolve error. */ 
+
+if (connectionResult.hasResolution()) { 
+try { 
+// Start an Activity that tries to resolve the error connectionResult.startResolutionForResult(getActivity(), CONNECTION_FAILURE_RESOLUTION_REQUEST); 
+/* * Thrown if Google Play services canceled the original * PendingIntent */ 
+} 
+catch (IntentSender.SendIntentException e) { 
+// Log the error e.printStackTrace(); 
+} 
+} else { 
+Toast.makeText(getActivity(), &quot;Sorry. Location services not available to you&quot;, Toast.LENGTH_LONG).show(); 
+} 
+}</code></pre>
+<p>Now, open your <strong>Home</strong> Activity and instead of loading the Map Activity (as is currently the case) implement the necessary code to display our <strong>MapsFragment</strong>.</p>
+<p>If you&#39;ve followed all the steps correctly, you should be seeing something like this</p>
+<p><img src="/session07/lab/img/lab0705.png" alt=""></p>
+<p>Experiment with different coordinates and restarting your app. Now obviously, having to manually change the coordinates is not an option, so the next step will be about adding Location Awareness to our App and updating the Map automatically, as the user moves around and adding a &#39;Marker&#39; to show these movements.</p>
+
+      </div>
+     
+      <div  class="ui tab segment lab" data-tab=".">
+        <h1>View Users Current Location - Part II</h1>
+<p>The previous step was mostly about adding in a lot of boilerplate code to our Fragment, to get things moving - a lot of which you would have seen in the lecture material that covers Location and Google Maps.</p>
+<p>This step adds a bit more of that, but also adds some bespoke code specific to CoffeeMate and its features.</p>
+<p>Firstly, edit your <b>MapsFragment</b> and add/replace the following methods</p>
+<pre><code class="lang-java">protected void startLocationUpdates() { 
+    mLocationRequest = new LocationRequest();
+    mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY); 
+    mLocationRequest.setInterval(UPDATE_INTERVAL); 
+    mLocationRequest.setFastestInterval(FASTEST_INTERVAL); 
+
+    try { 
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this); 
+    } 
+    catch(SecurityException se) { 
+        Toast.makeText(getActivity(),&quot;Check Your Permissions on Location Updates&quot;,Toast.LENGTH_SHORT).show(); 
+    }
+  }
+
+public void onLocationChanged(Location location) { 
+// Report to the UI that the location was updated 
+String msg = &quot;Updated Location: &quot; + Double.toString(location.getLatitude()) + &quot;,&quot; + Double.toString(location.getLongitude()); 
+Log.v(&quot;coffeemate&quot;, &quot;onLocationChanged() = &quot; + msg); 
+mCurrentLocation = location; initCamera(mCurrentLocation);
+}</code></pre>
+<p>And make sure you call startLocationUpdates() in your onConnected()</p>
+<p>Now, add the following permission to your manifest file</p>
+<pre><code class="lang-java">&lt;uses-permission android:name=&quot;android.permission.ACCESS_FINE_LOCATION&quot;/&gt;</code></pre>
+<p>and run your app again (and remember to accept these new permissions).</p>
+<p><img src="/session07/lab/img/lab0710.png" alt=""></p>
+<p>You should now see something like this when you &#39;View on Map&#39;</p>
+<p><img src="/session07/lab/img/lab0706.png" alt=""></p>
+<p>but now when you send new coordinates to the emulator, you should see the &#39;blue dot&#39; move to that new location, as below</p>
+<p><img src="/session07/lab/img/lab0709.png" alt=""></p>
+<p><img src="/session07/lab/img/lab0707.png" alt=""></p>
+<p><img src="/session07/lab/img/lab0708.png" alt=""></p>
+
+      </div>
+     
+      <div  class="ui tab segment lab" data-tab=".">
+        <h1>View Users Coffee Locations</h1>
+<p>The last step in this lab involves displaying the users coffees on the map, along with the users location (which was the last step) so we need to modify a few classes here, namely</p>
+<ul>
+<li>MapFragment</li>
+<li>AddFragment</li>
+<li>CoffeeApi</li>
+</ul>
+<h3>MapFragment</h3>
+<p>Here we need to inspect our list of coffees and (using the longitude and latitude coordinates) place a marker on the map indicating the location of each coffee.</p>
+<p>So, first, open up your MapFragment class and add the following method</p>
+<pre><code class="lang-java">public void addCoffees(List&lt;Coffee&gt; list){ 
+    for(Coffee c : list) 
+        getMap().addMarker(new MarkerOptions() 
+            .position(new LatLng(c.marker.coords.latitude, c.marker.coords.longitude)) 
+            .title(c.name + &quot; €&quot; + c.price) 
+            .snippet(c.shop + &quot; &quot; + c.address)                 
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.coffee)));
+}</code></pre>
+<p>To ensure our list of coffees is up to date and the most recent one, the MapFragment class needs to implement the VolleyListener interface, so go ahead and complete that now.</p>
+<p>Once you&#39;ve implemented the necessary methods, add a call to <strong><em>addCoffees()</em></strong> in your <strong><em>setList()</em></strong> method.</p>
+<p>Now, add the following APi call to your <strong><em>onConnected()</em></strong>  </p>
+<pre><code class="lang-java">CoffeeApi.attachListener(this);
+CoffeeApi.getAll(&quot;/coffees/&quot; + Base.googleToken, null);</code></pre>
+<p>Because we&#39;re passing &#39;null&#39; to our getAll() call, there&#39;s a small change you need to make in your CoffeeApi class - so see if you can work out what it is?</p>
+<p>Once you have, add this to your <strong><em>onStop()</em></strong></p>
+<pre><code class="lang-java">CoffeeApi.detachListener();</code></pre>
+<p>Before you run your app, I&#39;d suggest checking the Web App to confirm you have some coffees stored on the server and can view them on the Map in the Browser, so when you run your app, you know it&#39;s working correctly if you see your coffees - something like this</p>
+<p><img src="/assets/coffeemate.9.png" alt=""></p>
+<hr>
+<h3>AddFragment</h3>
+<p>Now that we can see existing coffees on our Map, what about when we add new coffees on the device, not the web app? This is the final step in our Case Study and involves a bit of work in refactoring our AddFragment as we need to grab the current location to save with our coffee details.</p>
+<p>And for fun :) we&#39;ll also embed our MapFragment inside the AddFragment layout, so we can see where we&#39;re adding our coffee, like so</p>
+<p><img src="/assets/coffeemate.10.png" alt=""></p>
+<p>First thing to do is </p>
+
+      </div>
+     
+      <div  class="ui tab segment lab" data-tab=".">
+        
+      </div>
+     
+      <div  class="ui tab segment lab" data-tab=".">
+        
       </div>
      
     </div>
