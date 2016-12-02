@@ -126,6 +126,10 @@ h3
       08
     </a>
     
+    <a class="item" data-tab="09">
+      09
+    </a>
+    
     <a class="item" data-tab="Exercises">
       Exercises
     </a>
@@ -232,1027 +236,803 @@ h3
       
       <div  class="ui tab segment lab" data-tab="Lab-06">
         <h1>Objectives</h1>
-<p>This lab continues our Case Study <b>CoffeeMate</b> and again, yet another major refactoring of the app, where we introduce the ability to make API calls using <b>Volley</b> and introduce some basic security using <b>Google+ Sign-in</b>.</p>
+<p>This lab continues our Case Study <b>CoffeeMate</b> and again, yet another major refactoring of the app, where we introduce the ability to make API calls to our CoffeeMate Web App using <b>Volley</b> and introduce some basic security using <b>Google+ Sign-in</b>.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="01">
-        <h1>Step 01 - Create Project</h1>
-<p>Create a new Android application, as demonstrated in the following 5 screenshots:</p>
-<p><img src="img/firstrun.png" alt=""></p>
-<p><img src="img/lab2s101.png" alt=""></p>
-<p><img src="img/lab2s102.png" alt=""></p>
-<p>Note the &#39;Minimum Required SDK&#39; which may be different from the default (as above).</p>
-<p><img src="img/lab2s103.png" alt=""></p>
-<p><img src="img/lab2s104.png" alt=""></p>
-<p>The opening project perspective is shown below, with the <em>content_donate</em> layout open in the visual designer:</p>
-<p><img src="img/lab2s105.png" alt=""></p>
-<p>The project will look like this</p>
-<p><img src="img/lab2s106.png" alt=""></p>
-<p>It is important to become familiar with the structure and purpose of the three panes surrounding the Donation &#39;canvas&#39;:</p>
-<h2>Pallette:</h2>
-<p><img src="img/lab2s107.png" alt=""></p>
-<h2>Outline</h2>
-<p><img src="img/lab2s108.png" alt=""></p>
-<h2>Properties</h2>
-<p><img src="img/lab2s109.png" alt=""></p>
-<p>These views are closely related - and you will need to monitor the information displayed there continually as you evolve the appearance of your activities screens.</p>
-<p>Also, take a quick look at your <b>build.gradle</b> file to see the configuration and dependencies of your app.</p>
-<p><img src="img/lab2s110.png" alt=""></p>
+        <h1>Setup - Starter Code &amp; Configuring Volley</h1>
+<p>As this lab builds directly on the previous lab, but requires a number of helper classes you can download the starter code for the lab here - <a href="archives/CoffeeMate.5.0.Starter.zip">CoffeeMate.5.0</a>.</p>
+<p>In this lab, you are required to do the following:</p>
+<ul>
+<li>Refactor <b>CoffeeMate.4.0</b> replacing all Database calls with the Web Service calls (one of which is done already). This particular lab is concerned with initially using <b>Volley</b> to make our API calls and ultimately integrating <b>Google+ Sign-in</b> to allows us to securely login to our sister Web App - <b><a href="http://coffeemateweb.herokuapp.com">CoffeeMateWeb</a></b> and still offer the same functionality on the App.</li>
+</ul>
+<p>I would also like to bring to your attention our <b>Coffee</b> class as it has been refactored for use with the Web Service, we will be using this version of the model in this, and in subsequent Labs.</p>
+<p><hr>
+Once you import the Starter Code, you&#39;ll notice a number of errors, so to fix these we need to import/include the <b>Volley</b> &#39;Module&#39; in the project. To do this you can either</p>
+<ul>
+<li>clone the project (via git)</li>
+</ul>
+<pre><code class="lang-java">git clone https://android.googlesource.com/platform/frameworks/volley</code></pre>
+<p>or download my own volley archive here - <a href="../archives/volley.zip">volley.zip</a>.</p>
+<p>Eitherway, you then need to</p>
+<pre><code>File -&gt; New Module, choose Import Existing Project</code></pre>
+<p>and Add the following dependencies to your &#39;build.gradle&#39;</p>
+<pre><code>compile project(&#39;:volley&#39;)
+compile &#39;com.google.code.gson:gson:2.4&#39; // for Googles Gson JSON Parser</code></pre>
+<p>Add the necessary imports, clean the Project and the errors should be fixed, and if you run the app, you should get something like the following (depending on what&#39;s on the server at the time of making the api request)</p>
+<p> <img src="img/lab0601.png" alt=""></p>
+<p><i><b>I would strongly recommend spending some time familiarising yourself with the source code for this starter project - especially the API Calls and how we utilise a &#39;Callback Interface&#39;.</b></i></p>
+<p>The remainder of this lab involves integrating <b>Google+ Sign-in</b> and using <b>Volley</b> to interact with the Web App.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="02">
-        <h1>Step 02 - Donate Layout &amp; Resources</h1>
-<p>On completion of this lab you&#39;ll be able to</p>
+        <h1>Setting Up Google+ Sign-in</h1>
+<p>As previously mentioned, we now want our CoffeeMate App to interact with a sister Web App (<a href="http://coffeemateweb.herokuapp.com">CoffeeMateWeb</a>) so we need <b>Google+ Sign-in</b> support to allow us to connect to the Web App and Add/Edit/Delete/View Coffees stored on the Server.</p>
+<p>What we want is something like this:</p>
+<p>The user launches the app and (after a Splash Screen) is prompted to login, like so</p>
+<p><img src="img/lab0602.png" alt=""></p>
+<p>If the user hasn&#39;t previously logged in, they will be asked to choose an existing Account, or add a different account (that&#39;s what we&#39;ll do here)</p>
+<p><img src="img/lab0603.png" alt=""></p>
+<p>The user is then prompted for their Google credentials</p>
+<p><img src="img/lab0604.png" alt=""></p>
+<p><img src="img/lab0605.png" alt=""></p>
+<p>and then the app asked for certain permissions</p>
+<p><img src="img/lab0606.png" alt=""></p>
+<p>The additional account can now be chosen as the active Google account in the app</p>
+<p><img src="img/lab0607.png" alt=""></p>
+<p>and we can display the users Google Profile pic, and email in the Navigation Drawer like so</p>
+<p><img src="img/lab0608.png" alt=""></p>
+<hr>
+
+<p>Before you can start integrating Google+ features in your own app, you must create a <b><i>Google Developers Console project</i></b> and initialize the <b>GoogleApiClient</b> within your app.</p>
+<h3>Step 1: Add Google Sign-In</h3>
+<p>Before you begin using Google+ in your Android app, follow all of the steps to <a href="https://developers.google.com/identity/sign-in/android/start-integrating">Start Integrating Google Sign-In into your Android App</a>.</p>
+<h3>Step 2: Enable the Google+ API</h3>
+<p>If you followed the steps above to add Google Sign-In to your app, you have already created a project in Google Developers Console. Now enable the Google+ API for that project to access Google+ features.</p>
 <ul>
-<li><p>design an initial layout for the app.</p>
-</li>
-<li><p>add different widgets (such as a button, text and picker) to a layout.</p>
-</li>
-<li><p>implement basic event handling to cause some action on the click of a button.</p>
-</li>
-<li><p>be able to &#39;filter&#39; Log messages for testing and debugging.</p>
-</li>
+<li>Go to the <a href="https://console.developers.google.com/project/_/apiui/apis/library"><Google Developers Console APIs library</a>.</li>
+<li>From the project drop-down, select the <a href="https://support.google.com/cloud/answer/6158853">project</a> you previously created.</li>
+<li>In the list of Google APIs, search for the <b>Google+ API</b> service.</li>
+<li>Select <b>Google+ API</b> from the results list.</li>
+<li>Select <b>Enable API</b>.</li>
 </ul>
-<p>So, for this lab, our objective is to produce an Android App that looks something like this:</p>
-<p><img src="img/completeappv1.png" alt=""></p>
-<p>In your <b>content_donate.xml</b>, delete the current &#39;Hello World&#39; text, and drag and drop a new &#39;LargeText&#39; form widget onto the canvas, and &#39;stretch&#39; the widget to fill the canvas (like below). Look closely at the following:</p>
-<p><img src="img/lab2s201.png" alt=""></p>
-<p>Now, Double-Click the widget and you will be presented with the following:</p>
-<p><img src="img/lab2s202.png" alt=""></p>
-<p>Select the elipse (on the right hand side, indicated below)</p>
-<p><img src="img/lab2s203.png" alt=""></p>
-<p>and you will be presented with the Resources Menu</p>
-<p><img src="img/lab2s204.png" alt=""></p>
-<p>Select a &#39;New Resource-&gt;New String Value, and fill in the values as below</p>
-<p><img src="img/lab2s205.png" alt=""></p>
-<p>Double-Click the widget again and enter <b>donteTitle</b> for the <b>id</b> and hit return.</p>
-<p><img src="img/lab2s205a.png" alt=""></p>
-<p>Once completed, you&#39;ll have something like this</p>
-<p><img src="img/lab2s206.png" alt=""></p>
-<p>Note carefully the following features:</p>
-<ul>
-<li>the guides tying the text to the left, top and right corner</li>
-<li>in Outline - the name of the control has been changed from a default to &#39;donateTitle&#39;.</li>
-<li>in Properties - check the value for &#39;text&#39; and notice we have a string reference linking to our <b>strings.xml</b> (below)</li>
-</ul>
-<p><img src="img/lab2s207.png" alt=""></p>
-<p>Locate the following two files and inspect them closely:</p>
-<h2>res/layout/content_dontate.xml</h2>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
-    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot; android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;match_parent&quot; android:paddingLeft=&quot;@dimen/activity_horizontal_margin&quot;
-    android:paddingRight=&quot;@dimen/activity_horizontal_margin&quot;
-    android:paddingTop=&quot;@dimen/activity_vertical_margin&quot;
-    android:paddingBottom=&quot;@dimen/activity_vertical_margin&quot;
-    app:layout_behavior=&quot;@string/appbar_scrolling_view_behavior&quot;
-    tools:showIn=&quot;@layout/activity_donate&quot; tools:context=&quot;.Donate&quot;&gt;
-
-    &lt;TextView
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:textAppearance=&quot;?android:attr/textAppearanceLarge&quot;
-        android:text=&quot;@string/donateTitle&quot;
-        android:id=&quot;@+id/donateTitle&quot;
-        android:layout_alignParentTop=&quot;true&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:layout_alignParentEnd=&quot;true&quot; /&gt;
-&lt;/RelativeLayout&gt;</code></pre>
-<h2>res/values/strings.xml</h2>
-<pre><code>&lt;resources&gt;
-    &lt;string name=&quot;app_name&quot;&gt;Donation&lt;/string&gt;
-    &lt;string name=&quot;action_settings&quot;&gt;Settings&lt;/string&gt;
-    &lt;string name=&quot;donateTitle&quot;&gt;Welcome Homer&lt;/string&gt;
-&lt;/resources&gt;</code></pre>
-<p>Note the relationship between &#39;donateTitle&#39; in both files.</p>
-<p>Bring in the following string into the donate activity now - (medium text) - and follow the same procedure as above. The designer should look like this:</p>
-<p><img src="img/lab2s208.png" alt=""></p>
-<p>and our XML files will look something like this:</p>
-<h2>content_dontate.xml</h2>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
-    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot; android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;match_parent&quot; android:paddingLeft=&quot;@dimen/activity_horizontal_margin&quot;
-    android:paddingRight=&quot;@dimen/activity_horizontal_margin&quot;
-    android:paddingTop=&quot;@dimen/activity_vertical_margin&quot;
-    android:paddingBottom=&quot;@dimen/activity_vertical_margin&quot;
-    app:layout_behavior=&quot;@string/appbar_scrolling_view_behavior&quot;
-    tools:showIn=&quot;@layout/activity_donate&quot; tools:context=&quot;.Donate&quot;&gt;
-
-    &lt;TextView
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:textAppearance=&quot;?android:attr/textAppearanceLarge&quot;
-        android:text=&quot;@string/donateTitle&quot;
-        android:id=&quot;@+id/donateTitle&quot;
-        android:layout_alignParentTop=&quot;true&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:layout_alignParentEnd=&quot;true&quot; /&gt;
-
-    &lt;TextView
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:textAppearance=&quot;?android:attr/textAppearanceMedium&quot;
-        android:text=&quot;@string/donateSubtitle&quot;
-        android:id=&quot;@+id/donateSubtitle&quot;
-        android:layout_below=&quot;@+id/donateTitle&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:layout_marginTop=&quot;27dp&quot;
-        android:layout_alignEnd=&quot;@+id/donateTitle&quot; /&gt;
-&lt;/RelativeLayout&gt;</code></pre>
-<h2>strings.xml</h2>
-<pre><code>&lt;resources&gt;
-    &lt;string name=&quot;app_name&quot;&gt;Donation.1.0&lt;/string&gt;
-    &lt;string name=&quot;action_settings&quot;&gt;Settings&lt;/string&gt;
-    &lt;string name=&quot;donateTitle&quot;&gt;Welcome Homer&lt;/string&gt;
-    &lt;string name=&quot;donateSubtitle&quot;&gt;Please Give Generously&lt;/string&gt;
-&lt;/resources&gt;</code></pre>
+<p>When the process completes, <b>Google+ API</b> appears in the list of enabled APIs. To access, select <b>API Manager</b> on the left sidebar menu, then select the <b>Enabled APIs</b> tab.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="03">
-        <h1>Step 03 - The &#39;Donate&#39; Button</h1>
-<p>Place a button directly on to the activity - attached to the bottom of the screen as shown:</p>
-<p><img src="img/lab2s301.png" alt=""></p>
-<p>Following a similar procedure as in the previous step, rename the button and add an id, both called <b>donateButton</b> If all goes as expected, your xml files should be like this:</p>
-<h2>activity_donate.xml</h2>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
-    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot; android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;match_parent&quot; android:paddingLeft=&quot;@dimen/activity_horizontal_margin&quot;
-    android:paddingRight=&quot;@dimen/activity_horizontal_margin&quot;
-    android:paddingTop=&quot;@dimen/activity_vertical_margin&quot;
-    android:paddingBottom=&quot;@dimen/activity_vertical_margin&quot;
-    app:layout_behavior=&quot;@string/appbar_scrolling_view_behavior&quot;
-    tools:showIn=&quot;@layout/activity_donate&quot; tools:context=&quot;.Donate&quot;&gt;
+        <h1>Adding a Google+ Sign-in Screen</h1>
+<p>There&#39;s quite a lot of code (relatively speaking) to get this off the ground, so we&#39;ll use this step as more of a &#39;configuration&#39; step, and hopefully once you&#39;ve completed this, you&#39;ll be able to <strong><em>&#39;Go Green&#39;</em></strong> on your own app :-) (Reduce,Reuse,Recycle my code).</p>
+<p>The first thing you need to do is introduce the following variables into your <strong>Base</strong> class</p>
+<pre><code>/* Client used to interact with Google APIs. */
+public static GoogleApiClient mGoogleApiClient;
 
-    &lt;TextView
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:textAppearance=&quot;?android:attr/textAppearanceLarge&quot;
-        android:text=&quot;@string/donateTitle&quot;
-        android:id=&quot;@+id/donateTitle&quot;
-        android:layout_alignParentTop=&quot;true&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:layout_alignParentEnd=&quot;true&quot; /&gt;
-
-    &lt;TextView
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:textAppearance=&quot;?android:attr/textAppearanceMedium&quot;
-        android:text=&quot;@string/donateSubtitle&quot;
-        android:id=&quot;@+id/donateSubtitle&quot;
-        android:layout_below=&quot;@+id/donateTitle&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:layout_marginTop=&quot;27dp&quot;
-        android:layout_alignEnd=&quot;@+id/donateTitle&quot; /&gt;
-
-    &lt;Button
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:text=&quot;@string/donateButton&quot;
-        android:id=&quot;@+id/donateButton&quot;
-        android:layout_alignParentBottom=&quot;true&quot;
-        android:layout_centerHorizontal=&quot;true&quot;
-        android:layout_marginBottom=&quot;47dp&quot; /&gt;
-&lt;/RelativeLayout&gt;</code></pre>
-<h2>strings.xml</h2>
-<pre><code>&lt;resources&gt;
-    &lt;string name=&quot;app_name&quot;&gt;Donation.1.0&lt;/string&gt;
-    &lt;string name=&quot;action_settings&quot;&gt;Settings&lt;/string&gt;
-    &lt;string name=&quot;donateTitle&quot;&gt;Welcome Homer&lt;/string&gt;
-    &lt;string name=&quot;donateSubtitle&quot;&gt;Please Give Generously&lt;/string&gt;
-    &lt;string name=&quot;donateButton&quot;&gt;Donate&lt;/string&gt;
-&lt;/resources&gt;</code></pre>
-<p>If there is a deviation from the above - retrace your steps (delete the button) until you can match the above.</p>
-<p>We can now switch our attention to the <strong>Donate</strong> Activity class :</p>
-<pre><code>package ie.app;
-
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-
-public class Donate extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_donate);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, &quot;Replace with your own action&quot;, Snackbar.LENGTH_LONG)
-                        .setAction(&quot;Action&quot;, null).show();
-            }
-        });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_donate, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-}</code></pre>
-<p>For any &#39;controls&#39; a user can interact with we usually find it useful to associate a class member with that object. Currently we only have one - a Button. The text fields we don&#39;t consider &#39;interactive&#39; as such, so we will not include those.</p>
-<p>Insert the following new field into the class:</p>
-<pre><code>  private Button donateButton;</code></pre>
-<p>The class will have to be imported. The class name will always match the name in the Palette:</p>
-<p><img src="img/lab2s302.png" alt=""></p>
-<p>We are free to call the variable anything we like. However, in order to keep confusion to a minimum, always call the variable by the same name you used in the Outline view:</p>
-<p><img src="img/lab2s303.png" alt=""></p>
-<p>In <strong><em>onCreate()</em></strong> - we need to initialise this variable:</p>
-<pre><code>    donateButton = (Button) findViewById(R.id.donateButton);</code></pre>
-<p>We might also add a logging message so we can have some feedback as the app launches:</p>
-<pre><code>    if (donateButton != null)
+public static boolean signedIn = false;
+public static String googleToken;
+public static String googleName;
+public static String googleMail;
+public static String googlePhotoURL;
+public static Bitmap googlePhoto;
+public static int drawerID = 0;</code></pre>
+<p>and the following method</p>
+<pre><code>public void logout(MenuItem item)
+    {
+    Log.v(&quot;coffeemate&quot;,&quot;Logging out from: &quot; + mGoogleApiClient);
+    Base.signedIn = mGoogleApiClient.isConnected();
+        if (Base.signedIn)
         {
-            Log.v(&quot;Donate&quot;, &quot;Really got the donate button&quot;);
-        }</code></pre>
-<p>This is the complete activity class:</p>
-<pre><code>package ie.app;
+        Log.v(&quot;coffeemate&quot;,&quot;Logging out from: &quot; + mGoogleApiClient);
+        Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+        mGoogleApiClient.disconnect();
+        Base.googleToken = &quot;&quot;;
+        Base.signedIn = mGoogleApiClient.isConnected();
+        mGoogleApiClient.connect();
+        Log.v(&quot;coffeemate&quot;,&quot;googleClient Connected: &quot; + Base.signedIn);
+        Toast.makeText(this, &quot;Signing out of Google&quot;, Toast.LENGTH_LONG).show();
+        Log.v(&quot;coffeemate&quot;, &quot;CoffeeMate App Terminated&quot;);
+        }
 
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
+    startActivity(new Intent(Base.this, Login.class)
+        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+    }</code></pre>
+<p>Then, bring in the following resources into your own CoffeeMate project (and store in the relevant folders) and fix/import any errors. You may need to revisit the Nav Drawer layout to rename some widgets.</p>
+<ul>
+<li><strong>Login</strong> Activity (in package <strong><em>ie.cm.activities</em></strong>)</li>
+<li><strong>activity_login</strong> Layout (in <strong><em>res\/layout</em></strong>)</li>
+</ul>
+<p>Also, just confirm that you have the following permissions in your manifest file</p>
+<pre><code>&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&gt;</code></pre>
+<p>Next, bring in a &#39;Logout&#39; Option in your Menu, like so</p>
+<pre><code>&lt;item    
+    android:id=&quot;@+id/menu_logout&quot;    
+    android:title=&quot;Logout&quot;    
+    android:orderInCategory=&quot;100&quot;    
+    app:showAsAction=&quot;never&quot;    
+    android:onClick=&quot;logout&quot;/&gt;</code></pre>
+<p>Now, introduce the following variable in your <strong>Home</strong> Activity</p>
+<pre><code>private ImageView googlePhoto;</code></pre>
+<p>and the following code in your <em><strong>onCreate()</strong></em> method <strong>BEFORE</strong> your fragment transaction</p>
+<pre><code>//SetUp GooglePhoto and Email for Drawer here
+googlePhoto = (ImageView)navigationView.getHeaderView(0).findViewById(R.id.googlephoto);
+CoffeeApi.getGooglePhoto(Base.googlePhotoURL,googlePhoto);
 
-public class Donate extends AppCompatActivity {
+TextView googleName = (TextView)navigationView.getHeaderView(0).findViewById(R.id.googlename);
+googleName.setText(Base.googleName);
 
-    private Button donateButton;
+TextView googleMail = (TextView)navigationView.getHeaderView(0).findViewById(R.id.googlemail);
+googleMail.setText(Base.googleMail);</code></pre>
+<p>You&#39;ll get an error on</p>
+<pre><code>CoffeeApi.getGooglePhoto(Base.googlePhotoURL,googlePhoto);</code></pre>
+<p>so add the following method to your <b>CoffeeApi</b> class</p>
+<pre><code>public static void getGooglePhoto(String url,final ImageView googlePhoto)
+    {
+    ImageRequest imgRequest = new ImageRequest(url,
+        new Response.Listener&lt;Bitmap&gt;() {
+        @Override public void onResponse(Bitmap response) {
+                Base.googlePhoto = response;                         
+                googlePhoto.setImageBitmap(Base.googlePhoto);
+            } }, 0, 0, ImageView.ScaleType.FIT_XY, Bitmap.Config.ARGB_8888,
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_donate);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, &quot;Replace with your own action&quot;, Snackbar.LENGTH_LONG)
-                        .setAction(&quot;Action&quot;, null).show();
-            }
+        new Response.ErrorListener() {
+            @Override public void onErrorResponse(VolleyError error) {             
+                    System.out.println(&quot;Something went wrong!&quot;);
+                    error.printStackTrace();
+                }
         });
-
-        donateButton = (Button) findViewById(R.id.donateButton);
-
-        if (donateButton != null)
-        {
-            Log.v(&quot;Donate&quot;, &quot;Really got the donate button&quot;);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_donate, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-}</code></pre>
-<p>Finding the log message can be very difficult, unless you set a filter. In the &#39;LogCat&#39; view in Android Studio, create a filter like this:</p>
-<p>Choose &quot;Edit Filter Configuration&quot; on the right-hand-side of the LogCat View</p>
-<p><img src="img/lab2s304.png" alt=""></p>
-<p>Enter the name and filter as below</p>
-<p><img src="img/lab2s305.png" alt=""></p>
-<p>and if you then select the filter, we should see our message:</p>
-<p><img src="img/lab2s306.png" alt=""></p>
-<p>Run the app again, and verify the above message appears.</p>
+    // Add the request to the queue
+    Base.app.add(imgRequest);</code></pre>
+<p>There&#39;s one other small step, but a vital one, to get your Login Screen loading after your splash Screen - and I&#39;ll leave that up to you.</p>
+<p>Once you get the app running and a user Signing in - you&#39;ll see that the list can be downloaded as before, and the users Google credentials are displayed in the Nav Drawer - but nothing else works properly - the rest of the lab involves refactoring our code to make API requests on the Server to Delete/Update etc.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="04">
-        <h1>Step 04 - Documentation</h1>
-<p>The android documentation is particularly helpful and well designed. These are the two key starting points:</p>
-<ul>
-<li><a href="http://developer.android.com/guide/components/index.html">http://developer.android.com/guide/components/index.html</a></li>
-<li><a href="http://developer.android.com/reference/packages.html">http://developer.android.com/reference/packages.html</a></li>
-</ul>
-<p>The first is designed to be read though as a guide, perhaps independent of any work in Android Studio. You should get into the habit of devoting an hour or two a week just reading this section.</p>
-<p>The Reference guide should always be open as you are working on labs or projects, and you should make a serious effort to get to grips with at least some of the information here.</p>
-<p>Taking the <strong>Button</strong> class we have just started using. We can immediately find the reference just by knowing the import statement in our Activity class:</p>
-<pre><code>import android.widget.Button;</code></pre>
-<p>.. translates to</p>
-<ul>
-<li><a href="http://developer.android.com/reference/android/widget/Button.html">http://developer.android.com/reference/android/widget/Button.html</a></li>
-</ul>
-<p>(note the last three segments match the package name). Open this page now. Read just as far as the &quot;Button Style&quot; heading. There seems to be two ways of learning when an button event occurs. The first method is using the event handler/listener - but a second easier method is also available.</p>
-<p>Try this now. Bring in a new method into the <strong>Donate</strong> class:</p>
-<pre><code>  public void donateButtonPressed (View view)
-  {
-    Log.v(&quot;Donate&quot;, &quot;Donate Pressed!&quot;);
-   }</code></pre>
-<p>Then, edit the <b>content_donate.xml</b> file - and add a new &#39;onClick&#39; <em>attribute</em> into the Button xml fragment:</p>
-<p>(the very last entry)</p>
-<pre><code>    &lt;Button
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:text=&quot;@string/donateButton&quot;
-        android:id=&quot;@+id/donateButton&quot;
-        android:layout_alignParentBottom=&quot;true&quot;
-        android:layout_centerHorizontal=&quot;true&quot;
-        android:layout_marginBottom=&quot;47dp&quot;
-        android:onClick=&quot;donateButtonPressed&quot;/&gt;</code></pre>
-<p>Save everything and execute the app, and monitor the log as you press the button:</p>
-<p><img src="img/lab2s401.png" alt=""></p>
-<p>We now have our first interaction working!</p>
+        <h1>Google+ Integration - Retrieving &#39;My Coffees&#39;</h1>
+<p>At the moment the user is seeing a list of <strong><em>all</em></strong> coffees stored on the server, so let&#39;s make the app a bit more user friendly and download <strong><em>only</em></strong> the users coffees.</p>
+<p>This is actually a very simple step, all we need to do is modify our APi call and add the users Google+ credentials to the request (which we already have) like so:</p>
+<pre><code>CoffeeApi.get(&quot;/coffees/&quot; + Base.googleToken);</code></pre>
+<p>so now when we run the app we only see the current users coffees - here&#39;s mine (at the time of the request)</p>
+<p><img src="img/lab0609.png" alt=""></p>
+<p>and</p>
+<p><img src="img/lab0610.png" alt=""></p>
+<p>You can confirm your own coffees (if you&#39;ve added some already) by visiting the <a href="http://coffeemateweb.herokuapp.com">webapp</a> and sign in with your google+ details.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="05">
-        <h1>Step 05 - New Control Layout</h1>
-<p>Recall the UI we are trying to implement:</p>
-<p><img src="img/completeappv1.png" alt=""></p>
-<p>We need radio buttons, some sort of selection/combo box + a progress bar. These can be found in various locations in the pallette:</p>
-<p><img src="img/lab2s107.png" alt="">
-<img src="img/lab2s501.png" alt="">
-<img src="img/lab2s502.png" alt=""></p>
-<p>RadioGroup, ProgressBar and NumberPicker seem likely candidates. The names of these controls are exactly as advertised, and we can expect them to be in the &#39;widgets&#39; package. To verify this, try importing them at the top of the <strong>Donate</strong> activity class:</p>
-<pre><code>import android.widget.RadioGroup;
-import android.widget.NumberPicker;
-import android.widget.ProgressBar;</code></pre>
-<p>... and we can bring in three fields into the class:</p>
-<pre><code>  private RadioGroup   paymentMethod;
-  private ProgressBar  progressBar;
-  private NumberPicker amountPicker;</code></pre>
-<p>We can also open up three pages of documentation - which we can reverse engineer from the package/class names:</p>
-<ul>
-<li><a href="http://developer.android.com/reference/android/widget/RadioGroup.html">http://developer.android.com/reference/android/widget/RadioGroup.html</a></li>
-<li><a href="http://developer.android.com/reference/android/widget/ProgressBar.html">http://developer.android.com/reference/android/widget/ProgressBar.html</a></li>
-<li><a href="http://developer.android.com/reference/android/widget/NumberPicker.html">http://developer.android.com/reference/android/widget/NumberPicker.html</a></li>
-</ul>
-<p>Note this time we have gone to the Activity class before actually creating the controls. We should do this now - and remember to use the same names (for the IDs) as we create the controls.</p>
-<p><img src="img/lab2s503.png" alt=""></p>
-<p>and</p>
-<p><img src="img/lab2s504.png" alt=""></p>
-<p>Getting the layout +id names as shown above may take some practice. However, it is an essential skill to get on top of, even it it takes a lot of trial and error.</p>
-<p>For reference purposes (try to do it yourself first!), these are the relevant generated xml files:</p>
-<h2>content_donate.xml</h2>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
-    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot; android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;match_parent&quot; android:paddingLeft=&quot;@dimen/activity_horizontal_margin&quot;
-    android:paddingRight=&quot;@dimen/activity_horizontal_margin&quot;
-    android:paddingTop=&quot;@dimen/activity_vertical_margin&quot;
-    android:paddingBottom=&quot;@dimen/activity_vertical_margin&quot;
-    app:layout_behavior=&quot;@string/appbar_scrolling_view_behavior&quot;
-    tools:showIn=&quot;@layout/activity_donate&quot; tools:context=&quot;.Donate&quot;&gt;
+        <h1>Google+ Integration - Adding a Coffee</h1>
+<p>At this stage, we&#39;ve made a few simple <strong>GET</strong> requests on the Server - now let&#39;s make some <strong>POST</strong> Requests and add a coffee to our list.</p>
+<p>The first thing we need to do is update our <strong>CoffeeApi</strong> class and add in a new method to allow us to POST our coffee to the server, so open up your <strong><em>CoffeeApi.java</em></strong> and add the following:</p>
+<pre><code>public static void post(String url,Coffee aCoffee) {
+    Log.v(TAG, &quot;POSTing to : &quot; + url);
+    Type objType = new TypeToken&lt;Coffee&gt;(){}.getType();
+    String json = new Gson().toJson(aCoffee, objType);
+    JSONObject jsonObject = null;
 
-    &lt;TextView
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:textAppearance=&quot;?android:attr/textAppearanceLarge&quot;
-        android:text=&quot;@string/donateTitle&quot;
-        android:id=&quot;@+id/donateTitle&quot;
-        android:layout_alignParentTop=&quot;true&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:layout_alignParentEnd=&quot;true&quot; /&gt;
-
-    &lt;TextView
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:textAppearance=&quot;?android:attr/textAppearanceMedium&quot;
-        android:text=&quot;@string/donateSubtitle&quot;
-        android:id=&quot;@+id/donateSubtitle&quot;
-        android:layout_below=&quot;@+id/donateTitle&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:layout_marginTop=&quot;27dp&quot;
-        android:layout_alignEnd=&quot;@+id/donateTitle&quot; /&gt;
-
-    &lt;Button
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:text=&quot;@string/donateButton&quot;
-        android:id=&quot;@+id/donateButton&quot;
-        android:layout_alignParentBottom=&quot;true&quot;
-        android:layout_centerHorizontal=&quot;true&quot;
-        android:layout_marginBottom=&quot;47dp&quot;
-        android:onClick=&quot;donateButtonPressed&quot;/&gt;
-
-    &lt;RadioGroup
-        android:layout_width=&quot;match_parent&quot;
-        android:layout_height=&quot;match_parent&quot;
-        android:layout_below=&quot;@+id/donateSubtitle&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:id=&quot;@+id/paymentMethod&quot;
-        android:layout_toStartOf=&quot;@+id/amountPicker&quot;
-        android:layout_above=&quot;@+id/progressBar&quot;&gt;
-
-        &lt;RadioButton
-            android:layout_width=&quot;wrap_content&quot;
-            android:layout_height=&quot;wrap_content&quot;
-            android:text=&quot;@string/paypal&quot;
-            android:id=&quot;@+id/PayPal&quot;
-            android:checked=&quot;false&quot; /&gt;
-
-        &lt;RadioButton
-            android:layout_width=&quot;wrap_content&quot;
-            android:layout_height=&quot;wrap_content&quot;
-            android:text=&quot;@string/direct&quot;
-            android:id=&quot;@+id/Direct&quot;
-            android:checked=&quot;false&quot; /&gt;
-    &lt;/RadioGroup&gt;
-
-    &lt;NumberPicker
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:id=&quot;@+id/amountPicker&quot;
-        android:layout_alignTop=&quot;@+id/paymentGroup&quot;
-        android:layout_alignEnd=&quot;@+id/donateSubtitle&quot; /&gt;
-
-    &lt;ProgressBar
-        android:layout_width=&quot;wrap_content&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        style=&quot;?android:attr/progressBarStyleHorizontal&quot;
-        android:id=&quot;@+id/progressBar&quot;
-        android:layout_alignParentStart=&quot;true&quot;
-        android:layout_alignEnd=&quot;@+id/donateSubtitle&quot;
-        android:layout_above=&quot;@+id/donateButton&quot;
-        android:indeterminate=&quot;false&quot; /&gt;
-&lt;/RelativeLayout&gt;</code></pre>
-<h2>strings.xml</h2>
-<pre><code>&lt;resources&gt;
-    &lt;string name=&quot;app_name&quot;&gt;Donation.1.0&lt;/string&gt;
-    &lt;string name=&quot;action_settings&quot;&gt;Settings&lt;/string&gt;
-    &lt;string name=&quot;donateTitle&quot;&gt;Welcome Homer&lt;/string&gt;
-    &lt;string name=&quot;donateSubtitle&quot;&gt;Please Give Generously&lt;/string&gt;
-    &lt;string name=&quot;donateButton&quot;&gt;Donate&lt;/string&gt;
-    &lt;string name=&quot;paypal&quot;&gt;PayPal&lt;/string&gt;
-    &lt;string name=&quot;direct&quot;&gt;Direct&lt;/string&gt;
-&lt;/resources&gt;</code></pre>
-<p>If we have our naming conventions right - then we can bind to these new controls in <strong><em>onCreate()</em></strong>:</p>
-<pre><code>    paymentMethod = (RadioGroup)   findViewById(R.id.paymentMethod);
-    progressBar   = (ProgressBar)  findViewById(R.id.progressBar);
-    amountPicker  = (NumberPicker) findViewById(R.id.amountPicker);</code></pre>
-<p>This is the complete <strong>Donate</strong> class so far:</p>
-<pre><code>package ie.app;
-
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.ProgressBar;
-import android.widget.RadioGroup;
-
-public class Donate extends AppCompatActivity {
-
-    private Button          donateButton;
-    private RadioGroup      paymentMethod;
-    private ProgressBar     progressBar;
-    private NumberPicker    amountPicker;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_donate);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, &quot;Replace with your own action&quot;, Snackbar.LENGTH_LONG)
-                        .setAction(&quot;Action&quot;, null).show();
-            }
-        });
-
-        donateButton = (Button) findViewById(R.id.donateButton);
-
-        if (donateButton != null)
-        {
-            Log.v(&quot;Donate&quot;, &quot;Really got the donate button&quot;);
+    try {
+        jsonObject = new JSONObject(json);
         }
+    catch (JSONException e) {
+        e.printStackTrace();
+       }     
 
-        paymentMethod = (RadioGroup)   findViewById(R.id.paymentMethod);
-        progressBar   = (ProgressBar)  findViewById(R.id.progressBar);
-        amountPicker  = (NumberPicker) findViewById(R.id.amountPicker);
+    JsonObjectRequest gsonRequest = new JsonObjectRequest( Request.Method.POST, hostURL + url, jsonObject,
+            new Response.Listener&lt;JSONObject&gt;() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.v(TAG, &quot;insert new Coffee &quot; + response.toString());
+                    }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) { // Handle Error
+                    Log.v(TAG, &quot;Unable to insert new Coffee&quot;);
+                }
+            }) {
 
-        amountPicker.setMinValue(0);
-        amountPicker.setMaxValue(1000);
-    }
+        @Override
+        public Map&lt;String, String&gt; getHeaders() throws AuthFailureError {
+               HashMap&lt;String, String&gt; headers = new HashMap&lt;String, String&gt;();
+               headers.put(&quot;Content-Type&quot;, &quot;application/json; charset=utf-8&quot;);
+               //headers.put(&quot;User-agent&quot;, System.getProperty(&quot;http.agent&quot;)); return headers; } };
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_donate, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void donateButtonPressed (View view)
-    {
-        Log.v(&quot;Donate&quot;, &quot;Donate Pressed!&quot;);
-    }
+    // Add the request to the queue
+    Base.app.add(gsonRequest);
 }</code></pre>
+<p>Fix any import errors you have and take some time to investigate how this method achieves our goal of</p>
+<ul>
+<li>accepting a coffee object as a parameter</li>
+<li>converting this object into a JSON String (using Gson)</li>
+<li>POSTing this JSON String to the server</li>
+</ul>
+<p>You can always ask the Lecturer for some more detail if necessary.</p>
+<p>The next thing we need to do is refactor our <strong>Add Fragment</strong> and integrate our APi class so open up your <em>AddFragment.java</em> and have a go at implementing what we need.</p>
+<p>There&#39;s actually verry little to this so if you&#39;ve added the necessary code correctly, you should be able to add a coffee in the same way as in <strong>CoffeeMate.4.0</strong> but this time, the coffee is added to the list of your coffees on the server <strong>NOT</strong> on the device (via the database).</p>
+<p>And don&#39;t worry, the solution is next :)</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="06">
-        <h1>Step 06 - NumberPicker</h1>
-<p>This is our reference documentation:</p>
+        <h1>Google+ Integration - Updating a Coffee</h1>
+<p>Before we make a start at updating a coffee, here are the 2 lines of code necessary for adding a coffee (replacing our database insert call)</p>
+<pre><code>
+Base.app.coffeeList.add(c);
+
+CoffeeApi.post(&quot;/coffees/&quot; + Base.googleToken,c);</code></pre>
+<p>Unfortunately, this step isn&#39;t as simple and straightforward as the last step, in that we need to</p>
 <ul>
-<li><a href="http://developer.android.com/reference/android/widget/NumberPicker.html">http://developer.android.com/reference/android/widget/NumberPicker.html</a></li>
+<li><p>display the coffee details (that the user has selected) on the Edit Screen via a <strong>GET</strong> request</p>
+</li>
+<li><p>send a <strong>PUT</strong> request to update our coffee on the server</p>
+</li>
+<li><p>return the user to the screen they were on before they chose to edit their coffee (NOT the Home Screen as with the &#39;Add&#39; option)</p>
+</li>
 </ul>
-<p>which is a little overwhelming. Back in the guides:</p>
-<ul>
-<li><a href="http://developer.android.com/guide/components/index.html">http://developer.android.com/guide/components/index.html</a></li>
-</ul>
-<p>we might find some useful tutorial type introduction to this control - under &#39;User Interface&#39; - &#39;Input Controls&#39;</p>
-<ul>
-<li><a href="http://developer.android.com/guide/topics/ui/controls.html">http://developer.android.com/guide/topics/ui/controls.html</a></li>
-</ul>
-<p>.. and this is the page on &#39;pickers&#39;</p>
-<ul>
-<li><a href="http://developer.android.com/guide/topics/ui/controls/pickers.html">http://developer.android.com/guide/topics/ui/controls/pickers.html</a></li>
-</ul>
-<p>This documentation is concerned with Fragments - a concept that may be difficult to grasp initially, and also explores the usage of date and time pickers.</p>
-<p>We can get up and running without this much fuss. Returning to the documentation, these three methods should be sufficient initially:</p>
-<ul>
-<li><a href="http://developer.android.com/reference/android/widget/NumberPicker.html#setMaxValue(int)">http://developer.android.com/reference/android/widget/NumberPicker.html#setMaxValue(int)</a></li>
-<li><a href="http://developer.android.com/reference/android/widget/NumberPicker.html#setMinValue(int)">http://developer.android.com/reference/android/widget/NumberPicker.html#setMinValue(int)</a></li>
-<li><a href="http://developer.android.com/reference/android/widget/NumberPicker.html#getValue()">http://developer.android.com/reference/android/widget/NumberPicker.html#getValue()</a></li>
-</ul>
-<p>In <strong><em>onCreate()</em></strong>, initialise the values:</p>
-<pre><code>    amountPicker.setMinValue(0);
-    amountPicker.setMaxValue(1000);</code></pre>
-<p>And in <strong><em>donateButtonPressed()</em></strong>:</p>
-<pre><code>  public void donateButtonPressed (View view)
+<p>So, the first thing to do (as I&#39;ve made a few changes to the following) is replace your current <strong>CoffeeApi</strong> class with this one</p>
+<pre><code>package ie.cm.api;
+
+import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
+import android.widget.ImageView;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import ie.cm.activities.Base;
+import ie.cm.models.Coffee;
+
+/**
+ * Created by ddrohan on 18/07/2016.
+ */
+
+
+public class CoffeeApi {
+
+    private static final String hostURL = &quot;http://coffeemateweb.herokuapp.com&quot;;
+    private static final String LocalhostURL = &quot;http://192.168.0.13:3000&quot;;
+    private static       VolleyListener vListener;
+    private static final String TAG = &quot;coffeemate&quot;;
+
+    public static void attachListener(VolleyListener fragment)
+    {
+        vListener = fragment;
+    }
+    public static void detachListener()
+    {
+        vListener  = null;
+    }
+    private static void showDialog(String message) {
+        //Log.v(TAG, &quot;Showing Dialog because &quot; + Base.dialog.isShowing());
+        Base.dialog.setMessage(message);
+        if (!Base.dialog.isShowing())
+                Base.dialog.show();
+    }
+    private static void hideDialog() {
+        //Log.v(TAG, &quot;Hiding Dialog because &quot; + Base.dialog.isShowing());
+        if (Base.dialog.isShowing())
+            Base.dialog.dismiss();
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public static void getAll(String url, final SwipeRefreshLayout mSwipeRefreshLayout) {
+        Log.v(TAG, &quot;GETing from &quot; + url);
+            showDialog(&quot;Downloading Coffees...&quot;);
+        // Request a string response
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, hostURL + url,
+                new Response.Listener&lt;String&gt;() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Result handling
+                        List&lt;Coffee&gt; result = null;
+                        Type collectionType = new TypeToken&lt;List&lt;Coffee&gt;&gt;(){}.getType();
+                        result = new Gson().fromJson(response, collectionType);
+                        vListener.setList(result);
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        hideDialog();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Error handling
+                System.out.println(&quot;Something went wrong!&quot;);
+                mSwipeRefreshLayout.setRefreshing(false);
+                error.printStackTrace();
+            }
+        });
+        // Add the request to the queue
+        Base.app.add(stringRequest);
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public static void get(String url) {
+        Log.v(TAG, &quot;GETing from &quot; + url);
+        showDialog(&quot;Downloading a Coffee...&quot;);
+        // Request a string response
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, hostURL + url,
+                new Response.Listener&lt;String&gt;() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Result handling
+                        Coffee result = null;
+                        Type objType = new TypeToken&lt;Coffee&gt;(){}.getType();
+                        result = new Gson().fromJson(response, objType);
+                        vListener.setCoffee(result);
+                        hideDialog();
+                        //vListener.updateUI((Fragment)vListener);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Error handling
+                System.out.println(&quot;Something went wrong!&quot;);
+                error.printStackTrace();
+            }
+        });
+
+        // Add the request to the queue
+        Base.app.add(stringRequest);
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public static void post(String url,Coffee aCoffee) {
+
+        Log.v(TAG, &quot;POSTing to : &quot; + url);
+        showDialog(&quot;Adding a Coffee...&quot;);
+        Type objType = new TypeToken&lt;Coffee&gt;(){}.getType();
+        String json = new Gson().toJson(aCoffee, objType);
+
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest gsonRequest = new JsonObjectRequest( Request.Method.POST, hostURL + url,
+
+                jsonObject,
+                new Response.Listener&lt;JSONObject&gt;() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        hideDialog();
+                        Log.v(TAG, &quot;insert new Coffee &quot; + response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //   Handle Error
+                        Log.v(TAG, &quot;Unable to insert new Coffee&quot;);
+                    }
+                }) {
+            @Override
+            public Map&lt;String, String&gt; getHeaders() throws AuthFailureError {
+                HashMap&lt;String, String&gt; headers = new HashMap&lt;String, String&gt;();
+                headers.put(&quot;Content-Type&quot;, &quot;application/json; charset=utf-8&quot;);
+                //headers.put(&quot;User-agent&quot;, System.getProperty(&quot;http.agent&quot;));
+                return headers;
+            }
+        };
+
+        // Add the request to the queue
+        Base.app.add(gsonRequest);
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public static void put(String url,Coffee aCoffee) {
+
+        Log.v(TAG, &quot;PUTing to : &quot; + url);
+        showDialog(&quot;Updating a Coffee...&quot;);
+        Type objType = new TypeToken&lt;Coffee&gt;(){}.getType();
+        String json = new Gson().toJson(aCoffee, objType);
+
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest gsonRequest = new JsonObjectRequest( Request.Method.PUT, hostURL + url,
+
+                jsonObject,
+                new Response.Listener&lt;JSONObject&gt;() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // Result handling
+                        Coffee result = null;
+                        Type objType = new TypeToken&lt;Coffee&gt;(){}.getType();
+
+                        try {
+                            result = new Gson().fromJson(response.getString(&quot;data&quot;), objType);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        vListener.setCoffee(result);
+                        hideDialog();
+                        Log.v(TAG, &quot;Updating a Coffee successful with :&quot; + result);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //   Handle Error
+                        Log.v(TAG, &quot;Unable to update Coffee with error : &quot; + error.getMessage());
+                    }
+                }) {
+            @Override
+            public Map&lt;String, String&gt; getHeaders() throws AuthFailureError {
+                HashMap&lt;String, String&gt; headers = new HashMap&lt;String, String&gt;();
+                headers.put(&quot;Content-Type&quot;, &quot;application/json; charset=utf-8&quot;);
+                //headers.put(&quot;User-agent&quot;, System.getProperty(&quot;http.agent&quot;));
+                return headers;
+            }
+        };
+
+        // Add the request to the queue
+        Base.app.add(gsonRequest);
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public static void delete(String url) {
+        Log.v(TAG, &quot;DELETEing from &quot; + url);
+
+        // Request a string response
+        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, hostURL + url,
+                new Response.Listener&lt;String&gt;() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Result handling
+                        Log.v(TAG, &quot;DELETE success &quot; + response);
+                        //vListener.updateUI((Fragment)vListener);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Error handling
+                System.out.println(&quot;Something went wrong!&quot;);
+                error.printStackTrace();
+            }
+        });
+
+        // Add the request to the queue
+        Base.app.add(stringRequest);
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public static void getGooglePhoto(String url,final ImageView googlePhoto) {
+
+        ImageRequest imgRequest = new ImageRequest(url,
+                new Response.Listener&lt;Bitmap&gt;() {
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        Base.googlePhoto = response;
+                        googlePhoto.setImageBitmap(Base.googlePhoto);
+                    }
+                }, 0, 0, ImageView.ScaleType.FIT_XY, Bitmap.Config.ARGB_8888, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println(&quot;Something went wrong!&quot;);
+                error.printStackTrace();
+            }
+        });
+
+// Add the request to the queue
+        Base.app.add(imgRequest);
+    }
+}</code></pre>
+<p>and your VolleyListener with this</p>
+<pre><code>public interface VolleyListener {
+
+ void setList(List list);
+
+ void setCoffee(Coffee c);
+
+}</code></pre>
+<p>You&#39;ll get a few errors, but don&#39;t worry, we&#39;ll fix those now, so go ahead and open up your <em>CoffeeFragment.java</em> and replace your current class with this one</p>
+<pre><code>package ie.cm.fragments;
+
+import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.List;
+
+import ie.cm.R;
+import ie.cm.activities.Base;
+import ie.cm.adapters.CoffeeFilter;
+import ie.cm.adapters.CoffeeListAdapter;
+import ie.cm.api.CoffeeApi;
+import ie.cm.api.VolleyListener;
+import ie.cm.models.Coffee;
+
+public class CoffeeFragment  extends Fragment implements AdapterView.OnItemClickListener,
+                                                         View.OnClickListener,
+                                                         VolleyListener
+{
+  protected static  CoffeeListAdapter     listAdapter;
+  protected         ListView             listView;
+  protected         CoffeeFilter        coffeeFilter;
+  public            boolean             favourites = false;
+  protected         TextView            titleBar;
+  protected         SwipeRefreshLayout  mSwipeRefreshLayout;
+
+  public CoffeeFragment() {
+    // Required empty public constructor
+  }
+
+  public static CoffeeFragment newInstance() {
+    CoffeeFragment fragment = new CoffeeFragment();
+    return fragment;
+  }
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+  }
+
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                           Bundle savedInstanceState) {
+    // Inflate the layout for this fragment
+    View v = null;
+
+    v = inflater.inflate(R.layout.fragment_home, container, false);
+
+    listView = (ListView) v.findViewById(R.id.coffeeList);
+    mSwipeRefreshLayout =   (SwipeRefreshLayout) v.findViewById(R.id.coffee_swipe_refresh_layout);
+
+    setSwipeRefreshLayout();
+
+    return v;
+  }
+
+  protected void setSwipeRefreshLayout()
   {
-    int amount = amountPicker.getValue();
-    Log.v(&quot;Donate&quot;, &quot;Donate Pressed! with amount &quot; + amount);
-   }</code></pre>
-<p>Run this now - and verify that it operates as expected (see the actual amounts in the log file, as below).</p>
-<p><img src="img/lab2s601.png" alt=""></p>
+    mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+        CoffeeApi.getAll(&quot;/coffees/&quot; + Base.googleToken,mSwipeRefreshLayout);
+      }
+    });
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+    //updateUI(this);
+    CoffeeApi.attachListener(this);
+    CoffeeApi.getAll(&quot;/coffees/&quot; + Base.googleToken, mSwipeRefreshLayout);
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    CoffeeApi.detachListener();
+  }
+
+  @Override
+  public void onStart()
+  {
+    super.onStart();
+  }
+
+  @Override
+  public void onClick(View view)
+  {
+    if (view.getTag() instanceof Coffee)
+    {
+      onCoffeeDelete ((Coffee) view.getTag());
+    }
+  }
+
+  public void onCoffeeDelete(final Coffee coffee)
+  {
+    String stringName = coffee.name;
+    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+    builder.setMessage(&quot;Are you sure you want to Delete the \&#39;Coffee\&#39; &quot; + stringName + &quot;?&quot;);
+    builder.setCancelable(false);
+
+    builder.setPositiveButton(&quot;Yes&quot;, new DialogInterface.OnClickListener()
+    {
+      public void onClick(DialogInterface dialog, int id)
+      {
+
+        //Base.app.coffeeList.remove(coffee); // remove from our list
+        listAdapter.coffeeList.remove(coffee); // update adapters data
+        listAdapter.notifyDataSetChanged(); // refresh adapter
+      }
+    }).setNegativeButton(&quot;No&quot;, new DialogInterface.OnClickListener()
+    {
+      public void onClick(DialogInterface dialog, int id)
+      {
+        dialog.cancel();
+      }
+    });
+    AlertDialog alert = builder.create();
+    alert.show();
+  }
+
+  @Override
+  public void onItemClick(AdapterView&lt;?&gt; parent, View view, int position, long id) {
+    Bundle activityInfo = new Bundle();
+    activityInfo.putString(&quot;coffeeID&quot;, (String)view.getTag());
+
+    FragmentTransaction ft = getFragmentManager().beginTransaction();
+    Fragment fragment = EditFragment.newInstance(activityInfo);
+    ft.replace(R.id.homeFrame, fragment);
+    ft.addToBackStack(null);
+    ft.commit();
+  }
+
+  @Override
+  public void setCoffee(Coffee c) {}
+
+  @Override
+  public void setList(List list) {
+    Base.app.coffeeList = list;
+    updateUI();
+  }
+
+  public void updateUI() {
+    //System.out.println(&quot;CALLING updateUI in CoffeeFragment&quot;);
+    titleBar = (TextView)getActivity().findViewById(R.id.recentAddedBarTextView);
+    titleBar.setText(R.string.recentlyViewedLbl);
+    ((TextView)getActivity().findViewById(R.id.empty_list_view)).setText(R.string.recentlyViewedEmptyMessage);
+
+    listAdapter = new CoffeeListAdapter(getActivity(), this, Base.app.coffeeList);
+    listView.setAdapter (listAdapter);
+    coffeeFilter = new CoffeeFilter(Base.app.coffeeList,&quot;all&quot;,listAdapter);
+
+    if (favourites) {
+      titleBar.setText(R.string.favouritesCoffeeLbl);
+      ((TextView)getActivity().findViewById(R.id.empty_list_view)).setText(R.string.favouritesEmptyMessage);
+
+      coffeeFilter.setFilter(&quot;favourites&quot;); // Set the filter text field from &#39;all&#39; to &#39;favourites&#39;
+      coffeeFilter.filter(null); // Filter the data, but don&#39;t use any prefix
+    }
+
+    listView.setOnItemClickListener(this);
+    listView.setEmptyView(getActivity().findViewById(R.id.empty_list_view));
+    listAdapter.notifyDataSetChanged(); // Update the adapter
+  }
+}</code></pre>
+<p><strong>I strongly recommend that you take some time and review this class and compare it to your previous class to understand the changes that have been made, particularly the introduction of the <em>SwipeRefreshLayout</em> and the refactoring of the <em>onItemClick()</em> method</strong>.</p>
+<p>Now, open your <strong>EditFragment</strong> and ensure it implements our <strong>VolleyListener</strong> interface (and fix any errors). Then ensure your variable instances matches the following</p>
+<pre><code>TextView titleBar,titleName,titleShop;
+Coffee aCoffee;
+Boolean isFavourite;
+
+EditText name, shop, price;
+RatingBar ratingBar;
+ImageView favouriteImage;
+
+String coffeeID;
+
+private OnFragmentInteractionListener mListener;</code></pre>
+<p>and your <em>onCreate()</em> method now should look like this</p>
+<pre><code>@Override
+public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+        if(getArguments() != null) {
+            coffeeID = getArguments().getString(&quot;coffeeID&quot;);
+        }
+    }</code></pre>
+<p>As we need to reuse the widgets on our layout we need to refactor our <em>onCreateView()</em>, and using the variables you&#39;ve just declared have a go at a revised version of the method, where you specifically bind to each widget on the layout (not just reference it).</p>
+<p>Now, using the <strong><em>coffeeID</em></strong> from your <em>onCreate()</em> (above) see can you code correctly the APi call to retrieve a single coffee from the server? (All you need to do is append the coffee id to the call made to get all coffees).</p>
+<p>Before you get to actually update the coffee on the server, it&#39;s probably worth testing your app at this point to see if everything is working correctly, so run your app and confirm you get to see the coffee details on the Edit Screen once the user has selected a particular coffee to edit, like so</p>
+<p><img src="img/coffeemate.2.png" alt=""></p>
+<p>and if the user selects &quot;Regular Joe&quot;</p>
+<p><img src="img/coffeemate.7.png" alt=""></p>
+<p>You&#39;re probably not seeing anything (or maybe your app even crashed?) and this is (probably) because you haven&#39;t implemented the interface methods correctly (or at all!) and you haven&#39;t allowed for updating the UI with the coffee details AFTER the individual coffee details have been retrieved.</p>
+<p>We&#39;ll have a look at the solution in the next step but try and complete it yourself first by referring to how we achieved our goal in our <strong>CoffeeFragment</strong> class.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="07">
-        <h1>Step 07 - The Radio Buttons</h1>
-<p>In <strong><em>donateButtonPressed()</em></strong> we need to discover which payment method has been selected. Our RadioGroup documentation is here:</p>
-<ul>
-<li><a href="http://developer.android.com/reference/android/widget/RadioGroup.html">http://developer.android.com/reference/android/widget/RadioGroup.html</a></li>
-</ul>
-<p>This looks like the method we need:</p>
-<ul>
-<li><a href="http://developer.android.com/reference/android/widget/RadioGroup.html#getCheckedRadioButtonId(">getCheckedRadioButtonId()</a>)</li>
-</ul>
-<p>This is a revised version of <strong><em>donateButtonPressed()</em></strong></p>
-<pre><code>  public void donateButtonPressed (View view)
-  {
-    int amount = amountPicker.getValue();
-    int radioId = paymentMethod.getCheckedRadioButtonId();
-    String method = &quot;&quot;;
-    if (radioId == R.id.PayPal)
-    {
-      method = &quot;PayPal&quot;;
-    }
-    else
-    {
-      method = &quot;Direct&quot;;
-    }
-    Log.v(&quot;Donate&quot;, &quot;Donate Pressed! with amount &quot; + amount + &quot;, method: &quot; + method);
-   }</code></pre>
-<p>Run it now and verify we are getting the correct logs.</p>
-<p>We can simplify it somewhat by reducing the if statement to a single line:</p>
-<pre><code>    String method = radioId == R.id.PayPal ? &quot;PayPal&quot; : &quot;Direct&quot;;</code></pre>
-<p>This is the Java ternary operator:</p>
-<ul>
-<li><a href="http://marxsoftware.blogspot.ie/2010/09/how-i-learned-to-stop-worrying-and-love.html">http://marxsoftware.blogspot.ie/2010/09/how-i-learned-to-stop-worrying-and-love.html</a></li>
-</ul>
-<p>This is the complete activity class so far:</p>
-<pre><code>package ie.app;
+        <h1>Google+ Integration - Updating a Coffee</h1>
+<p>As promised, here&#39;s the code necessary for initially retrieving a coffee from the server and displaying it on the Edit Screen</p>
+<pre><code>@Override
+public void setList(List list) {
+    Base.app.coffeeList = list;
+}
 
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.ProgressBar;
-import android.widget.RadioGroup;
+@Override
+public void setCoffee(Coffee c) {
+    this.aCoffee = c;
+    updateUI();
+}
 
-public class Donate extends AppCompatActivity {
+public void updateUI() {
+    titleName.setText(aCoffee.name);
+    titleShop.setText(aCoffee.shop);
+    name.setText(aCoffee.name);
+    shop.setText(aCoffee.shop);
+    price.setText(&quot;&quot;+aCoffee.price);
+    ratingBar.setRating((float)aCoffee.rating);
 
-    private Button          donateButton;
-    private RadioGroup      paymentMethod;
-    private ProgressBar     progressBar;
-    private NumberPicker    amountPicker;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_donate);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, &quot;Replace with your own action&quot;, Snackbar.LENGTH_LONG)
-                        .setAction(&quot;Action&quot;, null).show();
+        if (aCoffee.favourite == true) {
+                favouriteImage.setImageResource(R.drawable.ic_favourite_on);
+                isFavourite = true;
             }
-        });
-
-        donateButton = (Button) findViewById(R.id.donateButton);
-
-        if (donateButton != null)
-        {
-            Log.v(&quot;Donate&quot;, &quot;Really got the donate button&quot;);
-        }
-
-        paymentMethod = (RadioGroup)   findViewById(R.id.paymentMethod);
-        progressBar   = (ProgressBar)  findViewById(R.id.progressBar);
-        amountPicker  = (NumberPicker) findViewById(R.id.amountPicker);
-
-        amountPicker.setMinValue(0);
-        amountPicker.setMaxValue(1000);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_donate, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void donateButtonPressed (View view)
-    {
-        int amount = amountPicker.getValue();
-        int radioId = paymentMethod.getCheckedRadioButtonId();
-        String method = radioId == R.id.PayPal ? &quot;PayPal&quot; : &quot;Direct&quot;;
-        Log.v(&quot;Donate&quot;, &quot;Donate Pressed! with amount &quot; + amount + &quot;, method: &quot; + method);
-    }
-}</code></pre>
-<p>So run your app again just to confirm the LogCat entries</p>
-<p><img src="img/lab2s701.png" alt=""></p>
+            else {
+                favouriteImage.setImageResource(R.drawable.ic_favourite_off);
+                isFavourite = false;
+            }
+    }</code></pre>
+<p>Run your app again to confirm everything is as expected.</p>
+<p>The last part of updating a coffee, is just that - <strong>PUT</strong>ing our data back on the server and there&#39;s actually not too much to this. To get you started, here&#39;s the APi call you&#39;ll need to make,</p>
+<pre><code>CoffeeApi.put(&quot;/coffees/&quot; + Base.googleToken +&quot;/&quot; + aCoffee._id, aCoffee);</code></pre>
+<p>but the existing <em>update()</em> method needs a small bit of refactoring so see if you can make the necessary changes to get everything working.</p>
+<p>Once that&#39;s done you can move onto the next step - Deleting a Coffee.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="08">
-        <h1>Step 08 - The Progress Bar</h1>
-<p>The progress bar documentation:</p>
-<ul>
-<li><a href="http://developer.android.com/reference/android/widget/ProgressBar.html">http://developer.android.com/reference/android/widget/ProgressBar.html</a></li>
-</ul>
-<p>offers us advice on using the progress bar in multi-threaded application. Not quite what we are ready for yet! (but file it away for future reference).</p>
-<p>These two methods are probably what we need:</p>
-<ul>
-<li><a href="http://developer.android.com/reference/android/widget/ProgressBar.html#setMax(int)">http://developer.android.com/reference/android/widget/ProgressBar.html#setMax(int)</a></li>
-<li><a href="http://developer.android.com/reference/android/widget/ProgressBar.html#setProgress(int)">http://developer.android.com/reference/android/widget/ProgressBar.html#setProgress(int)</a></li>
-</ul>
-<p>First we would need to equip our activity with the ability to remember the donation amounts:</p>
-<pre><code>  private int totalDonated = 0;</code></pre>
-<p>Lets set max progress bar to 10000 in <strong><em>onCreate()</em></strong>:</p>
-<pre><code>    progressBar.setMax(10000);</code></pre>
-<p>.. and set the progress in <strong><em>donateButtonPressed()</em></strong>:</p>
-<pre><code>    totalDonated = totalDonated + amount;
-    progressBar.setProgress(totalDonated);
+        <h1>Google+ Integration - Deleting a Coffee</h1>
+<p>As we already have all the necessary code in place from previous versions of CoffeeMate, AND we have a full APi class available to us, this step is very simple - we just need to change our delete method to delete the specific coffee from the server, and not the database, as is currently the case.</p>
+<p>we achieve this by calling our <strong>CoffeeApi</strong> &#39;delete&#39; method like so</p>
+<pre><code>CoffeeApi.delete(&quot;/coffees/&quot; + Base.googleToken +&quot;/&quot; + coffee._id);</code></pre>
+<p>so see if you can work out where this call should go, and what code it should replace?</p>
 
-    Log.v(&quot;Donate&quot;, &quot;Donate Pressed! with amount &quot; + amount + &quot;, method: &quot; + method);
-    Log.v(&quot;Donate&quot;, &quot;Current total &quot; + totalDonated);</code></pre>
-<p>Try this now and observe the progress bar and logCat</p>
-<p><img src="img/lab2s801.png" alt=""></p>
-<p>This is the complete class so far:</p>
-<pre><code>package ie.app;
+      </div>
+     
+      <div  class="ui tab segment lab" data-tab="09">
+        <h1>Google+ Integration - Searching a Coffee</h1>
+<p>At this Stage your CoffeeMate App should be able to View/Add/Delete &amp; Update coffees, and view your favourite coffees (like before), all on the server.</p>
+<p>Now, because we introduced a <strong>SwipeRefreshLayout</strong>, we need to make some modifications to our &#39;Search&#39; option so you need to ensure that your <strong>fragment_search</strong> layout now has the following (around the ListView)</p>
+<pre><code>&lt;android.support.v4.widget.SwipeRefreshLayout     
+    android:id=&quot;@+id/coffee_swipe_refresh_layout&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;107dp&quot;
+    android:layout_alignParentStart=&quot;true&quot;
+    android:layout_below=&quot;@+id/recentAddedBarTextView&quot;     
+    android:layout_alignParentBottom=&quot;true&quot;&gt;
 
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.ProgressBar;
-import android.widget.RadioGroup;
+&lt;ListView android:id=&quot;@+id/coffeeList&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:layout_gravity=&quot;right|bottom&quot;&gt;
+&lt;/ListView&gt;
 
-public class Donate extends AppCompatActivity {
-
-    private Button          donateButton;
-    private RadioGroup      paymentMethod;
-    private ProgressBar     progressBar;
-    private NumberPicker    amountPicker;
-
-    private int             totalDonated = 0;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_donate);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, &quot;Replace with your own action&quot;, Snackbar.LENGTH_LONG)
-                        .setAction(&quot;Action&quot;, null).show();
-            }
-        });
-
-        donateButton = (Button) findViewById(R.id.donateButton);
-
-        if (donateButton != null)
-        {
-            Log.v(&quot;Donate&quot;, &quot;Really got the donate button&quot;);
-        }
-
-        paymentMethod = (RadioGroup)   findViewById(R.id.paymentMethod);
-        progressBar   = (ProgressBar)  findViewById(R.id.progressBar);
-        amountPicker  = (NumberPicker) findViewById(R.id.amountPicker);
-
-        amountPicker.setMinValue(0);
-        amountPicker.setMaxValue(1000);
-        progressBar.setMax(10000);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_donate, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void donateButtonPressed (View view)
-    {
-        int amount = amountPicker.getValue();
-        int radioId = paymentMethod.getCheckedRadioButtonId();
-        String method = radioId == R.id.PayPal ? &quot;PayPal&quot; : &quot;Direct&quot;;
-
-        totalDonated = totalDonated + amount;
-        progressBar.setProgress(totalDonated);
-
-        Log.v(&quot;Donate&quot;, &quot;Donate Pressed! with amount &quot; + amount + &quot;, method: &quot; + method);
-        Log.v(&quot;Donate&quot;, &quot;Current total &quot; + totalDonated);
-    }
-}</code></pre>
-<p>Here is another version of exactly the same class:</p>
-<pre><code>package ie.app;
-
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.ProgressBar;
-import android.widget.RadioGroup;
-
-public class Donate extends AppCompatActivity {
-
-    private Button          donateButton;
-    private RadioGroup      paymentMethod;
-    private ProgressBar     progressBar;
-    private NumberPicker    amountPicker;
-
-    private int             totalDonated = 0;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_donate);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, &quot;Replace with your own action&quot;, Snackbar.LENGTH_LONG)
-                        .setAction(&quot;Action&quot;, null).show();
-            }
-        });
-
-        donateButton = (Button) findViewById(R.id.donateButton);
-
-        if (donateButton != null)
-        {
-            Log.v(&quot;Donate&quot;, &quot;Really got the donate button&quot;);
-        }
-
-        paymentMethod = (RadioGroup)   findViewById(R.id.paymentMethod);
-        progressBar   = (ProgressBar)  findViewById(R.id.progressBar);
-        amountPicker  = (NumberPicker) findViewById(R.id.amountPicker);
-
-        amountPicker.setMinValue(0);
-        amountPicker.setMaxValue(1000);
-        progressBar.setMax(10000);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_donate, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void donateButtonPressed (View view)
-    {
-    totalDonated  = totalDonated + amountPicker.getValue();
-    String method = paymentMethod.getCheckedRadioButtonId() == R.id.PayPal ? &quot;PayPal&quot; : &quot;Direct&quot;;
-    progressBar.setProgress(totalDonated);
-
-    Log.v(&quot;Donate&quot;, amountPicker.getValue() + &quot; donated by &quot; +  method + &quot;\nCurrent total &quot; + totalDonated);
-    }
-}</code></pre>
-<p>Examine them carefully. What are the differences? Why make these changes?</p>
-<p>Note also the careful attention to spacing and alignment in the code. Not just correct indentation, but continual attention to structuring each method carefully, removing duplication and unnecessary code and formatting/aligning the declarations and assignment statements in a table like structure:</p>
-<p>Visible here:</p>
-<pre><code>  private RadioGroup   paymentMethod;
-  private ProgressBar  progressBar;
-  private NumberPicker amountPicker;
-
-  private int          totalDonated = 0;</code></pre>
-<p>and here:</p>
-<pre><code>    paymentMethod = (RadioGroup)   findViewById(R.id.paymentMethod);
-    progressBar   = (ProgressBar)  findViewById(R.id.progressBar);
-    amountPicker  = (NumberPicker) findViewById(R.id.amountPicker);</code></pre>
-<p>and here:</p>
-<pre><code>    totalDonated  = totalDonated + amountPicker.getValue();
-    String method = paymentMethod.getCheckedRadioButtonId() == R.id.PayPal ? &quot;PayPal&quot; : &quot;Direct&quot;;</code></pre>
-<p>Android code can become very verbose and complex. Carefully formatting is essential if you are not to be overwhelmed.</p>
+&lt;/android.support.v4.widget.SwipeRefreshLayout&gt;</code></pre>
+<p>and in your Fragment you bind to the <strong>SwipeRefreshLayout</strong> and set it like so</p>
+<pre><code>mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.coffee_swipe_refresh_layout);
+setSwipeRefreshLayout();</code></pre>
+<p>Run your app once again and make a few changes on the server and test out the swipe refresh to confirm you&#39;ve completed this lab successfully - Well Done!</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="Exercises">
-        <h1>Exercises</h1>
-<p>Archive of lab so far:</p>
+        <h1>Solution</h1>
+<p>This is a solution which uses a Web Service and <b>Volley</b> with <b>Google+ Sign-in</b> to manage the Coffees in the app:</p>
 <ul>
-<li><a href="archives/Donation.1.0.zip">Donation.1.0.zip</a></li>
-</ul>
-<h2>Exercise 1:</h2>
-<p>Consider an alternative to the NumberPicker - specifically one of the &quot;Text Fields&quot; controls:</p>
-<p>These are mostly EditView objects:</p>
-<ul>
-<li><a href="http://developer.android.com/reference/android/widget/EditText.html">http://developer.android.com/reference/android/widget/EditText.html</a></li>
-</ul>
-<p>Redesign the activity to take a value from the picker or directly from a text view and maintain a &quot;Total so Far&quot; Value:</p>
-<p><img src="img/lab2s902.png" alt=""></p>
-<p><img src="img/lab2s901.png" alt=""></p>
-<p><img src="img/lab2s903.png" alt=""></p>
-<p>If the number picker is set to zero, then attempt to get a number from the text view.</p>
-<p>Here is a hint (a version of <strong><em>donatButonPressed()</em></strong> that does what we want):</p>
-<pre><code>  public void donateButtonPressed (View view)
-  {
-    String method = paymentMethod.getCheckedRadioButtonId() == R.id.PayPal ? &quot;PayPal&quot; : &quot;Direct&quot;;
-    progressBar.setProgress(totalDonated);
-
-    int donatedAmount =  amountPicker.getValue();
-    if (donatedAmount == 0)
-    {
-      String text = amountText.getText().toString();
-      if (!text.equals(&quot;&quot;))
-        donatedAmount = Integer.parseInt(text);
-    }
-    totalDonated  = totalDonated + donatedAmount;
-    Log.v(&quot;Donate&quot;, amountPicker.getValue() + &quot; donated by &quot; +  method + &quot;\nCurrent total &quot; + totalDonated);
-   }</code></pre>
-<h2>Exercise 2:</h2>
-<p>Revise the app such that when the target is achieved (10000) - then no more donations accepted, and the user is made aware of this.</p>
-<p>Hint - here is how you can display a simple alert:</p>
-<pre><code>      Toast.makeText(this, &quot;Target Exceeded!&quot;, Toast.LENGTH_SHORT).show();</code></pre>
-<h2>Exercise 3:</h2>
-<p>Modify the colour scheme for our widgets..</p>
-<p>You will notice that the Floating Action Button, the Radio Buttons, the Progress Bar etc, are all a kind of pink - not really in line with our current colour scheme.</p>
-<p>Hint - have a look at your <b>colors.xml</b></p>
-<p><img src="img/lab2s904.png" alt=""></p>
-<p>Archive of lab with the above Exercises:</p>
-<ul>
-<li><a href="archives/Donation.1.5.zip">Donation.1.5.zip</a></li>
+<li><a href="archives/CoffeeMate.5.0.Solution.zip">CoffeeMate.5.0</a></li>
 </ul>
 
       </div>
