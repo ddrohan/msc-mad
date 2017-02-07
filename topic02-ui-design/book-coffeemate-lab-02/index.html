@@ -370,7 +370,7 @@ So, first of all, have a quick look again at the resource layout (home.xml). We&
 <p>Here we use the Views &#39;Tag&#39; to see if it&#39;s a coffee, and if it is, that&#39;s the one we delete. You can just copy &amp; paste the following code for the <b><i>onCoffeeDelete()</i></b> method:</p>
 <pre><code class="lang-java">public void onCoffeeDelete(final Coffee coffee)
   {
-    String stringName = coffee.getCoffeeName();
+    String stringName = coffee.name;
     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
     builder.setMessage(&quot;Are you sure you want to Delete the \&#39;Coffee\&#39; &quot; + stringName + &quot;?&quot;);
     builder.setCancelable(false);
