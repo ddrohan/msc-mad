@@ -198,24 +198,47 @@ h3
       
       <div  class="ui tab segment lab" data-tab="Lab-08">
         <h1>Objectives</h1>
-<p>This lab is the final lab in the series (so far!) and completes our Case Study <b>CoffeeMate</b> with the introduction of <strong>Location Awareness</strong> and <strong>Google Maps</strong> in version <b>CoffeeMate.6.0</b></p>
+<p>This lab &#39;takes a step back to go forward&#39;, in that we revert to a previous version our Case Study <b>CoffeeMate</b> and introduce <strong>Firebase Support</strong> via <strong>Google Authentication</strong> and a <strong>Realtime Database</strong> in version <b>CoffeeMateFBI.1.0</b></p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="01">
         <h1>Setup - Starter Code</h1>
-<p>Unlike previous labs, you don&#39;t need to download the starter code for this lab as it&#39;s basically a copy of CoffeeMate.5.0, so if you wish, you could just continue on with your own version. If you didn&#39;t get a chance to finish the previous lab you can download the CoffeeMate.5.0 solution here - <a href="archives/CoffeeMate.5.0.Solution.zip">CoffeeMate.5.0.Solution</a>.</p>
-<p>Either way, It&#39;s probably still a good idea to run the App and confirm that the app (our your app) is configured properly and (still) running.</p>
-<p>In this lab, you are required to do the following:</p>
+<p>It would be quite difficult to try and &#39;bolt on&#39; Firebase to the latest version of our Case Study, so we will start with a version which doesn&#39;t include any of the Google APis, namely <b>CoffeeMate.4.0</b>, which you can download here - <a href="archives/CoffeeMate.4.0.zip">CoffeeMate.4.0</a>.</p>
+<p>As always, It&#39;s probably still a good idea to run the App and confirm that the app (or your 4.0 version app) is configured properly and (still) running.</p>
+<p>You might also want to rename the app to what I will be referring to throughout the rest of the lab - <b>CoffeeMateFBI.1.0</b>.</p>
+<p>On completion of this lab, you will be able to do the following:</p>
 <ul>
-<li><p>Add Location awareness to the App (via a custom MapsFragment class)</p>
+<li><p>Create/Import a new project to your Firebase Console (found <a href="https://console.firebase.google.com">here</a>) and configure your project as required</p>
 </li>
-<li><p>Add a Google Map, so the user can see their coffees displayed on a Map</p>
+<li><p>Add Google Sign-In and Firebase Authentication</p>
 </li>
-<li><p>Add Volley Support to CoffeeMate to manage our coffees and their locations on the server (our APi already does this)</p>
+<li><p>Add CRUD (Create Retrieve Update Delete) functionality via your Firebase Realtime Database</p>
 </li>
 </ul>
-<p>The following steps will guide you through these requirements, but before we can do anything with the Google Maps, you need to obtain your own Google Maps Key to add to your manifest file.</p>
+<p>The following steps will help you achieve this, so before we can do anything with the Firebase, let&#39;s setup our CoffeeMate Project on the Firebase Console.</p>
+<p>The instructions on the official developer docs are as good a place to stat as any, so check how to &#39;Add Firebase to your Project&#39; <a href="https://firebase.google.com/docs/android/setup">here</a>.</p>
+<p>The final list of dependencies/plugins required are as below, so confirm your list against mine and add them in at this stage if you so wish?</p>
+<pre><code>dependencies {
+    compile fileTree(include: [&#39;*.jar&#39;], dir: &#39;libs&#39;)
+    testCompile &#39;junit:junit:4.12&#39;
+    compile &#39;com.android.support:appcompat-v7:25.0.0&#39;
+    compile &#39;com.android.support:support-v4:25.0.0&#39;
+    compile &#39;com.android.support:design:25.0.0&#39;
+    compile &#39;com.makeramen:roundedimageview:2.2.1&#39;
+
+    compile &#39;com.google.firebase:firebase-core:9.8.0&#39;
+    compile &#39;com.google.firebase:firebase-auth:9.8.0&#39;
+    compile &#39;com.google.firebase:firebase-database:9.8.0&#39;
+    compile &#39;com.firebaseui:firebase-ui-database:1.0.0&#39;
+
+    compile &#39;com.google.android.gms:play-services-auth:9.8.0&#39;
+    compile project(&#39;:volley&#39;)
+}
+
+
+apply plugin: &#39;com.google.gms.google-services&#39;</code></pre>
+<p>Once you have your project set up, you can continue on to the next step.</p>
 
       </div>
      
