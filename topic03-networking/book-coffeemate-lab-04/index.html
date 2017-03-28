@@ -883,7 +883,7 @@ public void toggle(View v) {
      
       <div  class="ui tab segment lab" data-tab="10">
         <h1>App Refactoring - Our &#39;Edit&#39; Option (Part 4)</h1>
-<p>Now, once you&#39;ve tried to confirm that your update and toggle features are working as expected, you&#39;ve probably noticeed you have to manually navigate back to the previous screen when you click the update button.</p>
+<p>Now, once you&#39;ve tried to confirm that your update and toggle features are working as expected, you&#39;ve probably noticed you have to manually navigate back to the previous screen when you click the update button.</p>
 <p>To improve the user experience somewhat, we can ensure that the user is automatically returned to the previous screen after they&#39;ve selected the update button - no matter which screen they were on. This can be achieved with the following code, so add this to your Fragment and run your app again and se what happens.</p>
 <pre><code>if (getFragmentManager().getBackStackEntryCount() &gt; 0) {    
                 getFragmentManager().popBackStack();    
@@ -896,7 +896,7 @@ public void toggle(View v) {
       <div  class="ui tab segment lab" data-tab="11">
         <h1>App Refactoring - Adding Database Support</h1>
 <p>Before we complete this step, there&#39;s a few classes you need to import to help you along. Once you import the necessary Database classes, this step is relatively straight forward - all you have to do is replace the method calls that manages the <strong>coffeeList</strong> with the respective <strong>dbManager</strong> calls.</p>
-<p>First thing to do is download the necessary database classes in the [database](..\/archives\/database.zip) archive and add them to a new <em><strong>ie.cm.db</strong></em> package in your project.</p>
+<p>First thing to do is download the necessary database classes in the <a href="archives/database.zip">database</a> archive and add them to a new <em><strong>ie.cm.db</strong></em> package in your project.</p>
 <p>Take a few moments to investigate the classes and familiarise yourself with the methods you&#39;ll be using. There are a number of classes you&#39;ll need to modify to add database support to your project, but initially, you need to create an instance of <em><strong>DBManager</strong></em> in <strong>CofeeMateApp.java</strong> and both open\/close the database when necessary.</p>
 <p>Our DBManager instance inside our Application Object</p>
 <pre><code>public class CoffeeMateApp extends Application {    
