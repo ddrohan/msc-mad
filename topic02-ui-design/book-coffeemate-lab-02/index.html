@@ -571,9 +571,10 @@ So, first of all, have a quick look again at the resource layout (home.xml). We&
 <p>Currently, if we wanted to delete more than one coffee at a time we need to delete them individually, which does achieve what we want, but is not a great User Experience if there are dozens of coffees to remove.</p>
 <p>This is where we can utilise a Context Menu and the ActionBar / Action Mode features available to us in Android.</p>
 <h1>Setting up your Resources &amp; XML</h1>
-<p>This what we want when the user &#39;Long Clicks&#39; a row in our List.</p>
+<p>This is what we want when the user &#39;Long Clicks&#39; a row in our List.</p>
 <p><img src="img/lab0310.png" alt=""></p>
-<p>and then subsequently</p>
+<p>Note the different (Context) Menu for deleting.</p>
+<p>And then subsequently</p>
 <p><img src="img/lab0311.png" alt=""></p>
 <p>To achieve this we need to</p>
 <ul>
@@ -597,6 +598,18 @@ So, first of all, have a quick look again at the resource layout (home.xml). We&
         android:icon=&quot;@android:drawable/ic_menu_delete&quot;
         android:title=&quot;@string/deleteCoffeesLbl&quot; /&gt;
 &lt;/menu&gt;</code></pre>
+<p>Next, create a new drawable <b>selector</b> resource xml file in the &#39;drawable&#39; folder called &#39;background_activated.xml&#39; and place the following inside</p>
+<pre><code class="lang-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;selector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; &gt;
+    &lt;item
+        android:state_activated=&quot;true&quot;
+        android:drawable=&quot;@color/appFooterBGColor&quot;
+        /&gt;
+&lt;/selector&gt;</code></pre>
+<p>Finally, edit your <b>styles.xml</b> and add the following to your &#39;AppTheme&#39; style. If you like, you can experiment with you own colors?</p>
+<pre><code class="lang-xml">&lt;item name=&quot;windowActionModeOverlay&quot;&gt;true&lt;/item&gt;
+&lt;item name=&quot;actionModeBackground&quot;&gt;@color/colorPrimary&lt;/item&gt;</code></pre>
+<h1>Implementing the MultiChoice Listener interface</h1>
 <p>probably easiest to do something like this</p>
 <pre><code class="lang-java">public class Coffee implements Serializable
 {
