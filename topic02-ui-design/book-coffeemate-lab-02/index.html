@@ -122,6 +122,10 @@ h3
       07
     </a>
     
+    <a class="item" data-tab="08">
+      08
+    </a>
+    
     <a class="item" data-tab="Exercises">
       Exercises
     </a>
@@ -520,7 +524,79 @@ So, first of all, have a quick look again at the resource layout (home.xml). We&
       <div  class="ui tab segment lab" data-tab="07">
         <h1>Our &#39;new look&#39; Home Screen - Edit a Coffee</h1>
 <h1>Updating the data in our coffeeList</h1>
-<p>The first issue was no matte which coffee we &#39;clicked&#39; on we always got the first coffee to edit - this is because the coffee id never gets set, so you need to refactor the <b>Coffee</b> model and add an autoincrement number to act as a unique id. It&#39;s a bit crude but it&#39;ll do the job until we move on to more sophisticated approaches in later labs.</p>
+<p>The first issue was, no matter which coffee we &#39;clicked&#39; on we always got the first coffee to edit - this is because the coffee id never gets set, so you need to refactor the <b>Coffee</b> model and add an autoincrement number to act as a unique id. It&#39;s a bit crude but it&#39;ll do the job until we move on to more sophisticated approaches in later labs.</p>
+<p>probably easiest to do something like this</p>
+<pre><code class="lang-java">public class Coffee implements Serializable
+{
+
+    public static int autoid = 1;
+    public int coffeeId;
+    public String name;
+    public String shop;
+    public double rating;
+    public double price;
+    public boolean favourite;
+
+
+    public Coffee() {}
+
+    public Coffee(String name, String shop, double rating, double price, boolean fav)
+    {
+        this.coffeeId = autoid++;
+        this.name = name;
+        this.shop = shop;
+        this.rating = rating;
+        this.price = price;
+        this.favourite = fav;
+    }
+
+    @Override
+    public String toString() {
+        return &quot;Coffee [name=&quot; + name
+                + &quot;, shop =&quot; + shop + &quot;, rating=&quot; + rating + &quot;, price=&quot; + price
+                + &quot;, fav =&quot; + favourite + &quot;]&quot;;
+    }
+}</code></pre>
+<p>And you probably worked out that the problem was, even if we changed the data, it was only updated in our list of coffees if we clicked the &#39;Update&#39; Button, but nothing else happens - we&#39;d need to hit the &#39;back&#39; button to return to the previous screen.</p>
+<p>It&#39;s worth noting that we never actually &#39;put it back&#39; in the list after we updated it, but because our list is <i>static</i>, that&#39;s ok - any changes to a single coffee are updated in the global list. We might need to revisit this in later labs, but for now, it&#39;s all good.</p>
+<p>In the <i><b>update()</b></i> method we need something like this</p>
+<pre><code class="lang-java">goToActivity(this,Home.class, activityInfo);</code></pre>
+<p>so see if you can work out where this should be inserted.</p>
+<p>You should run you app once more and fully test it for the features now implemented.</p>
+
+      </div>
+     
+      <div  class="ui tab segment lab" data-tab="08">
+        <h1>Deleting Multiple Coffees with a Context Menu &amp; ActionMode</h1>
+<p>Currently, if we wanted to delete more than one coffee at a time we need to delete them individually, which does achieve what we want, but is not a great User Experience if there are dozens of coffees to remove.</p>
+<p>This is where we can utilise a Context Menu and the ActionBar / Action Mode features available to us in Android.</p>
+<h1>Setting up your Resources &amp; XML</h1>
+<p>This what we want when the user &#39;Long Clicks&#39; a row in our List.</p>
+<p><img src="img/lab0310.png" alt=""></p>
+<p>and then subsequently</p>
+<p><img src="img/lab0311.png" alt=""></p>
+<p>To achieve this we need to</p>
+<ul>
+<li><p>design the Context Menu</p>
+</li>
+<li><p>update the coffeerow design (for when it&#39;s selected) and</p>
+</li>
+<li><p>update our application &#39;style&#39; to reflect what and how our Context Menu overlays.</p>
+</li>
+</ul>
+<p>First, let&#39;s design the Menu to look something this:</p>
+<p><img src="img/lab0312.png" alt=""></p>
+<p>and</p>
+<p><img src="img/lab0313.png" alt=""></p>
+<p>create a new menu resource in the &#39;menu&#39; folder called &#39;delete_list_context.xml&#39; and place the following code inside it - just make sure you have the proper string resource set up beforehand (&#39;deleteCoffeesLbl&#39;)</p>
+<pre><code class="lang-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;menu xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;item
+        android:id=&quot;@+id/menu_item_delete_coffee&quot;
+        android:icon=&quot;@android:drawable/ic_menu_delete&quot;
+        android:title=&quot;@string/deleteCoffeesLbl&quot; /&gt;
+&lt;/menu&gt;</code></pre>
 <p>probably easiest to do something like this</p>
 <pre><code class="lang-java">public class Coffee implements Serializable
 {
