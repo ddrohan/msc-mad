@@ -126,6 +126,10 @@ h3
       08
     </a>
     
+    <a class="item" data-tab="09">
+      09
+    </a>
+    
     <a class="item" data-tab="Exercises">
       Exercises
     </a>
@@ -606,48 +610,241 @@ So, first of all, have a quick look again at the resource layout (home.xml). We&
         android:drawable=&quot;@color/appFooterBGColor&quot;
         /&gt;
 &lt;/selector&gt;</code></pre>
+<p>Now, edit your <b>coffeerow.xml</b> and add the resource you just created as the background color property for the whole layout (at the top), like so</p>
+<pre><code class="lang-xml"> android:background=&quot;@drawable/background_activated&quot;</code></pre>
 <p>Finally, edit your <b>styles.xml</b> and add the following to your &#39;AppTheme&#39; style. If you like, you can experiment with you own colors?</p>
 <pre><code class="lang-xml">&lt;item name=&quot;windowActionModeOverlay&quot;&gt;true&lt;/item&gt;
 &lt;item name=&quot;actionModeBackground&quot;&gt;@color/colorPrimary&lt;/item&gt;</code></pre>
 <h1>Implementing the MultiChoice Listener interface</h1>
-<p>probably easiest to do something like this</p>
-<pre><code class="lang-java">public class Coffee implements Serializable
+<p>The first thing to do is open up &#39;CoffeeFragment.java&#39; and make sure this class implements the interface we need:</p>
+<pre><code class="lang-java">public class CoffeeFragment  extends ListFragment implements  OnClickListener,
+                                          AbsListView.MultiChoiceModeListener
 {
-
-    public static int autoid = 1;
-    public int coffeeId;
-    public String name;
-    public String shop;
-    public double rating;
-    public double price;
-    public boolean favourite;
-
-
-    public Coffee() {}
-
-    public Coffee(String name, String shop, double rating, double price, boolean fav)
-    {
-        this.coffeeId = autoid++;
-        this.name = name;
-        this.shop = shop;
-        this.rating = rating;
-        this.price = price;
-        this.favourite = fav;
-    }
-
-    @Override
-    public String toString() {
-        return &quot;Coffee [name=&quot; + name
-                + &quot;, shop =&quot; + shop + &quot;, rating=&quot; + rating + &quot;, price=&quot; + price
-                + &quot;, fav =&quot; + favourite + &quot;]&quot;;
-    }
+    . . .
 }</code></pre>
-<p>And you probably worked out that the problem was, even if we changed the data, it was only updated in our list of coffees if we clicked the &#39;Update&#39; Button, but nothing else happens - we&#39;d need to hit the &#39;back&#39; button to return to the previous screen.</p>
-<p>It&#39;s worth noting that we never actually &#39;put it back&#39; in the list after we updated it, but because our list is <i>static</i>, that&#39;s ok - any changes to a single coffee are updated in the global list. We might need to revisit this in later labs, but for now, it&#39;s all good.</p>
-<p>In the <i><b>update()</b></i> method we need something like this</p>
-<pre><code class="lang-java">goToActivity(this,Home.class, activityInfo);</code></pre>
-<p>so see if you can work out where this should be inserted.</p>
-<p>You should run you app once more and fully test it for the features now implemented.</p>
+<p>add the necessary imports and accept the defaults for all the callbacks, we&#39;ll implement what we need to next.</p>
+<p>The MultiChoiceModeListener methods are :</p>
+<pre><code class="lang-java">/* ************ MultiChoiceModeListener methods (begin) *********** */
+ @Override
+ public boolean onCreateActionMode(ActionMode actionMode, Menu menu)
+ { . . . }
+
+ @Override
+ public boolean onPrepareActionMode(ActionMode actionMode, Menu menu)
+ { . . . }
+
+ @Override
+ public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem)
+ { . . . }
+
+ @Override
+ public void onDestroyActionMode(ActionMode actionMode)
+ {}
+
+ @Override
+ public void onItemCheckedStateChanged(ActionMode actionMode, int position, long id, boolean checked)
+ {}
+ /* ************ MultiChoiceModeListener methods (end) *********** */</code></pre>
+<p>We only need to implement a few of them, and supply one other local method to actually carry out the deleting of multiple coffees, when selected.</p>
+<p>Using the lecture material as reference, have a go at implementing the necessary methods to achieve the desired functionality. (The solution is on the next step anyway, but have a go first).</p>
+<h1>Setting up the List as MultipleChoice</h1>
+<p>You&#39;ve now, hopefully, implemented the necessary callbacks for handling the MultiChoiceMode, but there&#39;s one step needs to be carried - the ListView itself needs to be &#39;aware&#39; that it&#39;s items can be selected individually AND as multiple items. This is achieved through setting some of the List properties as the &#39;View&#39; is created.</p>
+<p>To help you along, here&#39;s the method you need to add to &#39;CoffeeFragment&#39;, to achieve the desired results, but be sure what&#39;s going on here, before proceeding.</p>
+<pre><code class="lang-java">@Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+    View v = super.onCreateView(inflater, parent, savedInstanceState);
+
+    listView = (ListView) v.findViewById(android.R.id.list);
+    listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+    listView.setMultiChoiceModeListener(this);
+
+    return v;
+  }</code></pre>
+<p>Run the app again and see if you can now delete multiple coffees through the use of a Context Menu and ActionMode/ActionBar.</p>
+
+      </div>
+     
+      <div  class="ui tab segment lab" data-tab="09">
+        <h1>Completed CoffeeFragment</h1>
+<p>Here&#39;s the full source code for the updated CoffeeFragment class, and the full solution can be found on the next, final step.</p>
+<pre><code class="lang-java">package ie.cm.fragments;
+
+import ie.cm.R;
+import ie.cm.activities.Base;
+import ie.cm.activities.Edit;
+import ie.cm.adapters.CoffeeListAdapter;
+import ie.cm.models.Coffee;
+
+import android.app.AlertDialog;
+import android.app.ListFragment;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.ActionMode;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.ListView;
+
+public class CoffeeFragment  extends ListFragment implements  OnClickListener,
+                                          AbsListView.MultiChoiceModeListener
+{
+  protected         Base                activity;
+  protected static  CoffeeListAdapter     listAdapter;
+  protected         ListView             listView;
+
+  public CoffeeFragment() {
+    // Required empty public constructor
+  }
+
+  public static CoffeeFragment newInstance() {
+    CoffeeFragment fragment = new CoffeeFragment();
+    return fragment;
+  }
+@Override
+  public void onAttach(Context context)
+  {
+    super.onAttach(context);
+    this.activity = (Base) context;
+  }
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    listAdapter = new CoffeeListAdapter(activity, this, Base.coffeeList);
+    setListAdapter (listAdapter);
+  }
+
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+    View v = super.onCreateView(inflater, parent, savedInstanceState);
+
+    listView = (ListView) v.findViewById(android.R.id.list);
+    listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+    listView.setMultiChoiceModeListener(this);
+
+    return v;
+  }
+
+
+
+  @Override
+  public void onStart()
+  {
+    super.onStart();
+  }
+
+  @Override
+  public void onClick(View view)
+  {
+    if (view.getTag() instanceof Coffee)
+    {
+      onCoffeeDelete ((Coffee) view.getTag());
+    }
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+    ((CoffeeListAdapter) getListAdapter()).notifyDataSetChanged();
+  }
+
+  @Override
+  public void onListItemClick(ListView l, View v, int position, long id)
+  {
+    Bundle activityInfo = new Bundle();
+    activityInfo.putInt(&quot;coffeeID&quot;, v.getId());
+
+    Intent goEdit = new Intent(getActivity(), Edit.class);
+    goEdit.putExtras(activityInfo);
+    getActivity().startActivity(goEdit);
+  }
+
+  public void onCoffeeDelete(final Coffee coffee)
+  {
+    String stringName = coffee.name;
+    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+    builder.setMessage(&quot;Are you sure you want to Delete the \&#39;Coffee\&#39; &quot; + stringName + &quot;?&quot;);
+    builder.setCancelable(false);
+
+    builder.setPositiveButton(&quot;Yes&quot;, new DialogInterface.OnClickListener()
+    {
+      public void onClick(DialogInterface dialog, int id)
+      {
+        Base.coffeeList.remove(coffee); // remove from our list
+        listAdapter.coffeeList.remove(coffee); // update adapters data
+        listAdapter.notifyDataSetChanged(); // refresh adapter
+      }
+    }).setNegativeButton(&quot;No&quot;, new DialogInterface.OnClickListener()
+    {
+      public void onClick(DialogInterface dialog, int id)
+      {
+        dialog.cancel();
+      }
+    });
+    AlertDialog alert = builder.create();
+    alert.show();
+  }
+
+  /* ************ MultiChoiceModeListener methods (begin) *********** */
+  @Override
+  public boolean onCreateActionMode(ActionMode actionMode, Menu menu)
+  {
+    MenuInflater inflater = actionMode.getMenuInflater();
+    inflater.inflate(R.menu.delete_list_context, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onPrepareActionMode(ActionMode actionMode, Menu menu)
+  {
+    return false;
+  }
+
+  @Override
+  public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem)
+  {
+    switch (menuItem.getItemId())
+    {
+      case R.id.menu_item_delete_coffee:
+        deleteCoffees(actionMode);
+        return true;
+      default:
+        return false;
+    }
+
+  }
+
+  private void deleteCoffees(ActionMode actionMode)
+  {
+    for (int i = listAdapter.getCount() - 1; i &gt;= 0; i--)
+    {
+      if (listView.isItemChecked(i))
+      {
+        Base.coffeeList.remove(listAdapter.getItem(i));
+      }
+    }
+    actionMode.finish();
+    listAdapter.notifyDataSetChanged();
+  }
+
+  @Override
+  public void onDestroyActionMode(ActionMode actionMode)
+  {}
+
+  @Override
+  public void onItemCheckedStateChanged(ActionMode actionMode, int position, long id, boolean checked)
+  {}
+  /* ************ MultiChoiceModeListener methods (end) *********** */
+}</code></pre>
 
       </div>
      
