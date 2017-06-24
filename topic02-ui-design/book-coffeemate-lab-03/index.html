@@ -243,8 +243,6 @@ import ie.cm.models.Coffee;
 
 public class Home extends Base {
 
-    TextView recentList;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -252,8 +250,6 @@ public class Home extends Base {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setLogo(R.drawable.ic_launcher1);
-
-        recentList = (TextView) findViewById(R.id.recentlyAddedListEmpty);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -290,18 +286,11 @@ public class Home extends Base {
     protected void onResume() {
         super.onResume();
 
-        if(coffeeList.isEmpty())
-            recentList.setText(getString(R.string.recentlyViewedListEmptyMessage));
-        else
-            recentList.setText(&quot;&quot;);
-
             coffeeFragment = CoffeeFragment.newInstance(); //get a new Fragment instance
             getFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_layout, coffeeFragment)
                     .commit(); // add/replace in the current activity
-
-
     }
 
     public void setupCoffees(){
@@ -359,7 +348,8 @@ public class Home extends Base {
 <p>If you run the app again, and select the Favourites Button, you should now see just the &#39;Favourite&#39; coffees, like so:</p>
 <p><img src="img/lab0406.png" alt=""></p>
 <p>Note that we didn&#39;t have to modify a single line of code in our <b>Favourites.java</b> Activity class.</p>
-<p>There&#39;s still a few issues with our <b>Favourites</b> though, if you&#39;ve done some proper testing? Can you identify the bug - and how to fix it?</p>
+<p>There&#39;s still a few issues with our <b>Favourites</b> though, if you&#39;ve done some proper testing? And tried to delete multiple coffees via the context menu? Can you identify how to fix it?</p>
+<p>Hint : You&#39;ll be focusing on the &#39;deleteCoffees() method and having to &#39;filter&#39; again. (Or you can always check the notes!)</p>
 <p>Next we&#39;ll look at searching our coffees by name and/or type.</p>
 
       </div>
@@ -386,7 +376,7 @@ public class Home extends Base {
         super.onStart();
     }
 }</code></pre>
-<p>There&#39;s not much in there, so the first add the following :</p>
+<p>There&#39;s not much in there, so first add the following :</p>
 <pre><code class="lang-java">public SearchFragment() {
         // Required empty public constructor
     }
@@ -419,7 +409,7 @@ public class Home extends Base {
       <div  class="ui tab segment lab" data-tab="06">
         <h1>Reusing Fragments - Adding Event Handlers</h1>
 <p>At the moment, if the user types in some text or selects an option from the Spinner on the Search screen, nothings happens as there&#39;s no code attached to these types of events. This step involves implementing the necessary interfaces to complete the lab.</p>
-<p>If you haven&#39;t been doing so already, you should definitely make use of the Eclipse features to speed up this process, so all we will be left with is writing the specific code for what we want to happen.</p>
+<p>If you haven&#39;t been doing so already, you should definitely make use of the Android Studio features to speed up this process, so all we will be left with is writing the specific code for what we want to happen.</p>
 <h1>Handling the Spinner with the <u>OnItemSelectedListener</u> interface</h1>
 <p>First of all, ensure your <b>SearchFragment</b> implements the correct interface</p>
 <pre><code class="lang-java">implements AdapterView.OnItemSelectedListener</code></pre>
@@ -436,19 +426,39 @@ public class Home extends Base {
 
     }</code></pre>
 <p>We only need to complete the <i>onItemSelected</i> method to filter our list when the user selects a particular &#39;type&#39; of coffee, as follows:</p>
-<pre><code class="lang-java">  String selected = arg0.getItemAtPosition(arg2).toString();
+<p>Introduce a new global String variable &#39;selected&#39; then</p>
+<p>Introduce this helper method</p>
+<pre><code class="lang-java">private void checkSelected(String selected)
+    {
+        if (selected != null) {
+            if (selected.equals(&quot;All Types&quot;)) {
+                coffeeFilter.setFilter(&quot;all&quot;);
+            } else if (selected.equals(&quot;Favourites&quot;)) {
+                coffeeFilter.setFilter(&quot;favourites&quot;);
+            }
 
-    if (selected != null) {
-      if (selected.equals(&quot;All Types&quot;)) {
-        coffeeFilter.setFilter(&quot;all&quot;);
-      } else if (selected.equals(&quot;Favourites&quot;)) {
-        coffeeFilter.setFilter(&quot;favourites&quot;);
-      }
-      coffeeFilter.filter(&quot;&quot;);
+            String filterText = ((EditText)activity
+                    .findViewById(R.id.searchCoffeeNameEditText))
+                    .getText().toString();
+
+            if(filterText.length() &gt; 0)
+                coffeeFilter.filter(filterText);
+            else
+                coffeeFilter.filter(&quot;&quot;);
+        }
     }</code></pre>
+<p>and finally, inside &#39;onItemSelected&#39;</p>
+<pre><code class="lang-java">  String selected = parent.getItemAtPosition(position).toString();
+  checkSelected(selected);</code></pre>
 <p>Once again, be clear about what is going here.</p>
-<p>The last thing to do is set the spinners listener, so have a go at this method call.
-If you like, you can run the app, just to see if this works like it should.</p>
+<p>We also need to override our &#39;deleteCoffees()&#39; method in the super class to ensure our context menu continues to function as expected, so revisit &#39;CoffeeFragment&#39; and change the access modifier of the method to public and then introduce the following method into your &#39;SearchFragment&#39;</p>
+<pre><code class="lang-java">@Override
+    public void deleteCoffees(ActionMode actionMode) {
+        super.deleteCoffees(actionMode);
+        checkSelected(selected);
+    }</code></pre>
+<p>The last thing to do is set the spinners listener, so have a go at this method call.</p>
+<p>Run your app again to confirm everything is still working as expected.</p>
 <h1>Handling the EditText with the <u>TextWatcher</u> interface</h1>
 <p>Similar to handling the <b><i>Spinner</i></b> try and use the Android Studio features to implement the <b><i>TextWatcher</i></b> interface. If you&#39;ve done this correctly you&#39;ll have the following method stubs:</p>
 <pre><code class="lang-java">@Override
