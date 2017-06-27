@@ -439,7 +439,7 @@ h3
 <p>First, we need a new layout for our Search, so either copy/paste one of the existing fragment layouts, or go ahead and create a new one (I copied the <i>fragment_home</i> layout and went from there).</p>
 <p>We already have most of the layout we need in the &#39;Search&#39; xml file so see can you put together a layout similar to the following:</p>
 <p><img src="img/lab506.png" alt=""></p>
-<p>If it all get&#39;s a bit much for you :) here&#39;s the complete xml code but it&#39;s really worth having a go yourself first, as it will help you develop your layout design skills.</p>
+<p>If it all gets a bit much for you :) here&#39;s the complete xml code but it&#39;s really worth having a go yourself first, as it will help you develop your layout design skills.</p>
 <pre><code class="lang-xml"> &lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
     xmlns:tools=&quot;http://schemas.android.com/tools&quot;
     android:layout_width=&quot;match_parent&quot;
@@ -527,7 +527,46 @@ h3
     }</code></pre>
 <p>Can you explain why we need to bind to the &#39;coffeeList&#39; ListView widget? (comment out the line of code and run the app once you&#39;ve completed the &#39;wiring up&#39;, and see does that give you any clues?).</p>
 <p>Now, &#39;wire up&#39; a new instance of this fragment to the Search option on the Navigation Drawer, similar to how we did the &#39;Add&#39; and &#39;View Favourites&#39;.</p>
-<p>Run the app and confirm you get the following after you choose the &#39;Search&#39; option:</p>
+<p>If you run the app at this stage (which you should) you&#39;ll probably get a NullPointerException error, so be clear why we need to move some existing code from <b>onCreate()</b> to <b>onCreateView()</b>, and carry out some refactoring, like so</p>
+<pre><code class="lang-java">@Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        super.onCreateView(inflater,container,savedInstanceState);
+
+        View v = inflater.inflate(R.layout.fragment_search, container, false);
+
+        ArrayAdapter&lt;CharSequence&gt; spinnerAdapter = ArrayAdapter
+                .createFromResource(getActivity(), R.array.coffeeTypes,
+                        android.R.layout.simple_spinner_item);
+
+        spinnerAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        Spinner spinner = ((Spinner) v.findViewById(R.id.searchCoffeeTypeSpinner));
+        spinner.setAdapter(spinnerAdapter);
+        spinner.setOnItemSelectedListener(this);
+
+        EditText nameText = (EditText)v.findViewById(R.id.searchCoffeeNameEditText);
+        nameText.addTextChangedListener(this);
+
+        listView = (ListView) v.findViewById(R.id.coffeeList); //Bind to the list on our Search layout
+
+        setListView(listView,v);
+
+        return v;
+    }</code></pre>
+<p>Notice there&#39;s a new <b>setListView(listView,v)</b> method. This has been introduced to reduce some code redundancy, so make sure it&#39;s implemented in the super CoffeeFragment class. Here&#39;s the code you need for this method</p>
+<pre><code class="lang-java">public void setListView(ListView listview, View v) {
+    listview = (ListView) v.findViewById(R.id.coffeeList);
+    listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+    listview.setMultiChoiceModeListener(this);
+
+    listview.setAdapter (listAdapter);
+    listview.setOnItemClickListener(this);
+    listview.setEmptyView(getActivity().findViewById(R.id.empty_list_view));
+  }</code></pre>
+<p>Once you&#39;ve mand the necessary changes, run the app again and confirm you get the following after you choose the &#39;Search&#39; option:</p>
 <p><img src="img/lab507.png" alt=""></p>
 <p>You&#39;ll notice that the spinner and filter don&#39;t work - the next step is to bring in the logic so a user can actually search &amp; filter Coffees (like CoffeeMate 3.0).</p>
 
