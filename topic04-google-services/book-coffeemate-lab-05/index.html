@@ -216,7 +216,7 @@ Once you import the Starter Code, you&#39;ll notice a number of errors, so to fi
 <li>clone the project (via git)</li>
 </ul>
 <pre><code class="lang-java">git clone https://android.googlesource.com/platform/frameworks/volley</code></pre>
-<p>or download my own volley archive here - <a href="../archives/volley.zip">volley.zip</a>.</p>
+<p>or download my own volley archive here - <a href="archives/volley.zip">volley.zip</a>.</p>
 <p>Eitherway, you then need to</p>
 <pre><code>File -&gt; New Module, choose Import Existing Project</code></pre>
 <p>and Add the following dependencies to your &#39;build.gradle&#39;</p>
@@ -224,7 +224,7 @@ Once you import the Starter Code, you&#39;ll notice a number of errors, so to fi
 compile &#39;com.google.code.gson:gson:2.4&#39; // for Googles Gson JSON Parser</code></pre>
 <p>Add the necessary imports, clean the Project and the errors should be fixed, and if you run the app, you should get something like the following (depending on what&#39;s on the server at the time of making the api request)</p>
 <p> <img src="img/lab0601.png" alt=""></p>
-<p><i><b>I would strongly recommend spending some time familiarising yourself with the source code for this starter project - especially the API Calls and how we utilise a &#39;Callback Interface&#39;.</b></i></p>
+<p><i><b>I would strongly recommend taking some time to have a look at the source code for this starter project - especially the API Calls and how we utilise a &#39;Callback Interface&#39;.</b></i> We&#39;ve also had to refactor our <b>CoffeeFragment</b> slightly, specifically the <b>onCreateView()</b> due to the nature of making network requests and the impact on the UI (already discussed in the Lectures).</p>
 <p>The remainder of this lab involves integrating <b>Google+ Sign-in</b> and using <b>Volley</b> to interact with the Web App.</p>
 
       </div>
@@ -267,66 +267,86 @@ compile &#39;com.google.code.gson:gson:2.4&#39; // for Googles Gson JSON Parser<
       <div  class="ui tab segment lab" data-tab="03">
         <h1>Adding a Google+ Sign-in Screen</h1>
 <p>There&#39;s quite a lot of code (relatively speaking) to get this off the ground, so we&#39;ll use this step as more of a &#39;configuration&#39; step, and hopefully once you&#39;ve completed this, you&#39;ll be able to <strong><em>&#39;Go Green&#39;</em></strong> on your own app :-) (Reduce,Reuse,Recycle my code).</p>
-<p>The first thing you need to do is introduce the following variables into your <strong>Base</strong> class</p>
+<p>The first thing you need to do is introduce the following variables into your <strong>CoffeeMateApp</strong> application class</p>
 <pre><code>/* Client used to interact with Google APIs. */
-public static GoogleApiClient mGoogleApiClient;
+    public GoogleApiClient mGoogleApiClient;
+    public GoogleSignInOptions mGoogleSignInOptions;
 
-public static boolean signedIn = false;
-public static String googleToken;
-public static String googleName;
-public static String googleMail;
-public static String googlePhotoURL;
-public static Bitmap googlePhoto;
-public static int drawerID = 0;</code></pre>
-<p>and the following method</p>
-<pre><code>public void logout(MenuItem item)
-    {
-    Log.v(&quot;coffeemate&quot;,&quot;Logging out from: &quot; + mGoogleApiClient);
-    Base.signedIn = mGoogleApiClient.isConnected();
-        if (Base.signedIn)
-        {
-        Log.v(&quot;coffeemate&quot;,&quot;Logging out from: &quot; + mGoogleApiClient);
-        Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-        mGoogleApiClient.disconnect();
-        Base.googleToken = &quot;&quot;;
-        Base.signedIn = mGoogleApiClient.isConnected();
-        mGoogleApiClient.connect();
-        Log.v(&quot;coffeemate&quot;,&quot;googleClient Connected: &quot; + Base.signedIn);
-        Toast.makeText(this, &quot;Signing out of Google&quot;, Toast.LENGTH_LONG).show();
-        Log.v(&quot;coffeemate&quot;, &quot;CoffeeMate App Terminated&quot;);
-        }
+    public boolean signedIn = false;
+    public String googleToken;
+    public String googleName;
+    public String googleMail;
+    public String googlePhotoURL;
+    public Bitmap googlePhoto;
+    public int drawerID = 0;</code></pre>
+<p>We&#39;ll be phasing out our <strong>Base</strong> class eventually, so the first step is keeping a reference to our application object in <strong>Home</strong>, like so</p>
+<pre><code class="lang-java">public CoffeeMateApp    app = CoffeeMateApp.getInstance();</code></pre>
+<p>Make sure you remove the reference from <strong>Base</strong> and fix any errors.</p>
+<p>now bring in the following method into your <strong>Home</strong> activity class</p>
+<pre><code class="lang-java">// [START signOut]
+    public void menuSignOut(MenuItem m) {
 
-    startActivity(new Intent(Base.this, Login.class)
-        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-    }</code></pre>
-<p>Then, bring in the following resources into your own CoffeeMate project (and store in the relevant folders) and fix/import any errors. You may need to revisit the Nav Drawer layout to rename some widgets.</p>
+        //https://stackoverflow.com/questions/38039320/googleapiclient-is-not-connected-yet-on-logout-when-using-firebase-auth-with-g
+        app.mGoogleApiClient.connect();
+        app.mGoogleApiClient.registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+            @Override
+            public void onConnected(@Nullable Bundle bundle) {
+
+                //FirebaseAuth.getInstance().signOut();
+                if(app.mGoogleApiClient.isConnected()) {
+                    Auth.GoogleSignInApi.signOut(app.mGoogleApiClient).setResultCallback(new ResultCallback&lt;Status&gt;() {
+                        @Override
+                        public void onResult(@NonNull Status status) {
+                            if (status.isSuccess()) {
+                                Log.v(&quot;coffeemate&quot;, &quot;User Logged out&quot;);
+                                Intent intent = new Intent(Home.this, Login.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onConnectionSuspended(int i) {
+                Log.d(&quot;coffeemate&quot;, &quot;Google API Client Connection Suspended&quot;);
+            }
+        });
+    }
+    // [END signOut]</code></pre>
+<p>Then, bring in the following resources <a href="archives/login.zip">login.zip</a> into your own CoffeeMate project (and store in the relevant folders) and fix/import any errors. You may need to revisit the Nav Drawer layout to rename some widgets.</p>
 <ul>
 <li><strong>Login</strong> Activity (in package <strong><em>ie.cm.activities</em></strong>)</li>
 <li><strong>activity_login</strong> Layout (in <strong><em>res\/layout</em></strong>)</li>
 </ul>
 <p>Also, just confirm that you have the following permissions in your manifest file</p>
 <pre><code>&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&gt;</code></pre>
+<p>and the following in your build.gradle</p>
+<pre><code>compile &#39;com.google.android.gms:play-services-auth:9.0.0&#39;</code></pre>
+<p>and the following in your strings.xml</p>
+<pre><code>&lt;string name=&quot;linktoRegister&quot;&gt;New to CoffeeMate?\n Register at\n &lt;a href=&#39;http://coffeemateweb.herokuapp.com&#39;&gt;http://coffeemateweb.herokuapp.com&lt;/a&gt;&lt;/string&gt;</code></pre>
 <p>Next, bring in a &#39;Logout&#39; Option in your Menu, like so</p>
-<pre><code>&lt;item    
-    android:id=&quot;@+id/menu_logout&quot;    
-    android:title=&quot;Logout&quot;    
-    android:orderInCategory=&quot;100&quot;    
-    app:showAsAction=&quot;never&quot;    
-    android:onClick=&quot;logout&quot;/&gt;</code></pre>
+<pre><code>&lt;item
+        android:id=&quot;@+id/menu_signout&quot;
+        android:title=&quot;Logout&quot;
+        android:orderInCategory=&quot;100&quot;
+        app:showAsAction=&quot;never&quot;
+        android:onClick=&quot;menuSignOut&quot;/&gt;</code></pre>
 <p>Now, introduce the following variable in your <strong>Home</strong> Activity</p>
 <pre><code>private ImageView googlePhoto;</code></pre>
 <p>and the following code in your <em><strong>onCreate()</strong></em> method <strong>BEFORE</strong> your fragment transaction</p>
 <pre><code>//SetUp GooglePhoto and Email for Drawer here
-googlePhoto = (ImageView)navigationView.getHeaderView(0).findViewById(R.id.googlephoto);
-CoffeeApi.getGooglePhoto(Base.googlePhotoURL,googlePhoto);
+        googlePhoto = (ImageView)navigationView.getHeaderView(0).findViewById(R.id.googlephoto);
+        CoffeeApi.getGooglePhoto(app.googlePhotoURL,googlePhoto);
 
-TextView googleName = (TextView)navigationView.getHeaderView(0).findViewById(R.id.googlename);
-googleName.setText(Base.googleName);
+        TextView googleName = (TextView)navigationView.getHeaderView(0).findViewById(R.id.googlename);
+        googleName.setText(app.googleName);
 
-TextView googleMail = (TextView)navigationView.getHeaderView(0).findViewById(R.id.googlemail);
-googleMail.setText(Base.googleMail);</code></pre>
+        TextView googleMail = (TextView)navigationView.getHeaderView(0).findViewById(R.id.googlemail);
+        googleMail.setText(app.googleMail);</code></pre>
 <p>You&#39;ll get an error on</p>
-<pre><code>CoffeeApi.getGooglePhoto(Base.googlePhotoURL,googlePhoto);</code></pre>
+<pre><code>CoffeeApi.getGooglePhoto(app.googlePhotoURL,googlePhoto);</code></pre>
 <p>so add the following method to your <b>CoffeeApi</b> class</p>
 <pre><code>public static void getGooglePhoto(String url,final ImageView googlePhoto)
     {
@@ -344,9 +364,11 @@ googleMail.setText(Base.googleMail);</code></pre>
                 }
         });
     // Add the request to the queue
-    Base.app.add(imgRequest);</code></pre>
+    app.add(imgRequest);</code></pre>
 <p>There&#39;s one other small step, but a vital one, to get your Login Screen loading after your splash Screen - and I&#39;ll leave that up to you.</p>
 <p>Once you get the app running and a user Signing in - you&#39;ll see that the list can be downloaded as before, and the users Google credentials are displayed in the Nav Drawer - but nothing else works properly - the rest of the lab involves refactoring our code to make API requests on the Server to Delete/Update etc.</p>
+<p>This is now a good time to remove our <strong>Base</strong> class altogether, but we do need to move some of the functionality into our <strong>Home</strong> class, such as the menu inflation and event handling, so have a go at that refactoring now.</p>
+<p>To save time, and if you ran into any configuration issues, here&#39;s a version of CoffeeMate up to this point <a href="archives/CoffeeMate.5.0.sofar.zip">CoffeeMate.5.0.sofar.zip</a></p>
 
       </div>
      
