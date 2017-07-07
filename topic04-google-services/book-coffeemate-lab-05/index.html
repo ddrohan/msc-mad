@@ -265,7 +265,7 @@ compile &#39;com.google.code.gson:gson:2.4&#39; // for Googles Gson JSON Parser<
       </div>
      
       <div  class="ui tab segment lab" data-tab="03">
-        <h1>Adding a Google+ Sign-in Screen</h1>
+        <h1>Adding a Google Sign-in Screen</h1>
 <p>There&#39;s quite a lot of code (relatively speaking) to get this off the ground, so we&#39;ll use this step as more of a &#39;configuration&#39; step, and hopefully once you&#39;ve completed this, you&#39;ll be able to <strong><em>&#39;Go Green&#39;</em></strong> on your own app :-) (Reduce,Reuse,Recycle my code).</p>
 <p>The first thing you need to do is introduce the following variables into your <strong>CoffeeMateApp</strong> application class</p>
 <pre><code>/* Client used to interact with Google APIs. */
@@ -386,7 +386,7 @@ compile &#39;com.google.code.gson:gson:2.4&#39; // for Googles Gson JSON Parser<
       </div>
      
       <div  class="ui tab segment lab" data-tab="04">
-        <h1>Google+ Integration - Retrieving &#39;My Coffees&#39;</h1>
+        <h1>Google Integration - Retrieving &#39;My Coffees&#39;</h1>
 <p>At the moment the user is seeing a list of <strong><em>all</em></strong> coffees stored on the server, so let&#39;s make the app a bit more user friendly and download <strong><em>only</em></strong> the users coffees.</p>
 <p>This is actually a very simple step, (and may be done already!) all we need to do is modify our APi call and add the users Google credentials to the request (which we already have) like so:</p>
 <pre><code>CoffeeApi.get(&quot;/coffees/&quot; + app.googleToken);</code></pre>
@@ -399,7 +399,7 @@ compile &#39;com.google.code.gson:gson:2.4&#39; // for Googles Gson JSON Parser<
       </div>
      
       <div  class="ui tab segment lab" data-tab="05">
-        <h1>Google+ Integration - Adding a Coffee</h1>
+        <h1>Google Integration - Adding a Coffee</h1>
 <p>At this stage, we&#39;ve made a few simple <strong>GET</strong> requests on the Server - now let&#39;s make some <strong>POST</strong> Requests and add a coffee to our list.</p>
 <p>The first thing we need to do is update our <strong>CoffeeApi</strong> class and add in a new method to allow us to POST our coffee to the server, so open up your <strong><em>CoffeeApi.java</em></strong> and add the following:</p>
 <pre><code>public static void post(String url,Coffee aCoffee) {
@@ -455,7 +455,7 @@ compile &#39;com.google.code.gson:gson:2.4&#39; // for Googles Gson JSON Parser<
       </div>
      
       <div  class="ui tab segment lab" data-tab="06">
-        <h1>Google+ Integration - Updating a Coffee</h1>
+        <h1>Google Integration - Updating a Coffee</h1>
 <p>Before we make a start at updating a coffee, here is the line of code necessary for adding a coffee (replacing our database insert call)</p>
 <pre><code>CoffeeApi.post(&quot;/coffees/&quot; + app.googleToken,c);</code></pre>
 <p>Unfortunately, updating a coffee isn&#39;t as simple and straightforward as the last step, in that we need to</p>
@@ -1034,7 +1034,7 @@ public void onCreate(Bundle savedInstanceState) {
       </div>
      
       <div  class="ui tab segment lab" data-tab="07">
-        <h1>Google+ Integration - Updating a Coffee</h1>
+        <h1>Google Integration - Updating a Coffee</h1>
 <p>As promised, here&#39;s the code necessary for initially retrieving a coffee from the server and displaying it on the Edit Screen</p>
 <pre><code>@Override
 public void setList(List list) {
@@ -1068,7 +1068,7 @@ public void updateUI() {
 <p>The last part of updating a coffee, is just that - <strong>PUT</strong> ing our data back on the server and there&#39;s actually not too much to this. To get you started, here&#39;s the APi call you&#39;ll need to make</p>
 <pre><code>CoffeeApi.put(&quot;/coffees/&quot; + app.googleToken +&quot;/&quot; + aCoffee._id, aCoffee);</code></pre>
 <p>but the existing <em>update()</em> method needs a small bit of refactoring so see if you can make the necessary changes to get everything working.</p>
-<p>Also, you make find the following code snippet useful</p>
+<p>Also, you may find the following code snippet useful</p>
 <pre><code class="lang-java">if (getFragmentManager().getBackStackEntryCount() &gt; 0) {
                 getFragmentManager().popBackStack();
                 return;
@@ -1078,17 +1078,17 @@ public void updateUI() {
       </div>
      
       <div  class="ui tab segment lab" data-tab="08">
-        <h1>Google+ Integration - Deleting Coffees</h1>
+        <h1>Google Integration - Deleting Coffees</h1>
 <p>As we already have all the necessary code in place from previous versions of CoffeeMate, AND we have a full APi class available to us, this step is very simple - we just need to change our delete method(s) to delete the specific coffee (or multiple coffees) from the server, and not the database, as is currently the case.</p>
 <p>we achieve deleting a single coffee by calling our <strong>CoffeeApi</strong> &#39;delete&#39; method like so</p>
-<pre><code>CoffeeApi.delete(&quot;/coffees/&quot; + Base.googleToken +&quot;/&quot; + coffee._id);</code></pre>
+<pre><code>CoffeeApi.delete(&quot;/coffees/&quot; + app.googleToken +&quot;/&quot; + coffee._id);</code></pre>
 <p>so see if you can work out where this call should go, and what code it should replace?</p>
 <p>We can use the same method call to delete multiple coffees so try and have a go at implementing this feature (which we covered in the lectures).</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="09">
-        <h1>Google+ Integration - Searching a Coffee</h1>
+        <h1>Google Integration - Searching a Coffee</h1>
 <p>At this Stage your CoffeeMate App should be able to View/Add/Delete &amp; Update coffees, and view your favourite coffees (like before), all on the server.</p>
 <p>Now, because we introduced a <strong>SwipeRefreshLayout</strong>, we need to make some modifications to our &#39;Search&#39; option so you need to ensure that your <strong>fragment_search</strong> layout now has the following (around the ListView)</p>
 <pre><code>&lt;android.support.v4.widget.SwipeRefreshLayout     
