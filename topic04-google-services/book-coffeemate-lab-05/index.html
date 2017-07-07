@@ -198,7 +198,7 @@ h3
       
       <div  class="ui tab segment lab" data-tab="Lab-06">
         <h1>Objectives</h1>
-<p>This lab continues our Case Study <b>CoffeeMate</b> and once again, yet another major refactoring of the app, where we introduce the ability to make API calls to our CoffeeMate Web App using <b>Volley</b> and introduce some basic security using <b>Google+ Sign-in</b>.</p>
+<p>This lab continues our Case Study <b>CoffeeMate</b> and once again, yet another major refactoring of the app, where we introduce the ability to make API calls to our CoffeeMate Web App using <b>Volley</b> and introduce some basic security using <b>Google Sign-in</b>.</p>
 
       </div>
      
@@ -207,7 +207,7 @@ h3
 <p>As this lab builds directly on the previous lab, but requires a number of helper classes you can download the starter code for the lab here - <a href="archives/CoffeeMate.5.0.Starter.zip">CoffeeMate.5.0</a>.</p>
 <p>In this lab, you are required to do the following:</p>
 <ul>
-<li>Refactor <b>CoffeeMate.4.0</b> replacing all Database calls with the Web Service calls (one of which is done already). This particular lab is concerned with initially using <b>Volley</b> to make our API calls and ultimately integrating <b>Google+ Sign-in</b> to allows us to securely login to our sister Web App - <b><a href="http://coffeemateweb.herokuapp.com">CoffeeMateWeb</a></b> and still offer the same functionality on the App.</li>
+<li>Refactor <b>CoffeeMate.4.0</b> replacing all Database calls with the Web Service calls (one of which is done already). This particular lab is concerned with initially using <b>Volley</b> to make our API calls and ultimately integrating <b>Google Sign-in</b> to allows us to securely login to our sister Web App - <b><a href="http://coffeemateweb.herokuapp.com">CoffeeMateWeb</a></b> and still offer the same functionality on the App.</li>
 </ul>
 <p>I would also like to bring to your attention our <b>Coffee</b> class as it has been refactored for use with the Web Service, we will be using this version of the model in this, and in subsequent Labs.</p>
 <p><hr>
@@ -230,8 +230,8 @@ compile &#39;com.google.code.gson:gson:2.4&#39; // for Googles Gson JSON Parser<
       </div>
      
       <div  class="ui tab segment lab" data-tab="02">
-        <h1>Setting Up Google+ Sign-in</h1>
-<p>As previously mentioned, we now want our CoffeeMate App to interact with a sister Web App (<a href="http://coffeemateweb.herokuapp.com">CoffeeMateWeb</a>) so we need <b>Google+ Sign-in</b> support to allow us to connect to the Web App and Add/Edit/Delete/View Coffees stored on the Server.</p>
+        <h1>Setting Up Google Sign-in</h1>
+<p>As previously mentioned, we now want our CoffeeMate App to interact with a sister Web App (<a href="http://coffeemateweb.herokuapp.com">CoffeeMateWeb</a>) so we need <b>Google Sign-in</b> support to allow us to connect to the Web App and Add/Edit/Delete/View Coffees stored on the Server.</p>
 <p>What we want is something like this:</p>
 <p>The user launches the app and (after a Splash Screen) is prompted to login, like so</p>
 <p><img src="img/lab0602.png" alt=""></p>
@@ -369,19 +369,32 @@ compile &#39;com.google.code.gson:gson:2.4&#39; // for Googles Gson JSON Parser<
 <p>Once you get the app running and a user Signing in - you&#39;ll see that the list can be downloaded as before, and the users Google credentials are displayed in the Nav Drawer - but nothing else works properly - the rest of the lab involves refactoring our code to make API requests on the Server to Delete/Update etc.</p>
 <p>This is now a good time to remove our <strong>Base</strong> class altogether, but we do need to move some of the functionality into our <strong>Home</strong> class, such as the menu inflation and event handling, so have a go at that refactoring now.</p>
 <p>To save time, and if you ran into any configuration issues, here&#39;s a version of CoffeeMate up to this point <a href="archives/CoffeeMate.5.0.sofar.zip">CoffeeMate.5.0.sofar.zip</a></p>
+<p>EDIT : if you call .requestProfile() like so</p>
+<pre><code class="lang-java">app.mGoogleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestProfile()
+                .build();</code></pre>
+<p>you don&#39;t need to use</p>
+<pre><code class="lang-java">    @Override
+    public void onResume()
+    {
+        super.onResume();
+        googlePhoto.setImageBitmap(app.googlePhoto);
+    }</code></pre>
+<p>in your <strong>Home</strong> activity.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="04">
         <h1>Google+ Integration - Retrieving &#39;My Coffees&#39;</h1>
 <p>At the moment the user is seeing a list of <strong><em>all</em></strong> coffees stored on the server, so let&#39;s make the app a bit more user friendly and download <strong><em>only</em></strong> the users coffees.</p>
-<p>This is actually a very simple step, all we need to do is modify our APi call and add the users Google+ credentials to the request (which we already have) like so:</p>
-<pre><code>CoffeeApi.get(&quot;/coffees/&quot; + Base.googleToken);</code></pre>
+<p>This is actually a very simple step, (and may be done already!) all we need to do is modify our APi call and add the users Google credentials to the request (which we already have) like so:</p>
+<pre><code>CoffeeApi.get(&quot;/coffees/&quot; + app.googleToken);</code></pre>
 <p>so now when we run the app we only see the current users coffees - here&#39;s mine (at the time of the request)</p>
 <p><img src="img/lab0609.png" alt=""></p>
 <p>and</p>
 <p><img src="img/lab0610.png" alt=""></p>
-<p>You can confirm your own coffees (if you&#39;ve added some already) by visiting the <a href="http://coffeemateweb.herokuapp.com">webapp</a> and sign in with your google+ details.</p>
+<p>You can confirm your own coffees (if you&#39;ve added some already) by visiting the <a href="http://coffeemateweb.herokuapp.com">webapp</a> and sign in with your Google details.</p>
 
       </div>
      
@@ -390,41 +403,44 @@ compile &#39;com.google.code.gson:gson:2.4&#39; // for Googles Gson JSON Parser<
 <p>At this stage, we&#39;ve made a few simple <strong>GET</strong> requests on the Server - now let&#39;s make some <strong>POST</strong> Requests and add a coffee to our list.</p>
 <p>The first thing we need to do is update our <strong>CoffeeApi</strong> class and add in a new method to allow us to POST our coffee to the server, so open up your <strong><em>CoffeeApi.java</em></strong> and add the following:</p>
 <pre><code>public static void post(String url,Coffee aCoffee) {
-    Log.v(TAG, &quot;POSTing to : &quot; + url);
-    Type objType = new TypeToken&lt;Coffee&gt;(){}.getType();
-    String json = new Gson().toJson(aCoffee, objType);
-    JSONObject jsonObject = null;
+        Log.v(TAG, &quot;POSTing to : &quot; + url);
+        Type objType = new TypeToken&lt;Coffee&gt;(){}.getType();
+        String json = new Gson().toJson(aCoffee, objType);
+        JSONObject jsonObject = null;
 
-    try {
-        jsonObject = new JSONObject(json);
+        try {
+            jsonObject = new JSONObject(json);
         }
-    catch (JSONException e) {
-        e.printStackTrace();
-       }     
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-    JsonObjectRequest gsonRequest = new JsonObjectRequest( Request.Method.POST, hostURL + url, jsonObject,
-            new Response.Listener&lt;JSONObject&gt;() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.v(TAG, &quot;insert new Coffee &quot; + response.toString());
+        JsonObjectRequest gsonRequest = new JsonObjectRequest( Request.Method.POST, hostURL + url, jsonObject,
+                new Response.Listener&lt;JSONObject&gt;() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.v(TAG, &quot;insert new Coffee &quot; + response.toString());
                     }
-            },
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) { // Handle Error
-                    Log.v(TAG, &quot;Unable to insert new Coffee&quot;);
-                }
-            }) {
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) { // Handle Error
+                        Log.v(TAG, &quot;Unable to insert new Coffee&quot;);
+                    }
+                }) {
 
-        @Override
-        public Map&lt;String, String&gt; getHeaders() throws AuthFailureError {
-               HashMap&lt;String, String&gt; headers = new HashMap&lt;String, String&gt;();
-               headers.put(&quot;Content-Type&quot;, &quot;application/json; charset=utf-8&quot;);
-               //headers.put(&quot;User-agent&quot;, System.getProperty(&quot;http.agent&quot;)); return headers; } };
+            @Override
+            public Map&lt;String, String&gt; getHeaders() throws AuthFailureError {
+                HashMap&lt;String, String&gt; headers = new HashMap&lt;String, String&gt;();
+                headers.put(&quot;Content-Type&quot;, &quot;application/json; charset=utf-8&quot;);
 
-    // Add the request to the queue
-    Base.app.add(gsonRequest);
-}</code></pre>
+                return headers;
+                  }
+                };
+
+                // Add the request to the queue
+                app.add(gsonRequest);
+            }</code></pre>
 <p>Fix any import errors you have and take some time to investigate how this method achieves our goal of</p>
 <ul>
 <li>accepting a coffee object as a parameter</li>
@@ -433,19 +449,16 @@ compile &#39;com.google.code.gson:gson:2.4&#39; // for Googles Gson JSON Parser<
 </ul>
 <p>You can always ask the Lecturer for some more detail if necessary.</p>
 <p>The next thing we need to do is refactor our <strong>Add Fragment</strong> and integrate our APi class so open up your <em>AddFragment.java</em> and have a go at implementing what we need.</p>
-<p>There&#39;s actually verry little to this so if you&#39;ve added the necessary code correctly, you should be able to add a coffee in the same way as in <strong>CoffeeMate.4.0</strong> but this time, the coffee is added to the list of your coffees on the server <strong>NOT</strong> on the device (via the database).</p>
+<p>There&#39;s actually very little to this so if you&#39;ve added the necessary code correctly, you should be able to add a coffee in the same way as in <strong>CoffeeMate.4.0</strong> but this time, the coffee is added to the list of your coffees on the server <strong>NOT</strong> on the device (via the database).</p>
 <p>And don&#39;t worry, the solution is next :)</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="06">
         <h1>Google+ Integration - Updating a Coffee</h1>
-<p>Before we make a start at updating a coffee, here are the 2 lines of code necessary for adding a coffee (replacing our database insert call)</p>
-<pre><code>
-Base.app.coffeeList.add(c);
-
-CoffeeApi.post(&quot;/coffees/&quot; + Base.googleToken,c);</code></pre>
-<p>Unfortunately, this step isn&#39;t as simple and straightforward as the last step, in that we need to</p>
+<p>Before we make a start at updating a coffee, here is the line of code necessary for adding a coffee (replacing our database insert call)</p>
+<pre><code>CoffeeApi.post(&quot;/coffees/&quot; + app.googleToken,c);</code></pre>
+<p>Unfortunately, updating a coffee isn&#39;t as simple and straightforward as the last step, in that we need to</p>
 <ul>
 <li><p>display the coffee details (that the user has selected) on the Edit Screen via a <strong>GET</strong> request</p>
 </li>
@@ -459,7 +472,6 @@ CoffeeApi.post(&quot;/coffees/&quot; + Base.googleToken,c);</code></pre>
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -483,44 +495,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ie.cm.activities.Base;
+import ie.cm.main.CoffeeMateApp;
 import ie.cm.models.Coffee;
-
-/**
- * Created by ddrohan on 18/07/2016.
- */
-
 
 public class CoffeeApi {
 
-    private static final String hostURL = &quot;http://coffeemateweb.herokuapp.com&quot;;
-    private static final String LocalhostURL = &quot;http://192.168.0.13:3000&quot;;
-    private static       VolleyListener vListener;
-    private static final String TAG = &quot;coffeemate&quot;;
+    private static final    String          hostURL = &quot;http://coffeemateweb.herokuapp.com&quot;;
+    private static final    String          LocalhostURL = &quot;http://192.168.0.13:3000&quot;;
+    private static          VolleyListener  vListener;
+    public static           CoffeeMateApp   app = CoffeeMateApp.getInstance();
+    public static final     String          TAG = CoffeeMateApp.class.getName();
+    public static           ProgressDialog  dialog;
 
-    public static void attachListener(VolleyListener fragment)
-    {
+    public static void attachListener(VolleyListener fragment) {
         vListener = fragment;
     }
-    public static void detachListener()
-    {
+
+    public static void detachListener() {
         vListener  = null;
     }
+
+    public static void attachDialog(ProgressDialog mDialog) {
+        dialog = mDialog;
+    }
+
     private static void showDialog(String message) {
-        //Log.v(TAG, &quot;Showing Dialog because &quot; + Base.dialog.isShowing());
-        Base.dialog.setMessage(message);
-        if (!Base.dialog.isShowing())
-                Base.dialog.show();
+        dialog.setMessage(message);
+        if (!dialog.isShowing())
+            dialog.show();
     }
     private static void hideDialog() {
-        //Log.v(TAG, &quot;Hiding Dialog because &quot; + Base.dialog.isShowing());
-        if (Base.dialog.isShowing())
-            Base.dialog.dismiss();
+        if (dialog.isShowing())
+            dialog.dismiss();
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public static void getAll(String url, final SwipeRefreshLayout mSwipeRefreshLayout) {
-        Log.v(TAG, &quot;GETing from &quot; + url);
-            showDialog(&quot;Downloading Coffees...&quot;);
+        Log.v(TAG, &quot;GETing All Coffees from &quot; + url);
+        showDialog(&quot;Downloading Coffees...&quot;);
         // Request a string response
         StringRequest stringRequest = new StringRequest(Request.Method.GET, hostURL + url,
                 new Response.Listener&lt;String&gt;() {
@@ -538,43 +549,43 @@ public class CoffeeApi {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // Error handling
-                System.out.println(&quot;Something went wrong!&quot;);
+                Log.v(TAG,&quot;Something went wrong with GET ALL!&quot;);
                 mSwipeRefreshLayout.setRefreshing(false);
                 error.printStackTrace();
             }
         });
         // Add the request to the queue
-        Base.app.add(stringRequest);
+        app.add(stringRequest);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public static void get(String url) {
-        Log.v(TAG, &quot;GETing from &quot; + url);
-        showDialog(&quot;Downloading a Coffee...&quot;);
+        showDialog(&quot;Downloading all User Coffees...&quot;);
         // Request a string response
         StringRequest stringRequest = new StringRequest(Request.Method.GET, hostURL + url,
                 new Response.Listener&lt;String&gt;() {
                     @Override
                     public void onResponse(String response) {
+
                         // Result handling
                         Coffee result = null;
                         Type objType = new TypeToken&lt;Coffee&gt;(){}.getType();
                         result = new Gson().fromJson(response, objType);
                         vListener.setCoffee(result);
                         hideDialog();
-                        //vListener.updateUI((Fragment)vListener);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // Error handling
-                System.out.println(&quot;Something went wrong!&quot;);
+                Log.v(TAG,&quot;Something went wrong wit GET!&quot;);
                 error.printStackTrace();
             }
         });
 
-        // Add the request to the queue
-        Base.app.add(stringRequest);
+// Add the request to the queue
+        app.add(stringRequest);
     }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public static void post(String url,Coffee aCoffee) {
 
@@ -611,13 +622,13 @@ public class CoffeeApi {
             public Map&lt;String, String&gt; getHeaders() throws AuthFailureError {
                 HashMap&lt;String, String&gt; headers = new HashMap&lt;String, String&gt;();
                 headers.put(&quot;Content-Type&quot;, &quot;application/json; charset=utf-8&quot;);
-                //headers.put(&quot;User-agent&quot;, System.getProperty(&quot;http.agent&quot;));
+
                 return headers;
             }
         };
 
         // Add the request to the queue
-        Base.app.add(gsonRequest);
+        app.add(gsonRequest);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public static void put(String url,Coffee aCoffee) {
@@ -665,13 +676,12 @@ public class CoffeeApi {
             public Map&lt;String, String&gt; getHeaders() throws AuthFailureError {
                 HashMap&lt;String, String&gt; headers = new HashMap&lt;String, String&gt;();
                 headers.put(&quot;Content-Type&quot;, &quot;application/json; charset=utf-8&quot;);
-                //headers.put(&quot;User-agent&quot;, System.getProperty(&quot;http.agent&quot;));
+
                 return headers;
             }
         };
-
         // Add the request to the queue
-        Base.app.add(gsonRequest);
+        app.add(gsonRequest);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public static void delete(String url) {
@@ -684,19 +694,18 @@ public class CoffeeApi {
                     public void onResponse(String response) {
                         // Result handling
                         Log.v(TAG, &quot;DELETE success &quot; + response);
-                        //vListener.updateUI((Fragment)vListener);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // Error handling
-                System.out.println(&quot;Something went wrong!&quot;);
+                Log.v(TAG,&quot;Something went wrong with DELETE!&quot;);
                 error.printStackTrace();
             }
         });
 
         // Add the request to the queue
-        Base.app.add(stringRequest);
+        app.add(stringRequest);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public static void getGooglePhoto(String url,final ImageView googlePhoto) {
@@ -705,8 +714,8 @@ public class CoffeeApi {
                 new Response.Listener&lt;Bitmap&gt;() {
                     @Override
                     public void onResponse(Bitmap response) {
-                        Base.googlePhoto = response;
-                        googlePhoto.setImageBitmap(Base.googlePhoto);
+                        app.googlePhoto = response;
+                        googlePhoto.setImageBitmap(app.googlePhoto);
                     }
                 }, 0, 0, ImageView.ScaleType.FIT_XY, Bitmap.Config.ARGB_8888, new Response.ErrorListener() {
             @Override
@@ -717,16 +726,13 @@ public class CoffeeApi {
         });
 
 // Add the request to the queue
-        Base.app.add(imgRequest);
+        app.add(imgRequest);
     }
 }</code></pre>
 <p>and your VolleyListener with this</p>
 <pre><code>public interface VolleyListener {
-
  void setList(List list);
-
  void setCoffee(Coffee c);
-
 }</code></pre>
 <p>You&#39;ll get a few errors, but don&#39;t worry, we&#39;ll fix those now, so go ahead and open up your <em>CoffeeFragment.java</em> and replace your current class with this one</p>
 <pre><code>package ie.cm.fragments;
@@ -734,12 +740,18 @@ public class CoffeeApi {
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -747,16 +759,18 @@ import android.widget.TextView;
 import java.util.List;
 
 import ie.cm.R;
-import ie.cm.activities.Base;
+
 import ie.cm.adapters.CoffeeFilter;
 import ie.cm.adapters.CoffeeListAdapter;
 import ie.cm.api.CoffeeApi;
 import ie.cm.api.VolleyListener;
+import ie.cm.main.CoffeeMateApp;
 import ie.cm.models.Coffee;
 
 public class CoffeeFragment  extends Fragment implements AdapterView.OnItemClickListener,
-                                                         View.OnClickListener,
-                                                         VolleyListener
+                                              View.OnClickListener,
+                                              AbsListView.MultiChoiceModeListener,
+                                              VolleyListener
 {
   protected static  CoffeeListAdapter     listAdapter;
   protected         ListView             listView;
@@ -765,6 +779,8 @@ public class CoffeeFragment  extends Fragment implements AdapterView.OnItemClick
   protected         TextView            titleBar;
   protected         SwipeRefreshLayout  mSwipeRefreshLayout;
 
+  public CoffeeMateApp app = CoffeeMateApp.getInstance();
+
   public CoffeeFragment() {
     // Required empty public constructor
   }
@@ -772,6 +788,12 @@ public class CoffeeFragment  extends Fragment implements AdapterView.OnItemClick
   public static CoffeeFragment newInstance() {
     CoffeeFragment fragment = new CoffeeFragment();
     return fragment;
+  }
+@Override
+  public void onAttach(Context context)
+  {
+    super.onAttach(context);
+    CoffeeApi.attachListener(this);
   }
 
   @Override
@@ -785,13 +807,13 @@ public class CoffeeFragment  extends Fragment implements AdapterView.OnItemClick
                            Bundle savedInstanceState) {
     // Inflate the layout for this fragment
     View v = null;
-
     v = inflater.inflate(R.layout.fragment_home, container, false);
-
     listView = (ListView) v.findViewById(R.id.coffeeList);
-    mSwipeRefreshLayout =   (SwipeRefreshLayout) v.findViewById(R.id.coffee_swipe_refresh_layout);
 
+    mSwipeRefreshLayout =   (SwipeRefreshLayout) v.findViewById(R.id.coffee_swipe_refresh_layout);
     setSwipeRefreshLayout();
+
+    //CoffeeApi.getAll(&quot;/coffees/&quot; + app.googleToken, mSwipeRefreshLayout);
 
     return v;
   }
@@ -801,7 +823,7 @@ public class CoffeeFragment  extends Fragment implements AdapterView.OnItemClick
     mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override
       public void onRefresh() {
-        CoffeeApi.getAll(&quot;/coffees/&quot; + Base.googleToken,mSwipeRefreshLayout);
+        CoffeeApi.getAll(&quot;/coffees/&quot; + app.googleToken, mSwipeRefreshLayout);
       }
     });
   }
@@ -809,14 +831,63 @@ public class CoffeeFragment  extends Fragment implements AdapterView.OnItemClick
   @Override
   public void onResume() {
     super.onResume();
-    //updateUI(this);
+
     CoffeeApi.attachListener(this);
-    CoffeeApi.getAll(&quot;/coffees/&quot; + Base.googleToken, mSwipeRefreshLayout);
+    CoffeeApi.getAll(&quot;/coffees/&quot; + app.googleToken, mSwipeRefreshLayout);
   }
 
   @Override
   public void onPause() {
     super.onPause();
+    CoffeeApi.detachListener();
+  }
+
+  @Override
+  public void setList(List list) {
+    app.coffeeList = list;
+    updateUI();
+  }
+
+  @Override
+  public void setCoffee(Coffee c) {}
+
+  public void updateUI() {
+
+    titleBar = (TextView)getActivity().findViewById(R.id.recentAddedBarTextView);
+    titleBar.setText(R.string.recentlyViewedLbl);
+
+    listAdapter = new CoffeeListAdapter(getActivity(), this, app.coffeeList);
+    coffeeFilter = new CoffeeFilter(app.coffeeList,&quot;all&quot;,listAdapter);
+    setListView(listView);
+
+    if (favourites) {
+      titleBar.setText(R.string.favouritesCoffeeLbl);
+      ((TextView)getActivity().findViewById(R.id.empty_list_view)).setText(R.string.favouritesEmptyMessage);
+
+      coffeeFilter.setFilter(&quot;favourites&quot;); // Set the filter text field from &#39;all&#39; to &#39;favourites&#39;
+      coffeeFilter.filter(null); // Filter the data, but don&#39;t use any prefix
+    }
+
+    if(app.coffeeList.isEmpty())
+      ((TextView)getActivity().findViewById(R.id.empty_list_view)).setText(R.string.recentlyViewedEmptyMessage);
+    else
+      ((TextView)getActivity().findViewById(R.id.empty_list_view)).setText(&quot;&quot;);
+
+    listAdapter.notifyDataSetChanged(); // Update the adapter
+  }
+
+  public void setListView(ListView listview) {
+
+    listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+    listview.setMultiChoiceModeListener(this);
+    listview.setAdapter (listAdapter);
+    listview.setOnItemClickListener(this);
+    listview.setEmptyView(getActivity().findViewById(R.id.empty_list_view));
+  }
+
+  @Override
+  public void onDetach() {
+    super.onDetach();
     CoffeeApi.detachListener();
   }
 
@@ -846,10 +917,8 @@ public class CoffeeFragment  extends Fragment implements AdapterView.OnItemClick
     {
       public void onClick(DialogInterface dialog, int id)
       {
-
-        //Base.app.coffeeList.remove(coffee); // remove from our list
-        listAdapter.coffeeList.remove(coffee); // update adapters data
-        listAdapter.notifyDataSetChanged(); // refresh adapter
+        CoffeeApi.delete(&quot;/coffees/&quot; + app.googleToken +&quot;/&quot; + coffee._id);
+        CoffeeApi.getAll(&quot;/coffees/&quot; + app.googleToken, mSwipeRefreshLayout);
       }
     }).setNegativeButton(&quot;No&quot;, new DialogInterface.OnClickListener()
     {
@@ -865,7 +934,7 @@ public class CoffeeFragment  extends Fragment implements AdapterView.OnItemClick
   @Override
   public void onItemClick(AdapterView&lt;?&gt; parent, View view, int position, long id) {
     Bundle activityInfo = new Bundle();
-    activityInfo.putString(&quot;coffeeID&quot;, (String)view.getTag());
+    activityInfo.putString(&quot;coffeeID&quot;, (String) view.getTag());
 
     FragmentTransaction ft = getFragmentManager().beginTransaction();
     Fragment fragment = EditFragment.newInstance(activityInfo);
@@ -874,51 +943,76 @@ public class CoffeeFragment  extends Fragment implements AdapterView.OnItemClick
     ft.commit();
   }
 
+  /* ************ MultiChoiceModeListener methods (begin) *********** */
   @Override
-  public void setCoffee(Coffee c) {}
-
-  @Override
-  public void setList(List list) {
-    Base.app.coffeeList = list;
-    updateUI();
+  public boolean onCreateActionMode(ActionMode actionMode, Menu menu)
+  {
+    MenuInflater inflater = actionMode.getMenuInflater();
+    inflater.inflate(R.menu.delete_list_context, menu);
+    return true;
   }
 
-  public void updateUI() {
-    //System.out.println(&quot;CALLING updateUI in CoffeeFragment&quot;);
-    titleBar = (TextView)getActivity().findViewById(R.id.recentAddedBarTextView);
-    titleBar.setText(R.string.recentlyViewedLbl);
-    ((TextView)getActivity().findViewById(R.id.empty_list_view)).setText(R.string.recentlyViewedEmptyMessage);
+  @Override
+  public boolean onPrepareActionMode(ActionMode actionMode, Menu menu)
+  {
+    return false;
+  }
 
-    listAdapter = new CoffeeListAdapter(getActivity(), this, Base.app.coffeeList);
-    listView.setAdapter (listAdapter);
-    coffeeFilter = new CoffeeFilter(Base.app.coffeeList,&quot;all&quot;,listAdapter);
+  @Override
+  public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem)
+  {
+    switch (menuItem.getItemId())
+    {
+      case R.id.menu_item_delete_coffee:
+        deleteCoffees(actionMode);
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  public void deleteCoffees(ActionMode actionMode)
+  {
+    for (int i = listAdapter.getCount() - 1; i &gt;= 0; i--) {
+      if (listView.isItemChecked(i)) {
+        CoffeeApi.delete(&quot;/coffees/&quot; + app.googleToken +&quot;/&quot; + listAdapter.getItem(i)._id);
+      }
+      CoffeeApi.getAll(&quot;/coffees/&quot; + app.googleToken, mSwipeRefreshLayout);
+    }
+    actionMode.finish();
 
     if (favourites) {
-      titleBar.setText(R.string.favouritesCoffeeLbl);
-      ((TextView)getActivity().findViewById(R.id.empty_list_view)).setText(R.string.favouritesEmptyMessage);
-
-      coffeeFilter.setFilter(&quot;favourites&quot;); // Set the filter text field from &#39;all&#39; to &#39;favourites&#39;
-      coffeeFilter.filter(null); // Filter the data, but don&#39;t use any prefix
+      //Update the filters data
+      coffeeFilter = new CoffeeFilter(app.coffeeList,&quot;favourites&quot;,listAdapter);
+      coffeeFilter.filter(null);
     }
-
-    listView.setOnItemClickListener(this);
-    listView.setEmptyView(getActivity().findViewById(R.id.empty_list_view));
-    listAdapter.notifyDataSetChanged(); // Update the adapter
+    listAdapter.notifyDataSetChanged();
   }
+
+  @Override
+  public void onDestroyActionMode(ActionMode actionMode)
+  {}
+
+  @Override
+  public void onItemCheckedStateChanged(ActionMode actionMode, int position, long id, boolean checked)
+  {}
+  /* ************ MultiChoiceModeListener methods (end) *********** */
 }</code></pre>
 <p><strong>I strongly recommend that you take some time and review this class and compare it to your previous class to understand the changes that have been made, particularly the introduction of the <em>SwipeRefreshLayout</em> and the refactoring of the <em>onItemClick()</em> method</strong>.</p>
 <p>Now, open your <strong>EditFragment</strong> and ensure it implements our <strong>VolleyListener</strong> interface (and fix any errors). Then ensure your variable instances matches the following</p>
-<pre><code>TextView titleBar,titleName,titleShop;
-Coffee aCoffee;
-Boolean isFavourite;
+<pre><code>private OnFragmentInteractionListener mListener;
 
-EditText name, shop, price;
-RatingBar ratingBar;
-ImageView favouriteImage;
+    TextView    titleBar, titleName, titleShop;
+    Coffee      aCoffee;
+    Boolean     isFavourite;
 
-String coffeeID;
+    EditText    name, shop, price;
+    RatingBar   ratingBar;
+    ImageView   favouriteImage;
 
-private OnFragmentInteractionListener mListener;</code></pre>
+    String      coffeeID;
+
+    public CoffeeMateApp app = CoffeeMateApp.getInstance();</code></pre>
 <p>and your <em>onCreate()</em> method now should look like this</p>
 <pre><code>@Override
 public void onCreate(Bundle savedInstanceState) {
@@ -927,14 +1021,15 @@ public void onCreate(Bundle savedInstanceState) {
             coffeeID = getArguments().getString(&quot;coffeeID&quot;);
         }
     }</code></pre>
-<p>As we need to reuse the widgets on our layout we need to refactor our <em>onCreateView()</em>, and using the variables you&#39;ve just declared have a go at a revised version of the method, where you specifically bind to each widget on the layout (not just reference it).</p>
-<p>Now, using the <strong><em>coffeeID</em></strong> from your <em>onCreate()</em> (above) see can you code correctly the APi call to retrieve a single coffee from the server? (All you need to do is append the coffee id to the call made to get all coffees).</p>
+<p>You may need to make some minor changes to your <strong>CoffeeFragment</strong> class, depending on how closely you&#39;ve been following this particular lab.</p>
+<p>Now, as we need to reuse the widgets on our layout we need to refactor our <em>onCreateView()</em>, and using the variables you&#39;ve just declared have a go at a revised version of the method, where you specifically bind to each widget on the layout (not just reference it).</p>
+<p>Using the <strong><em>coffeeID</em></strong> from your <em>onCreate()</em> (above) see can you code correctly the APi call to retrieve a single coffee from the server? (All you need to do is append the coffee id to the call made to get all coffees).</p>
 <p>Before you get to actually update the coffee on the server, it&#39;s probably worth testing your app at this point to see if everything is working correctly, so run your app and confirm you get to see the coffee details on the Edit Screen once the user has selected a particular coffee to edit, like so</p>
 <p><img src="img/coffeemate.2.png" alt=""></p>
 <p>and if the user selects &quot;Regular Joe&quot;</p>
 <p><img src="img/coffeemate.7.png" alt=""></p>
-<p>You&#39;re probably not seeing anything (or maybe your app even crashed?) and this is (probably) because you haven&#39;t implemented the interface methods correctly (or at all!) and you haven&#39;t allowed for updating the UI with the coffee details AFTER the individual coffee details have been retrieved.</p>
-<p>We&#39;ll have a look at the solution in the next step but try and complete it yourself first by referring to how we achieved our goal in our <strong>CoffeeFragment</strong> class.</p>
+<p>You&#39;re probably not seeing anything (or maybe your app even crashed?) and this is (probably) because you haven&#39;t implemented the interface methods correctly (or at all!) and you haven&#39;t allowed for updating the UI with the coffee details <strong>AFTER</strong> the individual coffee details have been retrieved.</p>
+<p>We&#39;ll have a look at the solution in the next step but try and complete it yourself first by referring to how we achieved our goal in our <strong>CoffeeFragment</strong> class (and we briefly discussed it in the lectures).</p>
 
       </div>
      
@@ -943,12 +1038,12 @@ public void onCreate(Bundle savedInstanceState) {
 <p>As promised, here&#39;s the code necessary for initially retrieving a coffee from the server and displaying it on the Edit Screen</p>
 <pre><code>@Override
 public void setList(List list) {
-    Base.app.coffeeList = list;
+    app.coffeeList = list;
 }
 
 @Override
 public void setCoffee(Coffee c) {
-    this.aCoffee = c;
+    aCoffee = c;
     updateUI();
 }
 
@@ -970,19 +1065,25 @@ public void updateUI() {
             }
     }</code></pre>
 <p>Run your app again to confirm everything is as expected.</p>
-<p>The last part of updating a coffee, is just that - <strong>PUT</strong>ing our data back on the server and there&#39;s actually not too much to this. To get you started, here&#39;s the APi call you&#39;ll need to make,</p>
-<pre><code>CoffeeApi.put(&quot;/coffees/&quot; + Base.googleToken +&quot;/&quot; + aCoffee._id, aCoffee);</code></pre>
+<p>The last part of updating a coffee, is just that - <strong>PUT</strong> ing our data back on the server and there&#39;s actually not too much to this. To get you started, here&#39;s the APi call you&#39;ll need to make</p>
+<pre><code>CoffeeApi.put(&quot;/coffees/&quot; + app.googleToken +&quot;/&quot; + aCoffee._id, aCoffee);</code></pre>
 <p>but the existing <em>update()</em> method needs a small bit of refactoring so see if you can make the necessary changes to get everything working.</p>
+<p>Also, you make find the following code snippet useful</p>
+<pre><code class="lang-java">if (getFragmentManager().getBackStackEntryCount() &gt; 0) {
+                getFragmentManager().popBackStack();
+                return;
+            }</code></pre>
 <p>Once that&#39;s done you can move onto the next step - Deleting a Coffee.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="08">
-        <h1>Google+ Integration - Deleting a Coffee</h1>
-<p>As we already have all the necessary code in place from previous versions of CoffeeMate, AND we have a full APi class available to us, this step is very simple - we just need to change our delete method to delete the specific coffee from the server, and not the database, as is currently the case.</p>
-<p>we achieve this by calling our <strong>CoffeeApi</strong> &#39;delete&#39; method like so</p>
+        <h1>Google+ Integration - Deleting Coffees</h1>
+<p>As we already have all the necessary code in place from previous versions of CoffeeMate, AND we have a full APi class available to us, this step is very simple - we just need to change our delete method(s) to delete the specific coffee (or multiple coffees) from the server, and not the database, as is currently the case.</p>
+<p>we achieve deleting a single coffee by calling our <strong>CoffeeApi</strong> &#39;delete&#39; method like so</p>
 <pre><code>CoffeeApi.delete(&quot;/coffees/&quot; + Base.googleToken +&quot;/&quot; + coffee._id);</code></pre>
 <p>so see if you can work out where this call should go, and what code it should replace?</p>
+<p>We can use the same method call to delete multiple coffees so try and have a go at implementing this feature (which we covered in the lectures).</p>
 
       </div>
      
@@ -1014,7 +1115,7 @@ setSwipeRefreshLayout();</code></pre>
      
       <div  class="ui tab segment lab" data-tab="Solution">
         <h1>Solution</h1>
-<p>This is a solution which uses a Web Service and <b>Volley</b> with <b>Google+ Sign-in</b> to manage the Coffees in the app:</p>
+<p>This is a solution which uses a Web Service and <b>Volley</b> with <b>Google Sign-in</b> to manage the Coffees in the app:</p>
 <ul>
 <li><a href="archives/CoffeeMate.5.0.Solution.zip">CoffeeMate.5.0</a></li>
 </ul>
