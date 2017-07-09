@@ -1068,11 +1068,11 @@ public void updateUI() {
 <p>The last part of updating a coffee, is just that - <strong>PUT</strong> ing our data back on the server and there&#39;s actually not too much to this. To get you started, here&#39;s the APi call you&#39;ll need to make</p>
 <pre><code>CoffeeApi.put(&quot;/coffees/&quot; + app.googleToken +&quot;/&quot; + aCoffee._id, aCoffee);</code></pre>
 <p>but the existing <em>update()</em> method needs a small bit of refactoring so see if you can make the necessary changes to get everything working.</p>
-<p>Also, you may find the following code snippet useful</p>
-<pre><code class="lang-java">if (getFragmentManager().getBackStackEntryCount() &gt; 0) {
-                getFragmentManager().popBackStack();
-                return;
-            }</code></pre>
+<p>Also, you may find the following code snippet useful inside your &#39;put()&#39; method of <strong>CoffeeApi</strong></p>
+<pre><code class="lang-java">if (((Fragment)vListener).getFragmentManager().getBackStackEntryCount() &gt; 0) {
+            ((Fragment)vListener).getFragmentManager().popBackStack();
+                    return;
+      }</code></pre>
 <p>Once that&#39;s done you can move onto the next step - Deleting a Coffee.</p>
 
       </div>
