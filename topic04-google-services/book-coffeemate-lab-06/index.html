@@ -231,7 +231,8 @@ h3
     android:name=&quot;com.google.android.geo.API_KEY&quot;
     android:value=&quot;@string/google_maps_key&quot; /&gt;</code></pre>
 <p>Also, in your manifest file add the following permissions</p>
-<pre><code>&lt;uses-permission android:name=&quot;ie.cm.permission.MAPS_RECEIVE&quot;/&gt;</code></pre>
+<pre><code>&lt;uses-permission android:name=&quot;ie.cm.permission.MAPS_RECEIVE&quot;/&gt;
+&lt;uses-permission android:name=&quot;android.permission.ACCESS_FINE_LOCATION&quot;/&gt;</code></pre>
 <p>and the following dependencies to you build.gradle</p>
 <pre><code>compile &#39;com.google.android.gms:play-services-maps:8.1.0&#39;
 compile &#39;com.google.android.gms:play-services-location:8.1.0&#39;</code></pre>
@@ -251,16 +252,11 @@ startActivity(new Intent(this, Map.class));
 <p>and if everything goes according to plan, you should get</p>
 <p><img src="img/lab0703.png" alt=""></p>
 <p>Congratulations - you can now go ahead and build map based apps!</p>
-<p>You can download a version of this stage of CoffeeMate.6.0 on the next step, if you&#39;re still having issues.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="03">
         <h1>View Users Current Location - Part I</h1>
-<p>Before you go any further, here&#39;s where we&#39;re at so far</p>
-<ul>
-<li><a href="archives/CoffeeMate.6.0.sofar.zip">CoffeeMate.6.0.sofar</a></li>
-</ul>
 <p>At the moment, when the user selects the &#39;Map&#39; menu option, they get to see a standard map, but not their own location (or even their coffees locations), so this step (and the next) is about implementing that (we&#39;ll look at the coffees location in later steps).</p>
 <p>As we want to keep in line with the UI guidelines and approach, it makes sense to use a <i>Fragment</i> so first of all go ahead and create a new (Blank) Fragment called <strong>MapsFragment</strong> (NOT MapFragment) but DON&#39;T create a layout or include interface callbacks</p>
 <p><img src="img/lab0704.png" alt=""></p>
@@ -272,6 +268,7 @@ startActivity(new Intent(this, Map.class));
     GoogleMap.OnMapLongClickListener,
     GoogleMap.OnMapClickListener,
     GoogleMap.OnMarkerClickListener,
+    OnMapReadyCallback,
     LocationListener {
 ...
 }</code></pre>
@@ -281,139 +278,175 @@ startActivity(new Intent(this, Map.class));
 return fragment;
 }</code></pre>
 <p>Replace the existing instance variables with these</p>
-<pre><code class="lang-java">private GoogleApiClient mGoogleApiClient;
-private Location mCurrentLocation;
-private LocationRequest mLocationRequest;
-private List&lt;Coffee&gt; mCoffeeList;
+<pre><code class="lang-java">private LocationRequest mLocationRequest;
+  private List&lt;Coffee&gt; mCoffeeList;
+  private long UPDATE_INTERVAL = 30000; /* 30 secs */
+  private long FASTEST_INTERVAL = 1000; /* 5 secs */
+  private GoogleMap mMap;
+  private float zoom = 13f;
 
-private long UPDATE_INTERVAL = 30000; /* 30 secs */
-private long FASTEST_INTERVAL = 1000; /* 5 secs */
+  public CoffeeMateApp app = CoffeeMateApp.getInstance();
 
-/** Define a request code to send to Google Play services This code is
-* returned in Activity.onActivityResult
-*/
-private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+  /** Define a request code to send to Google Play services This code is
+   * returned in Activity.onActivityResult
+   */
 
-private final int[] MAP_TYPES = {
-    GoogleMap.MAP_TYPE_SATELLITE,
-    GoogleMap.MAP_TYPE_NORMAL,
-    GoogleMap.MAP_TYPE_HYBRID,
-    GoogleMap.MAP_TYPE_TERRAIN,
-    GoogleMap.MAP_TYPE_NONE
-};
+  private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+  String[] perms = {&quot;android.permission.FINE_LOCATION&quot;, &quot;android.permission.CAMERA&quot;};
 
-private int curMapTypeIndex = 1;</code></pre>
+  private static final int PERMISSION_REQUEST_CODE = 200;
+
+  private final int[] MAP_TYPES = {
+          GoogleMap.MAP_TYPE_SATELLITE,
+          GoogleMap.MAP_TYPE_NORMAL,
+          GoogleMap.MAP_TYPE_HYBRID,
+          GoogleMap.MAP_TYPE_TERRAIN,
+          GoogleMap.MAP_TYPE_NONE
+  };
+
+  private int curMapTypeIndex = 1;</code></pre>
 <p>Remove <strong><em>onCreate()</em></strong> and <strong><em>onCreateView()</em></strong> and replace with</p>
 <pre><code class="lang-java">@Override
-public void onViewCreated(View view, Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-    setHasOptionsMenu(true);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
 
-TextView titleBar = (TextView) getActivity().findViewById(R.id.recentAddedBarTextView);
-titleBar.setText(&quot;Coffee Map&quot;);
+        TextView titleBar = (TextView) getActivity().findViewById(R.id.recentAddedBarTextView);
+        titleBar.setText(&quot;Coffee Map&quot;);
 
-    mGoogleApiClient = new GoogleApiClient.Builder( getActivity() )
-        .addConnectionCallbacks( this )     
-        .addOnConnectionFailedListener( this )
-        .addApi( LocationServices.API )
-        .build();
-
-    initListeners();
-}</code></pre>
-<p>Add the following methods</p>
+        app.mGoogleApiClient.registerConnectionCallbacks(this);
+    }</code></pre>
+<p>Add/implement the following methods</p>
 <pre><code class="lang-java">private void initListeners() {
-    getMap().setOnMarkerClickListener(this);
-    getMap().setOnMapLongClickListener(this);
-    getMap().setOnInfoWindowClickListener(this);
-    getMap().setOnMapClickListener(this);
-}
+        mMap.setOnMarkerClickListener(this);
+        mMap.setOnMapLongClickListener(this);
+        mMap.setOnInfoWindowClickListener(this);
+        mMap.setOnMapClickListener(this);
+    }
 
-@Override
-public void onStart() {
-    super.onStart();
-    mGoogleApiClient.connect();
-  }
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(!app.mGoogleApiClient.isConnected())
+            app.mGoogleApiClient.connect();
 
-@Override
-public void onStop() {
-    super.onStop();
-        if( mGoogleApiClient != null &amp;&amp; mGoogleApiClient.isConnected() ) {             
-                mGoogleApiClient.disconnect();
-            }
-  }
+        Log.v(&quot;coffeemate&quot;, &quot;Google Client Connected onStart() MapsFragment Screen: &quot; + (app.mGoogleApiClient.isConnected() ? &quot;YES&quot; : &quot;NO&quot;) + app.mGoogleApiClient);
+    }
 
-private void initCamera( Location location ) {
-CameraPosition position = CameraPosition.builder()
-    .target( new LatLng( location.getLatitude(), location.getLongitude() ) )
-    .zoom( 14f )
-    .bearing( 0.0f )
-    .tilt( 0.0f )
-    .build();
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 
-    getMap().setMapType(MAP_TYPES[curMapTypeIndex]);
-    getMap().setMyLocationEnabled(true);
-    getMap().getUiSettings().setMapToolbarEnabled(true);
-    getMap().getUiSettings().setCompassEnabled(true);
-    getMap().getUiSettings().setMyLocationButtonEnabled(true);
-    getMap().getUiSettings().setAllGesturesEnabled(true);
-    getMap().setTrafficEnabled(true);
-    getMap().setBuildingsEnabled(true);
-    getMap().getUiSettings().setZoomControlsEnabled(true);
-    getMap().animateCamera(CameraUpdateFactory.newCameraPosition(position), null);
-}</code></pre>
+    private void initCamera(Location location) {
+
+        if (zoom != 13f &amp;&amp; zoom != mMap.getCameraPosition().zoom)
+            zoom = mMap.getCameraPosition().zoom;
+
+        CameraPosition position = CameraPosition.builder()
+                .target(new LatLng(location.getLatitude(),
+                        location.getLongitude()))
+                .zoom(zoom)
+                .bearing(0.0f)
+                .tilt(0.0f)
+                .build();
+
+        mMap.animateCamera(CameraUpdateFactory
+                .newCameraPosition(position), null);
+    }</code></pre>
 <p>And replace the relevant methods with the following</p>
 <pre><code class="lang-java">@Override
 public void onConnected(Bundle dataBundle)
 {
-// Display the connection status
-try {
-mCurrentLocation = LocationServices .FusedLocationApi .getLastLocation(mGoogleApiClient);
-}
-catch(SecurityException se) {
-Toast.makeText(getActivity(),&quot;Check Your Permissions&quot;,Toast.LENGTH_SHORT).show();
-}
-if (mCurrentLocation != null) {
-Toast.makeText(getActivity(), &quot;GPS location was found!&quot;, Toast.LENGTH_SHORT).show();
-//LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-}
-else {
-Toast.makeText(getActivity(), &quot;Current location was null, Setting Default Values!&quot;, Toast.LENGTH_SHORT).show();
-mCurrentLocation = new Location(&quot;Waterford City Default&quot;);
-mCurrentLocation.setLatitude(52.2462);
-mCurrentLocation.setLongitude(-7.1402);
-}
+  getMapAsync(this);
+          // Display the connection status
+          try {
+              app.mCurrentLocation = LocationServices
+                      .FusedLocationApi
+                      .getLastLocation(app.mGoogleApiClient);
+          }
+          catch(SecurityException se)
+          {
+              Toast.makeText(getActivity(),&quot;Check Your Permissions&quot;,Toast.LENGTH_SHORT).show();
+          }
 
-initCamera(mCurrentLocation);
+          if (app.mCurrentLocation != null) {
+              Toast.makeText(getActivity(), &quot;GPS location was found!&quot;, Toast.LENGTH_SHORT).show();
+              //LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+
+          } else {
+              Toast.makeText(getActivity(), &quot;Current location was null, Setting Default Values!&quot;, Toast.LENGTH_SHORT).show();
+              app.mCurrentLocation = new Location(&quot;Waterford City Default (WIT)&quot;);
+              app.mCurrentLocation.setLatitude(52.2462);
+              app.mCurrentLocation.setLongitude(-7.1202);
+
+          }
+
 }
 
 @Override
 public void onConnectionSuspended(int i) {
-if (i == CAUSE_SERVICE_DISCONNECTED) {
-Toast.makeText(getActivity(), &quot;Disconnected. Please re-connect.&quot;, Toast.LENGTH_SHORT).show();
-}
-else if (i == CAUSE_NETWORK_LOST) {
-Toast.makeText(getActivity(), &quot;Network lost. Please re-connect.&quot;, Toast.LENGTH_SHORT).show();
-}
+  if (i == CAUSE_SERVICE_DISCONNECTED) {
+              Toast.makeText(getActivity(), &quot;Disconnected. Please re-connect.&quot;, Toast.LENGTH_SHORT).show();
+          } else if (i == CAUSE_NETWORK_LOST) {
+              Toast.makeText(getActivity(), &quot;Network lost. Please re-connect.&quot;, Toast.LENGTH_SHORT).show();
+          }
 }
 
 
 @Override
 public void onConnectionFailed(ConnectionResult connectionResult) {
-/* * Google Play services can resolve some errors it detects. If the error * has a resolution, try sending an Intent to start a Google Play * services activity that can resolve error. */
+  /*
+         * Google Play services can resolve some errors it detects. If the error
+         * has a resolution, try sending an Intent to start a Google Play
+         * services activity that can resolve error.
+         */
+        if (connectionResult.hasResolution()) {
+            try {
+                // Start an Activity that tries to resolve the error
+                connectionResult.startResolutionForResult(getActivity(),
+                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
+                /*
+                 * Thrown if Google Play services canceled the original
+                 * PendingIntent
+                 */
+            } catch (IntentSender.SendIntentException e) {
+                // Log the error
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(getActivity(),
+                    &quot;Sorry. Location services not available to you&quot;, Toast.LENGTH_LONG).show();
+        }
+}
 
-if (connectionResult.hasResolution()) {
-try {
-// Start an Activity that tries to resolve the error connectionResult.startResolutionForResult(getActivity(), CONNECTION_FAILURE_RESOLUTION_REQUEST);
-/* * Thrown if Google Play services canceled the original * PendingIntent */
-}
-catch (IntentSender.SendIntentException e) {
-// Log the error e.printStackTrace();
-}
-} else {
-Toast.makeText(getActivity(), &quot;Sorry. Location services not available to you&quot;, Toast.LENGTH_LONG).show();
-}
-}</code></pre>
+@Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        mMap.setMapType(MAP_TYPES[curMapTypeIndex]);
+        if (!checkPermission())
+            requestPermission();
+        else
+            mMap.setMyLocationEnabled(true);
+
+        mMap.getUiSettings().setMapToolbarEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.getUiSettings().setAllGesturesEnabled(true);
+        mMap.setTrafficEnabled(true);
+        mMap.setBuildingsEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        initListeners();
+        initCamera(app.mCurrentLocation);
+    }</code></pre>
 <p>Now, open your <strong>Home</strong> Activity and instead of loading the Map Activity (as is currently the case) implement the necessary code to display our <strong>MapsFragment</strong>.</p>
+<p>If you run the app now you will probably get a</p>
+<pre><code class="lang-xml">java.lang.NullPointerException: Appropriate Api was not requested.</code></pre>
+<p>error so you need to add </p>
+<pre><code class="lang-java">.addApi(LocationServices.API)</code></pre>
+<p>to your GoogleClient when you build it in your <strong>Login</strong> activity, so fix that now.</p>
 <p>If you&#39;ve followed all the steps correctly, you should be seeing something like this</p>
 <p><img src="img/lab0705.png" alt=""></p>
 <p>Experiment with different coordinates and restarting your app. Now obviously, having to manually change the coordinates is not an option, so the next step will be about adding Location Awareness to our App and updating the Map automatically, as the user moves around and adding a &#39;Marker&#39; to show these movements.</p>
