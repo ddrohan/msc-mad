@@ -561,8 +561,6 @@ return fragment;
 <pre><code class="lang-java">CoffeeApi.attachListener(this);
 CoffeeApi.getAll(&quot;/coffees/&quot; + app.googleToken, null);</code></pre>
 <p>Because we&#39;re passing &#39;null&#39; to our getAll() call, there&#39;s a small change you need to make in your CoffeeApi class - so see if you can work out what it is?</p>
-<p>Once you have, add this to your <strong><em>onStop()</em></strong></p>
-<pre><code class="lang-java">CoffeeApi.detachListener();</code></pre>
 <p>Before you run your app, I&#39;d suggest checking the Web App to confirm you have some coffees stored on the server and can view them on the Map in the Browser, so when you run your app, you know it&#39;s working correctly if you see your coffees - something like this</p>
 <p><img src="img/coffeemate.9.png" alt=""></p>
 
