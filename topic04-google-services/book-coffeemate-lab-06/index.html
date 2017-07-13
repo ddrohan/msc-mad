@@ -819,15 +819,53 @@ CoffeeApi.getAll(&quot;/coffees/&quot; + app.googleToken, null);</code></pre>
       <div  class="ui tab segment lab" data-tab="06">
         <h1>Adding a Coffee - Updating the Map</h1>
 <p>Currently we can see the users coffees on a map even while we are on the &#39;Add a Coffee&#39; screen. Now let&#39;s look at updating that map with a newly added Coffee.</p>
-<p>First, open your add fragment layout and take note of the <strong>fragment id</strong>, this will be important as we are trying to get access to a <strong>fragment within a fragment</strong> so that we can update it with a new coffee, once it&#39;s been added.</p>
+<p>First, open your add fragment and remove/comment out the intent to return &#39;Home&#39;, otherwise you&#39;ll never see the coffee marker being added.</p>
+<p>Now, update the coffee constructor fields to include the latitude and longitude values for the coffee being created and finally, try and implement the code necessary to update our map with the newly created coffee. This is actually a single line of code but refer to the lecture material if you&#39;re not sure.</p>
+<p>Run your app again, send some coordinates to change your current location, Add a coffee and you should get something like This</p>
+<p><img src="img/coffeemate.12.png" alt=""></p>
+<p>and then</p>
+<p><img src="img/coffeemate.13.png" alt=""></p>
+<p>It might be useful to reset the fields after a coffee has been added, so go ahead and implement that, using the following method</p>
+<pre><code class="lang-java">private void resetFields() {
+        name.setText(&quot;&quot;);
+        shop.setText(&quot;&quot;);
+        price.setText(&quot;&quot;);
+        ratingBar.setRating(2);
+        name.requestFocus();
+        name.setFocusable(true);
+    }</code></pre>
+<p>If you click on one of the markers you&#39;ve added from the device (not the webapp) you&#39;ll notice that the address field is blank. We need to convert our coordinates into a meaningful address for the user, so that&#39;s next.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="07">
-        <p>.
-.
-.
-.</p>
+        <h1>Adding a Coffee - Reversing Geocoding</h1>
+<p>At this point when we add a new coffee, we can see it on the map instantly, but the address is empty if this is carried out on the device. To make sure the coffee address (as well as the other info) is stored correctly, we <strong>Reverse Geocode</strong> the location of the coffee into a meaningful street address and store that.</p>
+<p>Introduce the following method into your <strong>AddFragment</strong></p>
+<pre><code class="lang-java">private String getAddressFromLocation( Location location ) {
+       Geocoder geocoder = new Geocoder( getActivity() );
+
+       String strAddress = &quot;&quot;;
+       Address address;
+       try {
+           address = geocoder
+                   .getFromLocation( location.getLatitude(), location.getLongitude(), 1 )
+                   .get( 0 );
+           strAddress = address.getAddressLine(0) +
+                   &quot; &quot; + address.getAddressLine(1) +
+                   &quot; &quot; + address.getAddressLine(2);
+       }
+       catch (IOException e ) {
+       }
+
+       return strAddress;
+   }</code></pre>
+<p>and see if you can successfully achieve something along the lines of</p>
+<p>this (before)
+<img src="img/coffeemate.14.png" alt=""></p>
+<p>and then this (after)</p>
+<p><img src="img/coffeemate.15.png" alt=""></p>
+<p>Hint : you&#39;ll have to make a few changes to the Coffee class as well as when you create the coffee before posting it to the server (Well that&#39;s how I did it anyway!)</p>
 
       </div>
      
