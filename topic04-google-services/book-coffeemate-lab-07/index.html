@@ -246,8 +246,18 @@ apply plugin: &#39;com.google.gms.google-services&#39;</code></pre>
      
       <div  class="ui tab segment lab" data-tab="02">
         <h1>Signing In with Firebase Authentication</h1>
-<p>First of all,</p>
+<p>First of all, make sure you have your Firebase Project set up and you&#39;ve added your existing CoffeeMate project to it, like so</p>
+<p><img src="img/labfb01.png" alt=""></p>
+<p>Notice I&#39;ve renamed the package to <strong>ie.cmfbi</strong> - there were a few issues when I initially set up the project with the existing <strong>ie.cm</strong> package name (which you might get too) like</p>
+<p><img src="img/labfb02.png" alt=""></p>
+<p>so I just decided to rename the package. If you take this approach make sure you update your Google Maps APi authorised package name and SHA-1 key on the developer console here <a href="https://console.developers.google.com">https://console.developers.google.com</a></p>
+<p>Also, you&#39;ll need an updated <strong>google-services.json</strong> file so make sure you download it during the setup process</p>
+<p><img src="img/labfb03.png" alt=""></p>
+<p>and</p>
+<p><img src="img/labfb04.png" alt=""></p>
+<p>Some other useful links</p>
 <p><a href="https://console.cloud.google.com/home/dashboard">https://console.cloud.google.com/home/dashboard</a></p>
+<p><a href="https://developers.google.com/mobile/add">https://developers.google.com/mobile/add</a></p>
 <pre><code>compile &#39;com.google.android.gms:play-services-maps:8.1.0&#39;
 compile &#39;com.google.android.gms:play-services-location:8.1.0&#39;</code></pre>
 <p>Then, go ahead and create a new <strong>Empty Activity</strong> but name the Layout <strong><em>fragment_map</em></strong> - this is important as we will be disgarding the activity in the next step but retaining the layout - we are just using it here to confirm we have configured our key etc. correctly.</p>
