@@ -258,25 +258,67 @@ apply plugin: &#39;com.google.gms.google-services&#39;</code></pre>
 <p>Some other useful links</p>
 <p><a href="https://console.cloud.google.com/home/dashboard">https://console.cloud.google.com/home/dashboard</a></p>
 <p><a href="https://developers.google.com/mobile/add">https://developers.google.com/mobile/add</a></p>
-<pre><code>compile &#39;com.google.android.gms:play-services-maps:8.1.0&#39;
-compile &#39;com.google.android.gms:play-services-location:8.1.0&#39;</code></pre>
-<p>Then, go ahead and create a new <strong>Empty Activity</strong> but name the Layout <strong><em>fragment_map</em></strong> - this is important as we will be disgarding the activity in the next step but retaining the layout - we are just using it here to confirm we have configured our key etc. correctly.</p>
-<p><img src="img/lab0701.png" alt=""></p>
-<p>now add the following to the layout</p>
-<pre><code>&lt;fragment android:name=&quot;com.google.android.gms.maps.MapFragment&quot;
-        android:id=&quot;@+id/map&quot;
-        android:layout_width=&quot;match_parent&quot;
-        android:layout_height=&quot;match_parent&quot;/&gt;</code></pre>
-<p>Finally, (for this step) add the following to your Home Activity, to temporarily handle launching our new Map activity, if the user selects the menu option.</p>
-<pre><code>else if (id == R.id.nav_map) {
-startActivity(new Intent(this, Map.class));
-}</code></pre>
-<p>Run your app and select &quot;View on Map&quot;</p>
-<p><img src="img/lab0702.png" alt=""></p>
-<p>and if everything goes according to plan, you should get</p>
-<p><img src="img/lab0703.png" alt=""></p>
-<p>Congratulations - you can now go ahead and build map based apps!</p>
-<p>You can download a version of this stage of CoffeeMate.6.0 on the next step, if you&#39;re still having issues.</p>
+<p>For this Lab we&#39;ll be using Google Sign-In Authentication with Firebase, so visit your firebase console again here <a href="https://console.firebase.google.com">https://console.firebase.google.com</a> and turn on the required Authentication.</p>
+<p> <img src="img/labfb05.png" alt=""></p>
+<p> We&#39;ll be using a lot of this <a href="https://firebase.google.com/docs/auth/android/google-signin">https://firebase.google.com/docs/auth/android/google-signin</a> for reference.</p>
+<p>Now, open your <strong>Login.java</strong> and update your <strong>GoogleSignInOptions</strong> object to &#39;requestIDToken()&#39; like so</p>
+<pre><code class="lang-java">app.mGoogleSignInOptions = new GoogleSignInOptions
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .requestProfile()
+                .build();</code></pre>
+<p>Next, and the following property to your <strong>CoffeeMateApp</strong></p>
+<pre><code class="lang-java">public FirebaseAuth mFirebaseAuth;
+public FirebaseUser mFirebaseUser;</code></pre>
+<p>and bring in and/or update the following</p>
+<pre><code class="lang-java">private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+
+        Log.v(TAG, &quot;firebaseAuthWithGoogle:&quot; + acct.getId());
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        app.mFirebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener&lt;AuthResult&gt;() {
+                    @Override
+                    public void onComplete(@NonNull Task&lt;AuthResult&gt; task) {
+                        Log.v(TAG, &quot;signInWithCredential:onComplete:&quot; + task.isSuccessful());
+                        validateFirebaseUser();
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.v(TAG, &quot;signInWithCredential&quot;, task.getException());
+                            Toast.makeText(Login.this, &quot;Authentication failed.&quot;,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void validateFirebaseUser()
+    {
+        Log.v(TAG,&quot;Calling validateFirebaseUser() &quot; );
+        if(app.mFirebaseUser == null)
+            app.mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        final String userName = app.mFirebaseUser.getDisplayName();
+        final String userId = app.mFirebaseUser.getUid();
+        final String email = app.mFirebaseUser.getEmail();
+
+        Log.v(TAG,&quot;Validating Firebase User Details for: &quot; + app.mFirebaseUser.getEmail());
+
+    }</code></pre>
+<p>Add this to your <strong>onCreate()</strong></p>
+<pre><code class="lang-java">app.mFirebaseAuth = FirebaseAuth.getInstance();</code></pre>
+<p>and try and work out where you should be calling</p>
+<pre><code class="lang-java">firebaseAuthWithGoogle(...)</code></pre>
+<p>Run your app and keep track of the Logs in Android Studio to verify Firebase Authentication.</p>
+<p>If everything is configured correctly, you should now be seeing a new user on your console</p>
+<p> <img src="img/labfb06.png" alt=""></p>
+<p>And for completeness you should probably sign out your current user frm Firebase, whenever they log out of the app using</p>
+<pre><code class="lang-java">FirebaseAuth.getInstance().signOut();
+Log.v(&quot;coffeemate&quot;, &quot;User Logged out of Firebase&quot;);</code></pre>
+<p>The next step will involving Adding coffees to our Firebase Realtime database.</p>
 
       </div>
      
