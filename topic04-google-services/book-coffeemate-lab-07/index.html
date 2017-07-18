@@ -260,7 +260,7 @@ apply plugin: &#39;com.google.gms.google-services&#39;</code></pre>
 <p><a href="https://developers.google.com/mobile/add">https://developers.google.com/mobile/add</a></p>
 <p>For this Lab we&#39;ll be using Google Sign-In Authentication with Firebase, so visit your firebase console again here <a href="https://console.firebase.google.com">https://console.firebase.google.com</a> and turn on the required Authentication.</p>
 <p> <img src="img/labfb05.png" alt=""></p>
-<p> We&#39;ll be using a lot of this <a href="https://firebase.google.com/docs/auth/android/google-signin">https://firebase.google.com/docs/auth/android/google-signin</a> for reference.</p>
+<p> We&#39;ll be using a lot of this <a href="https://firebase.google.com/docs/auth/android/google-signin">https://firebase.google.com/docs/auth/android/google-signin</a> for reference on this step.</p>
 <p>Now, open your <strong>Login.java</strong> and update your <strong>GoogleSignInOptions</strong> object to &#39;requestIDToken()&#39; like so</p>
 <pre><code class="lang-java">app.mGoogleSignInOptions = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -274,26 +274,28 @@ public FirebaseUser mFirebaseUser;</code></pre>
 <p>and bring in and/or update the following</p>
 <pre><code class="lang-java">private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
 
-        Log.v(TAG, &quot;firebaseAuthWithGoogle:&quot; + acct.getId());
+       Log.v(TAG, &quot;firebaseAuthWithGoogle:&quot; + acct.getId());
 
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        app.mFirebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener&lt;AuthResult&gt;() {
-                    @Override
-                    public void onComplete(@NonNull Task&lt;AuthResult&gt; task) {
-                        Log.v(TAG, &quot;signInWithCredential:onComplete:&quot; + task.isSuccessful());
-                        validateFirebaseUser();
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.v(TAG, &quot;signInWithCredential&quot;, task.getException());
-                            Toast.makeText(Login.this, &quot;Authentication failed.&quot;,
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
+       AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+       app.mFirebaseAuth.signInWithCredential(credential)
+               .addOnCompleteListener(this, new OnCompleteListener&lt;AuthResult&gt;() {
+                   @Override
+                   public void onComplete(@NonNull Task&lt;AuthResult&gt; task) {
+                       Log.v(TAG, &quot;signInWithCredential:onComplete:&quot; + task.isSuccessful());
+                       validateFirebaseUser();
+                       // If sign in fails, display a message to the user. If sign in succeeds
+                       // the auth state listener will be notified and logic to handle the
+                       // signed in user can be handled in the listener.
+                       if (!task.isSuccessful()) {
+                           Log.v(TAG, &quot;signInWithCredential&quot;, task.getException());
+                           Toast.makeText(Login.this, &quot;Authentication failed.&quot;,
+                                   Toast.LENGTH_SHORT).show();
+                       }
+                       else
+                           startHomeScreen();
+                   }
+               });
+   }
 
     private void validateFirebaseUser()
     {
@@ -315,175 +317,100 @@ public FirebaseUser mFirebaseUser;</code></pre>
 <p>Run your app and keep track of the Logs in Android Studio to verify Firebase Authentication.</p>
 <p>If everything is configured correctly, you should now be seeing a new user on your console</p>
 <p> <img src="img/labfb06.png" alt=""></p>
-<p>And for completeness you should probably sign out your current user frm Firebase, whenever they log out of the app using</p>
+<p> and going forward</p>
+<p>  <img src="img/labfb06a.png" alt=""></p>
+<p>And for completeness you should probably sign out your current user from Firebase, whenever they log out of the app using</p>
 <pre><code class="lang-java">FirebaseAuth.getInstance().signOut();
+app.mFirebaseUser = null;
 Log.v(&quot;coffeemate&quot;, &quot;User Logged out of Firebase&quot;);</code></pre>
 <p>The next step will involving Adding coffees to our Firebase Realtime database.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="03">
-        <h1>View Users Current Location - Part I</h1>
+        <h1>Firebase CRUD - Add a Coffee</h1>
 <p>Before you go any further, here&#39;s where we&#39;re at so far</p>
 <ul>
-<li><a href="archives/CoffeeMate.6.0.sofar.zip">CoffeeMate.6.0.sofar</a></li>
+<li><a href="archives/CoffeeMateFBI.1.0.sofar.zip">CoffeeMateFBI.1.0.sofar</a></li>
 </ul>
-<p>At the moment, when the user selects the &#39;Map&#39; menu option, they get to see a standard map, but not their own location (or even their coffees locations), so this step (and the next) is about implementing that (we&#39;ll look at the coffees location in later steps).</p>
-<p>As we want to keep in line with the UI guidelines and approach, it makes sense to use a <i>Fragment</i> so first of all go ahead and create a new (Blank) Fragment called <strong>MapsFragment</strong> (NOT MapFragment) but DON&#39;T create a layout or include interface callbacks</p>
-<p><img src="img/lab0704.png" alt=""></p>
-<p>Make sure it <strong><em>extends</em></strong> from <em>MapFragment</em> and <strong><em>implements</em></strong> the following interfaces, like so</p>
-<pre><code class="lang-java">public class MapsFragment extends MapFragment implements
-    GoogleApiClient.ConnectionCallbacks,
-    GoogleApiClient.OnConnectionFailedListener,
-    GoogleMap.OnInfoWindowClickListener,
-    GoogleMap.OnMapLongClickListener,
-    GoogleMap.OnMapClickListener,
-    GoogleMap.OnMarkerClickListener,
-    LocationListener {
-...
+<p>and remember to retain your own <strong>google-services.json</strong> file (as this archive doesn&#39;t contain one!).</p>
+<p>We&#39;ll be using some of this <a href="http://www.amalhichri.net/android-firebase-realtime-database-basic-cruds/">http://www.amalhichri.net/android-firebase-realtime-database-basic-cruds/</a> tutorial for this and subsequent steps.</p>
+<p>So based on the above link, go ahead and add &quot;Firebase offline Persistence&quot;, wherever you think is most appropriate.</p>
+<p>Next, add the following to your <strong>CoffeeMateApp</strong></p>
+<pre><code class="lang-java">public DatabaseReference mFBDatabase;</code></pre>
+<p>Now, in order to perform any operation on the database, whether it be read or write (or update or delete), you need to get a reference to the database first.
+the code that follows gives you a reference to the database JSON top node (and a lot more). From here you need to use the child node names to traverse further. And to keep our code as reusable as possible, we&#39;ll introduce a few new classes to manage our Firebase database calls (similar to what we did for our SQLite calls).</p>
+<p>First, introduce the following into your <strong>models</strong> package, so that we can associate specific users with their own coffees.</p>
+<pre><code class="lang-java">public class User {
+
+    public String userId;
+    public String userName;
+    public String userEmail;
+    public String userProfilePic;
+
+    public User(){
+        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+    }
+
+    public User(String userId, String userName, String userEmail, String userProfilePic ){
+        this.userId = userId;
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.userProfilePic = userProfilePic;
+    }
 }</code></pre>
-<p>Fix the errors and replace the existing <strong><em>newInstance()</em></strong> method with this one</p>
-<pre><code class="lang-java">public static MapsFragment newInstance() {
-    MapsFragment fragment = new MapsFragment();
-return fragment;
-}</code></pre>
-<p>Replace the existing instance variables with these</p>
-<pre><code class="lang-java">private GoogleApiClient mGoogleApiClient;
-private Location mCurrentLocation;
-private LocationRequest mLocationRequest;
-private List&lt;Coffee&gt; mCoffeeList;
+<p>Now, create a new class called <strong>FBDBManager</strong> and for simplicity, place it in the same api package we have our <strong>VolleyApi</strong> class.</p>
+<p>add the following properties</p>
+<pre><code class="lang-java">  private static final String TAG = &quot;coffeemate&quot;;
+  public DatabaseReference mFirebaseDatabase;
+  public String mFBUserId;</code></pre>
+<p>and methods (for the moment)</p>
+<pre><code class="lang-java">public void open() {
+      //Set up local caching
+      FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
-private long UPDATE_INTERVAL = 30000; /* 30 secs */
-private long FASTEST_INTERVAL = 1000; /* 5 secs */
-
-/** Define a request code to send to Google Play services This code is
-* returned in Activity.onActivityResult
-*/
-private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-
-private final int[] MAP_TYPES = {
-    GoogleMap.MAP_TYPE_SATELLITE,
-    GoogleMap.MAP_TYPE_NORMAL,
-    GoogleMap.MAP_TYPE_HYBRID,
-    GoogleMap.MAP_TYPE_TERRAIN,
-    GoogleMap.MAP_TYPE_NONE
-};
-
-private int curMapTypeIndex = 1;</code></pre>
-<p>Remove <strong><em>onCreate()</em></strong> and <strong><em>onCreateView()</em></strong> and replace with</p>
-<pre><code class="lang-java">@Override
-public void onViewCreated(View view, Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-    setHasOptionsMenu(true);
-
-TextView titleBar = (TextView) getActivity().findViewById(R.id.recentAddedBarTextView);
-titleBar.setText(&quot;Coffee Map&quot;);
-
-    mGoogleApiClient = new GoogleApiClient.Builder( getActivity() )
-        .addConnectionCallbacks( this )     
-        .addOnConnectionFailedListener( this )
-        .addApi( LocationServices.API )
-        .build();
-
-    initListeners();
-}</code></pre>
-<p>Add the following methods</p>
-<pre><code class="lang-java">private void initListeners() {
-    getMap().setOnMarkerClickListener(this);
-    getMap().setOnMapLongClickListener(this);
-    getMap().setOnInfoWindowClickListener(this);
-    getMap().setOnMapClickListener(this);
-}
-
-@Override
-public void onStart() {
-    super.onStart();
-    mGoogleApiClient.connect();
+      //Bind to remote Firebase Database
+      mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
+      Log.v(TAG, &quot;Database Connected :&quot; + mFirebaseDatabase.getKey());
   }
+//Check to see if the Firebase User exists in the Database
+//if not, create a new User
+  public void checkUser(final String userid,final String username,final String email) {
+      mFirebaseDatabase.child(&quot;users&quot;).child(userid).addListenerForSingleValueEvent(
+              new ValueEventListener() {
+                  @Override
+                  public void onDataChange(DataSnapshot dataSnapshot) {
+                      if(dataSnapshot.exists()){
+                          Log.v(TAG, &quot;User found&quot;);
+                      }
+                      else{
+                          Log.v(TAG, &quot;User not found&quot;);
+                          User newUser = new User(userid, username, email, null);
+                          mFirebaseDatabase.child(&quot;users&quot;).child(userid).setValue(newUser);
+                      }
+                      mFBUserId = userid;
+                      Log.v(TAG, &quot;Firebase User ID : &quot; + mFBUserId);
+                  }
 
-@Override
-public void onStop() {
-    super.onStop();
-        if( mGoogleApiClient != null &amp;&amp; mGoogleApiClient.isConnected() ) {             
-                mGoogleApiClient.disconnect();
-            }
-  }
-
-private void initCamera( Location location ) {
-CameraPosition position = CameraPosition.builder()
-    .target( new LatLng( location.getLatitude(), location.getLongitude() ) )
-    .zoom( 14f )
-    .bearing( 0.0f )
-    .tilt( 0.0f )
-    .build();
-
-    getMap().setMapType(MAP_TYPES[curMapTypeIndex]);
-    getMap().setMyLocationEnabled(true);
-    getMap().getUiSettings().setMapToolbarEnabled(true);
-    getMap().getUiSettings().setCompassEnabled(true);
-    getMap().getUiSettings().setMyLocationButtonEnabled(true);
-    getMap().getUiSettings().setAllGesturesEnabled(true);
-    getMap().setTrafficEnabled(true);
-    getMap().setBuildingsEnabled(true);
-    getMap().getUiSettings().setZoomControlsEnabled(true);
-    getMap().animateCamera(CameraUpdateFactory.newCameraPosition(position), null);
-}</code></pre>
-<p>And replace the relevant methods with the following</p>
-<pre><code class="lang-java">@Override
-public void onConnected(Bundle dataBundle)
-{
-// Display the connection status
-try {
-mCurrentLocation = LocationServices .FusedLocationApi .getLastLocation(mGoogleApiClient);
-}
-catch(SecurityException se) {
-Toast.makeText(getActivity(),&quot;Check Your Permissions&quot;,Toast.LENGTH_SHORT).show();
-}
-if (mCurrentLocation != null) {
-Toast.makeText(getActivity(), &quot;GPS location was found!&quot;, Toast.LENGTH_SHORT).show();
-//LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-}
-else {
-Toast.makeText(getActivity(), &quot;Current location was null, Setting Default Values!&quot;, Toast.LENGTH_SHORT).show();
-mCurrentLocation = new Location(&quot;Waterford City Default&quot;);
-mCurrentLocation.setLatitude(52.2462);
-mCurrentLocation.setLongitude(-7.1402);
-}
-
-initCamera(mCurrentLocation);
-}
-
-@Override
-public void onConnectionSuspended(int i) {
-if (i == CAUSE_SERVICE_DISCONNECTED) {
-Toast.makeText(getActivity(), &quot;Disconnected. Please re-connect.&quot;, Toast.LENGTH_SHORT).show();
-}
-else if (i == CAUSE_NETWORK_LOST) {
-Toast.makeText(getActivity(), &quot;Network lost. Please re-connect.&quot;, Toast.LENGTH_SHORT).show();
-}
-}
-
-
-@Override
-public void onConnectionFailed(ConnectionResult connectionResult) {
-/* * Google Play services can resolve some errors it detects. If the error * has a resolution, try sending an Intent to start a Google Play * services activity that can resolve error. */
-
-if (connectionResult.hasResolution()) {
-try {
-// Start an Activity that tries to resolve the error connectionResult.startResolutionForResult(getActivity(), CONNECTION_FAILURE_RESOLUTION_REQUEST);
-/* * Thrown if Google Play services canceled the original * PendingIntent */
-}
-catch (IntentSender.SendIntentException e) {
-// Log the error e.printStackTrace();
-}
-} else {
-Toast.makeText(getActivity(), &quot;Sorry. Location services not available to you&quot;, Toast.LENGTH_LONG).show();
-}
-}</code></pre>
-<p>Now, open your <strong>Home</strong> Activity and instead of loading the Map Activity (as is currently the case) implement the necessary code to display our <strong>MapsFragment</strong>.</p>
-<p>If you&#39;ve followed all the steps correctly, you should be seeing something like this</p>
-<p><img src="img/lab0705.png" alt=""></p>
-<p>Experiment with different coordinates and restarting your app. Now obviously, having to manually change the coordinates is not an option, so the next step will be about adding Location Awareness to our App and updating the Map automatically, as the user moves around and adding a &#39;Marker&#39; to show these movements.</p>
+                  @Override
+                  public void onCancelled(DatabaseError databaseError) {
+                      Log.v(TAG, &quot;Unable to Validate Existing Firebase User: &quot;);
+                  }
+              }
+      );
+  }</code></pre>
+<p>and see if you can make the necessary modifications to the project to</p>
+<ul>
+<li>open the database &#39;link&#39; to Firebase on App Startup and</li>
+<li>verify the currently signed-in user against the database</li>
+</ul>
+<p>If it all checks out you should see something like this</p>
+<p>Initially, with no users</p>
+<p> <img src="img/labfb07.png" alt=""></p>
+<p> then with one new user (me :-) )</p>
+<p>  <img src="img/labfb08.png" alt=""></p>
+<p>  etc. etc.</p>
+<p>   <img src="img/labfb09.png" alt=""></p>
 
       </div>
      
