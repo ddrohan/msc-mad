@@ -198,44 +198,46 @@ h3
       
       <div  class="ui tab segment lab" data-tab="Lab-08">
         <h1>Objectives</h1>
-<p>This lab &#39;takes a step back to go forward&#39;, in that we revert to a previous version our Case Study <b>CoffeeMate</b> and introduce <strong>Firebase Support</strong> via <strong>Google Authentication</strong> and a <strong>Realtime Database</strong> in version <b>CoffeeMateFBI.1.0</b></p>
+<p>This lab &#39;takes a big step forward&#39;, in that we refactor the previous version (6.0) of our Case Study <b>CoffeeMate</b> and introduce <strong>Firebase Support</strong> via <strong>Google Authentication</strong> and a <strong>Realtime Database</strong> in version <b>CoffeeMateFBI.1.0</b></p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="01">
         <h1>Setup - Starter Code</h1>
-<p>It would be quite difficult to try and &#39;bolt on&#39; Firebase to the latest version of our Case Study, so we will start with a version which doesn&#39;t include any of the Google APis, namely <b>CoffeeMate.4.0</b>, which you can download here - <a href="archives/CoffeeMate.4.0.zip">CoffeeMate.4.0</a>.</p>
-<p>As always, It&#39;s probably still a good idea to run the App and confirm that the app (or your 4.0 version app) is configured properly and (still) running.</p>
+<p>It can be quite difficult to try and &#39;bolt on&#39; Firebase to an Android App, depending on the number and type of APis being used, but we can start with a version which does include a number of the Google APis that we need, namely <b>CoffeeMate.6.0</b>, which you can download here - <a href="archives/CoffeeMate.6.0.zip">CoffeeMate.6.0</a>.</p>
+<p>As always, It&#39;s probably still a good idea to run the App and confirm that the app (or your 6.0 version app) is configured properly and (still) running.</p>
 <p>You might also want to rename the app to what I will be referring to throughout the rest of the lab - <b>CoffeeMateFBI.1.0</b>.</p>
 <p>On completion of this lab, you will be able to do the following:</p>
 <ul>
 <li><p>Create/Import a new project to your Firebase Console (found <a href="https://console.firebase.google.com">here</a>) and configure your project as required</p>
 </li>
-<li><p>Add Google Sign-In and Firebase Authentication</p>
+<li><p>Add Firebase Authentication (including Google Sign-In)</p>
 </li>
 <li><p>Add CRUD (Create Retrieve Update Delete) functionality via your Firebase Realtime Database</p>
 </li>
 </ul>
-<p>The following steps will help you achieve this, so before we can do anything with the Firebase, let&#39;s setup our CoffeeMate Project on the Firebase Console.</p>
-<p>The instructions on the official developer docs are as good a place to stat as any, so check how to &#39;Add Firebase to your Project&#39; <a href="https://firebase.google.com/docs/android/setup">here</a>.</p>
+<p>The following steps will help you achieve this, so before we can do anything with Firebase, let&#39;s setup our CoffeeMate Project on the Firebase Console.</p>
+<p>The instructions on the official developer docs are as good a place to start as any, so check how to &#39;Add Firebase to your Project&#39; <a href="https://firebase.google.com/docs/android/setup">here</a>.</p>
 <p>The final list of dependencies/plugins required are as below, so confirm your list against mine and add them in at this stage if you so wish?</p>
 <pre><code>dependencies {
     compile fileTree(include: [&#39;*.jar&#39;], dir: &#39;libs&#39;)
-    testCompile &#39;junit:junit:4.12&#39;
-    compile &#39;com.android.support:appcompat-v7:25.0.0&#39;
-    compile &#39;com.android.support:support-v4:25.0.0&#39;
-    compile &#39;com.android.support:design:25.0.0&#39;
-    compile &#39;com.makeramen:roundedimageview:2.2.1&#39;
-
-    compile &#39;com.google.firebase:firebase-core:9.8.0&#39;
-    compile &#39;com.google.firebase:firebase-auth:9.8.0&#39;
-    compile &#39;com.google.firebase:firebase-database:9.8.0&#39;
-    compile &#39;com.firebaseui:firebase-ui-database:1.0.0&#39;
-
-    compile &#39;com.google.android.gms:play-services-auth:9.8.0&#39;
     compile project(&#39;:volley&#39;)
-}
+    compile &#39;com.android.support:appcompat-v7:25.2.0&#39;
+    compile &#39;com.android.support:support-v4:25.2.0&#39;
+    compile &#39;com.android.support:design:25.2.0&#39;
+    compile &#39;com.makeramen:roundedimageview:2.2.1&#39;
+    compile &#39;com.android.support.constraint:constraint-layout:1.0.2&#39;
+    compile &#39;com.google.code.gson:gson:2.7&#39;
+    compile &#39;com.google.android.gms:play-services-auth:11.0.2&#39;
+    compile &#39;com.google.android.gms:play-services-maps:11.0.2&#39;
+    compile &#39;com.google.android.gms:play-services-location:11.0.2&#39;
 
+    compile &#39;com.google.firebase:firebase-core:11.0.2&#39;
+    compile &#39;com.google.firebase:firebase-auth:11.0.2&#39;
+    compile &#39;com.google.firebase:firebase-database:11.0.2&#39;
+    compile &#39;com.firebaseui:firebase-ui-database:1.0.0&#39;
+    testCompile &#39;junit:junit:4.12&#39;
+}
 
 apply plugin: &#39;com.google.gms.google-services&#39;</code></pre>
 <p>Once you have your project set up, you can continue on to the next step.</p>
@@ -243,19 +245,9 @@ apply plugin: &#39;com.google.gms.google-services&#39;</code></pre>
       </div>
      
       <div  class="ui tab segment lab" data-tab="02">
-        <h1>Obtaining your Google Maps Key</h1>
-<p>First of all, you need to visit <a href="https://developers.google.com/maps/documentation/android-api/signup">Get an API Key</a> on the Android Developer site as it contains all the info you need to obtain your Key. You&#39;ll have some of the work done already (from the previous lab) but there&#39;s still a bit of work to do, so if you get stuck just ask!</p>
-<p>Once you have your key, the next thing to do is add the following to your strings.xml</p>
-<pre><code>&lt;string name=&quot;title_map&quot;&gt;Map&lt;/string&gt;
-&lt;string name=&quot;google_maps_key&quot;&gt;abcdefghijklmnopetcetcetc&lt;/string&gt;</code></pre>
-<p>where &#39;abcdefghijklmnopetcetcetc&#39; is your API Key.</p>
-<p>Next, open up your manifest file and add the following just before the <strong>closing</strong> &quot;application&quot; tag</p>
-<pre><code>&lt;meta-data
-    android:name=&quot;com.google.android.geo.API_KEY&quot;
-    android:value=&quot;@string/google_maps_key&quot; /&gt;</code></pre>
-<p>Also, in your manifest file add the following permissions</p>
-<pre><code>&lt;uses-permission android:name=&quot;ie.cm.permission.MAPS_RECEIVE&quot;/&gt;</code></pre>
-<p>and the following dependencies to you build.gradle</p>
+        <h1>Signing In with Firebase Authentication</h1>
+<p>First of all,</p>
+<p><a href="https://console.cloud.google.com/home/dashboard">https://console.cloud.google.com/home/dashboard</a></p>
 <pre><code>compile &#39;com.google.android.gms:play-services-maps:8.1.0&#39;
 compile &#39;com.google.android.gms:play-services-location:8.1.0&#39;</code></pre>
 <p>Then, go ahead and create a new <strong>Empty Activity</strong> but name the Layout <strong><em>fragment_map</em></strong> - this is important as we will be disgarding the activity in the next step but retaining the layout - we are just using it here to confirm we have configured our key etc. correctly.</p>
