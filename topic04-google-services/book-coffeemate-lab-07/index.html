@@ -268,7 +268,7 @@ apply plugin: &#39;com.google.gms.google-services&#39;</code></pre>
                 .requestEmail()
                 .requestProfile()
                 .build();</code></pre>
-<p>Next, and the following property to your <strong>CoffeeMateApp</strong></p>
+<p>Next, add the following property to your <strong>CoffeeMateApp</strong></p>
 <pre><code class="lang-java">public FirebaseAuth mFirebaseAuth;
 public FirebaseUser mFirebaseUser;</code></pre>
 <p>and bring in and/or update the following</p>
@@ -328,7 +328,7 @@ Log.v(&quot;coffeemate&quot;, &quot;User Logged out of Firebase&quot;);</code></
       </div>
      
       <div  class="ui tab segment lab" data-tab="03">
-        <h1>Firebase CRUD - Add a Coffee</h1>
+        <h1>Firebase CRUD - Add/Verify a User</h1>
 <p>Before you go any further, here&#39;s where we&#39;re at so far</p>
 <ul>
 <li><a href="archives/CoffeeMateFBI.1.0.sofar.zip">CoffeeMateFBI.1.0.sofar</a></li>
@@ -336,8 +336,6 @@ Log.v(&quot;coffeemate&quot;, &quot;User Logged out of Firebase&quot;);</code></
 <p>and remember to retain your own <strong>google-services.json</strong> file (as this archive doesn&#39;t contain one!).</p>
 <p>We&#39;ll be using some of this <a href="http://www.amalhichri.net/android-firebase-realtime-database-basic-cruds/">http://www.amalhichri.net/android-firebase-realtime-database-basic-cruds/</a> tutorial for this and subsequent steps.</p>
 <p>So based on the above link, go ahead and add &quot;Firebase offline Persistence&quot;, wherever you think is most appropriate.</p>
-<p>Next, add the following to your <strong>CoffeeMateApp</strong></p>
-<pre><code class="lang-java">public DatabaseReference mFBDatabase;</code></pre>
 <p>Now, in order to perform any operation on the database, whether it be read or write (or update or delete), you need to get a reference to the database first.
 the code that follows gives you a reference to the database JSON top node (and a lot more). From here you need to use the child node names to traverse further. And to keep our code as reusable as possible, we&#39;ll introduce a few new classes to manage our Firebase database calls (similar to what we did for our SQLite calls).</p>
 <p>First, introduce the following into your <strong>models</strong> package, so that we can associate specific users with their own coffees.</p>
@@ -363,7 +361,7 @@ the code that follows gives you a reference to the database JSON top node (and a
 <p>add the following properties</p>
 <pre><code class="lang-java">  private static final String TAG = &quot;coffeemate&quot;;
   public DatabaseReference mFirebaseDatabase;
-  public String mFBUserId;</code></pre>
+  public static String mFBUserId;</code></pre>
 <p>and methods (for the moment)</p>
 <pre><code class="lang-java">public void open() {
       //Set up local caching
@@ -408,48 +406,25 @@ the code that follows gives you a reference to the database JSON top node (and a
 <p>Initially, with no users</p>
 <p> <img src="img/labfb07.png" alt=""></p>
 <p> then with one new user (me :-) )</p>
-<p>  <img src="img/labfb08.png" alt=""></p>
+<p> <img src="img/labfb08.png" alt=""></p>
 <p>  etc. etc.</p>
-<p>   <img src="img/labfb09.png" alt=""></p>
+<p> <img src="img/labfb09.png" alt=""></p>
+<p> We&#39;re now in a position to be able to verify a user against our database but more importantly, we can associate this user with a specific coffee when we add a coffee to our database - so that&#39;s next.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="04">
-        <h1>View Users Current Location - Part II</h1>
-<p>The previous step was mostly about adding in a lot of boilerplate code to our Fragment, to get things moving - a lot of which you would have seen in the lecture material that covers Location and Google Maps.</p>
-<p>This step adds a bit more of that, but also adds some bespoke code specific to CoffeeMate and its features.</p>
-<p>Firstly, edit your <b>MapsFragment</b> and add/replace the following methods</p>
-<pre><code class="lang-java">protected void startLocationUpdates() {
-    mLocationRequest = new LocationRequest();
-    mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-    mLocationRequest.setInterval(UPDATE_INTERVAL);
-    mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-
-    try {
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-    }
-    catch(SecurityException se) {
-        Toast.makeText(getActivity(),&quot;Check Your Permissions on Location Updates&quot;,Toast.LENGTH_SHORT).show();
-    }
-  }
-
-public void onLocationChanged(Location location) {
-// Report to the UI that the location was updated
-String msg = &quot;Updated Location: &quot; + Double.toString(location.getLatitude()) + &quot;,&quot; + Double.toString(location.getLongitude());
-Log.v(&quot;coffeemate&quot;, &quot;onLocationChanged() = &quot; + msg);
-mCurrentLocation = location; initCamera(mCurrentLocation);
-}</code></pre>
-<p>And make sure you call startLocationUpdates() in your onConnected()</p>
-<p>Now, add the following permission to your manifest file</p>
-<pre><code class="lang-java">&lt;uses-permission android:name=&quot;android.permission.ACCESS_FINE_LOCATION&quot;/&gt;</code></pre>
-<p>and run your app again (and remember to accept these new permissions).</p>
-<p><img src="img/lab0710.png" alt=""></p>
-<p>You should now see something like this when you &#39;View on Map&#39;</p>
-<p><img src="img/lab0706.png" alt=""></p>
-<p>but now when you send new coordinates to the emulator, you should see the &#39;blue dot&#39; move to that new location, as below</p>
-<p><img src="img/lab0709.png" alt=""></p>
-<p><img src="img/lab0707.png" alt=""></p>
-<p><img src="img/lab0708.png" alt=""></p>
+        <h1>Firebase CRUD - Add a Coffee</h1>
+<p>At this point, we have to essentially &#39;break&#39; our app insofar as we need to change our <strong>Coffee</strong> model to allow us to store a user id with the coffee, when we add it to the firebase database.</p>
+<p>First of all, introduce the following property into the coffee models</p>
+<pre><code class="lang-java">public String uid;</code></pre>
+<p>and update your constructors accordingly.</p>
+<p>Next, introduce the following method into your <strong>Coffee</strong> class</p>
+<pre><code class="lang-java">
+</code></pre>
+<p>Next, introduce the following method into your <strong>FBDBManager</strong> class</p>
+<pre><code class="lang-java">
+</code></pre>
 
       </div>
      
