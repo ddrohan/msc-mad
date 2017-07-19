@@ -419,12 +419,19 @@ the code that follows gives you a reference to the database JSON top node (and a
 <p>First of all, introduce the following property into the coffee models</p>
 <pre><code class="lang-java">public String uid;</code></pre>
 <p>and update your constructors accordingly.</p>
-<p>Next, introduce the following method into your <strong>Coffee</strong> class</p>
+<p>Next, introduce the following method into your <strong>Coffee</strong> class for mapping our fields to JSON</p>
 <pre><code class="lang-java">
 </code></pre>
-<p>Next, introduce the following method into your <strong>FBDBManager</strong> class</p>
+<p>Finally, introduce the following method into your <strong>FBDBManager</strong> class</p>
 <pre><code class="lang-java">
 </code></pre>
+<p>and see can you now add a coffee to your firebase database.</p>
+<p>If you can, you should be seeing something like this</p>
+<p><img src="img/labfb10.png" alt=""></p>
+<p>Experiment with different users to confirm your app is working correctly, like so</p>
+<p><img src="img/labfb11.png" alt=""></p>
+<p><img src="img/labfb12.png" alt=""></p>
+<p>so the next step will be to retrieve these coffees from Firebase and display them in the list on the device.</p>
 
       </div>
      
