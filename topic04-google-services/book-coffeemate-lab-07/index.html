@@ -126,12 +126,12 @@ h3
       08
     </a>
     
-    <a class="item" data-tab="Solution">
-      Solution
+    <a class="item" data-tab="09">
+      09
     </a>
     
-    <a class="item" data-tab=".">
-      .
+    <a class="item" data-tab="Solution">
+      Solution
     </a>
     
     <a class="item" href="../../index.html">
@@ -653,27 +653,137 @@ updateUI();</code></pre>
 <p>(We&#39;ll sort out deleting and filtering on &#39;favourites&#39; later on)</p>
 <p>Now, run your app again and once you sign in, you should be seeing the coffees associated with the user stored in the Firebase database.</p>
 <p><img src="img/labfb13.png" alt=""></p>
-<p>Now if you visit your Firebase console and manually edit soem coffee data (chage the rating value or the name for example) and keep an eye on your list on your device (all going well!) you&#39;ll see the data automatically change, without any refreshing of the list, demonstrating the FirebaseUI realtime updates - pretty cool I think :)</p>
+<p>Now if you visit your Firebase console and manually edit some coffee data (change the rating value or the name for example) and keep an eye on your list on your device (all going well!) you&#39;ll see the data automatically change, without any swipe/refreshing of the list, demonstrating the FirebaseUI realtime updates, like so</p>
+<p><img src="img/labfb14.png" alt=""></p>
+<p>pretty cool I think :)</p>
 <p>On to the next step.....</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="06">
-        <p>.
-.
-.</p>
+        <h1>Firebase CRUD - Get Favourite Coffees</h1>
+<p>At the moment we can see our coffees being added on the Firebase console, and see them displayed in our list in the app, so let&#39;s now start to refactor all the other features of the app, starting with a relatively simple job of displaying just the favourite coffees belonging to the user.</p>
+<p>First thing to do is open up your <strong>FBDBManager</strong> class and add the following method, to get our favourite coffees</p>
+<pre><code class="lang-java">public Query getFavouriteCoffees()
+    {
+        Query query = mFirebaseDatabase.child(/* replace as necessary*/).child(/* replace as necessary*/)
+                .orderByChild(/* replace as necessary*/).equalTo(true);
+
+        return query;
+    }</code></pre>
+<p>Then, open your <strong>CoffeeFragment</strong> class and add</p>
+<pre><code class="lang-java">if(favourites)
+  query = app.mFBDBManager.getFavouriteCoffees();</code></pre>
+<p>when you think it should be placed.</p>
+<p>Experiment with manually changing the &#39;favourite&#39; field on your console and see what happens when you&#39;re viewing your &#39;Favourites&#39;</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="07">
-        <p>.
-.
-.
-.</p>
+        <h1>Firebase CRUD - Update a Coffee</h1>
+<p>Up to now, to see any changes/updates to our list of coffees we had to manually make those changes on the console. This step will involve allowing a coffee to be updated on the app and subsequently we&#39;ll be able to see those changes happen in realtime on our Firebase console.</p>
+<p>Similar to <strong>CoffeeMate.6.0</strong> we have to first retrieve the particular coffee from the server and then <strong>PUT</strong> in back so first, open your <strong>FBDBManager</strong> class and add the following</p>
+<pre><code class="lang-java">public void getACoffee(final String coffeeKey)
+   {
+       mFirebaseDatabase.child(&quot;user-coffees&quot;).child(mFBUserId).child(coffeeKey).addValueEventListener(
+               new ValueEventListener() {
+                   @Override
+                   public void onDataChange(DataSnapshot dataSnapshot) {
+                       Log.v(TAG,&quot;The read Succeeded: &quot; + dataSnapshot.toString());
+                       mFBDBListener.onSuccess(dataSnapshot);
+                   }
+                   @Override
+                   public void onCancelled(DatabaseError firebaseError) {
+                       Log.v(TAG,&quot;The read failed: &quot; + firebaseError.getMessage());
+                       mFBDBListener.onFailure();
+                   }
+               });
+   }
+
+   public void updateACoffee(final String coffeeKey,final Coffee updatedCoffee)
+   {
+       mFirebaseDatabase.child(&quot;user-coffees&quot;).child(mFBUserId).child(coffeeKey).addListenerForSingleValueEvent(
+               new ValueEventListener() {
+                   @Override
+                   public void onDataChange(DataSnapshot dataSnapshot) {
+                       Log.v(TAG,&quot;The update Succeeded: &quot; + dataSnapshot.toString());
+                       dataSnapshot.getRef().setValue(updatedCoffee);
+                   }
+                   @Override
+                   public void onCancelled(DatabaseError firebaseError) {
+                       Log.v(TAG,&quot;The update failed: &quot; + firebaseError.getMessage());
+                       mFBDBListener.onFailure();
+                   }
+               });
+   }</code></pre>
+<p>Once you&#39;ve fixed any errors, open <strong>EditFragment</strong> and replace <em>VolleyListener</em> with <em>FBDBListener</em>, and again fix the resultant errors.</p>
+<p>Next, to begin with, for completeness (and identifying a few changes we need to make) rename the &#39;coffeeID&#39; property to &#39;coffeeKey&#39; - don&#39;t forget to make the relevant change in <strong>CoffeeFragment</strong>.</p>
+<p>Then &#39;attach&#39; the Listener to the fragment and see can you correctly call the &#39;getACoffee()&#39; method and implement the Listener methods.</p>
+<p>You&#39;ll need this (and a bit more) in your <em>onResume()</em></p>
+<pre><code class="lang-java">app.mFBDBManager.getACoffee(coffeeKey);</code></pre>
+<p>and this in the Listener methods</p>
+<pre><code class="lang-java">aCoffee = dataSnapshot.getValue(Coffee.class);</code></pre>
+<p>and remember to call <em>updateUI()</em> to display the coffee data on screen.</p>
+<p>The last thing to do is actually update the data on the server once the user clicks &#39;update&#39; so using this method call</p>
+<pre><code class="lang-java"> app.mFBDBManager.updateACoffee(coffeeKey,aCoffee);</code></pre>
+<p>have a go at that.</p>
+<p>If you can remember way back to <strong>CoffeeMate.6.0</strong>, the user could toggle on/off the favourites star independently from having to update the coffee details so just to be complete, we&#39;ll do that now too.</p>
+<p>Open up <strong>FBDBManager</strong> class and add the following</p>
+<pre><code class="lang-java">public void toggleFavourite(final String coffeeKey,final boolean isFavourite)
+    {
+        mFirebaseDatabase.child(&quot;user-coffees&quot;).child(mFBUserId).child(coffeeKey).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        snapshot.getRef().child(&quot;favourite&quot;).setValue(isFavourite);
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError firebaseError) {
+                        Log.v(TAG,&quot;The toggle failed: &quot; + firebaseError.getMessage());
+                    }
+                });
+    }</code></pre>
+<p>and have a go at that too.</p>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="08">
+        <h1>Firebase CRUD - Deleting Coffees</h1>
+<p>This step involves two features</p>
+<ul>
+<li>deleting a single coffee and</li>
+<li>deleting multiple coffees</li>
+</ul>
+<p>so we&#39;ll start with the slightly more difficult option - deleting a single coffee.</p>
+<p>First, open your <strong>FBDBManager</strong> class and add the following</p>
+<pre><code class="lang-java">public void deleteACoffee(final String coffeeKey)
+    {
+        mFirebaseDatabase.child(&quot;user-coffees&quot;).child(mFBUserId).child(coffeeKey).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        snapshot.getRef().removeValue();
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError firebaseError) {
+                        Log.v(TAG,&quot;The delete failed: &quot; + firebaseError.getMessage());
+                    }
+                });
+    }</code></pre>
+<p>You&#39;ll need to make use of the <em>deleteListener</em> object we declared earlier, inside your <strong>CoffeeFragment</strong>&#39;s <em>onCreatView()</em> like so</p>
+<pre><code class="lang-java">deleteListener = new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        onCoffeeDelete (view.getTag().toString());
+      }
+    };</code></pre>
+<p>This ensures that we bind the listener (and an onClick() event) specifically to the delete button inside our <strong>CoffeeListAdapter</strong>.</p>
+<p>Now, try and work out where <em>deleteACoffee</em> should be called and the minor changes that need to be made to the existing <em>onCoffeeDelete</em>.</p>
+<p>To finish this step, deleting multiple coffees is literally one line of code, so try and work that out too (at least without looking at the notes first :) )</p>
+
+      </div>
+     
+      <div  class="ui tab segment lab" data-tab="09">
         <p>.
 .
 .
@@ -688,10 +798,6 @@ updateUI();</code></pre>
 <li><a href="archives/CoffeeMate.6.0.Solution.zip">CoffeeMate.6.0.Solution</a></li>
 </ul>
 
-      </div>
-     
-      <div  class="ui tab segment lab" data-tab=".">
-        
       </div>
      
     </div>
