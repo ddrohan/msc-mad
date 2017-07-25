@@ -869,7 +869,7 @@ updateUI();</code></pre>
 <p>Filtering on String name &#39;C&#39;</p>
 <p><img src="img/labfb17.png" alt=""></p>
 <p>Filtering on String name &#39;Cu&#39;</p>
-<p><img src="img/labfb17.png" alt=""></p>
+<p><img src="img/labfb18.png" alt=""></p>
 <p>If you wish, you can do some housekeeping on the entire project at this stage and remove the <strong>mSwipeRefreshLayout</strong> references, as we don&#39;t actually need it anymore due to the <strong>FirebaseUI</strong> api and the realtime nature of our database, but I&#39;ll leave it in the solution for reference.</p>
 <p>The last thing we need to do is make sure our Map is showing the correct marker locations, as currently we&#39;re still retrieving from the herokuapp server and not Firebase, so that&#39;s next.</p>
 
@@ -877,7 +877,39 @@ updateUI();</code></pre>
      
       <div  class="ui tab segment lab" data-tab="10">
         <h1>Firebase CRUD - Managing our Coffee Map</h1>
-<p>Currently our <strong>MapsFragment</strong> is implementing the <em>VolleyListener</em> interface and requesting the list of coffees from the herokuapp server, so this step requires a refactoring of the interface to use and the call we need to make to get our coffees from Firebase.</p>
+<p>Currently our <strong>MapsFragment</strong> is implementing the <em>VolleyListener</em> interface and requesting the list of coffees from the herokuapp server, so this step requires a refactoring of the interface to use, and the call we need to make to get our coffees from Firebase.</p>
+<p>First thing to do is add the following to your <strong>FBDBManager</strong></p>
+<pre><code class="lang-java">public void getAllCoffeesSnapshot()
+   {
+       ValueEventListener vel = mFirebaseDatabase.child(&quot;user-coffees&quot;)
+                                           .child(mFBUserId)
+                                           .addValueEventListener(
+               new ValueEventListener() {
+                   @Override
+                   public void onDataChange(DataSnapshot dataSnapshot) {
+                       mFBDBListener.onSuccess(dataSnapshot);
+                   }
+                   @Override
+                   public void onCancelled(DatabaseError firebaseError) {
+                       mFBDBListener.onFailure();
+                   }
+               });
+   }</code></pre>
+<p>This will allow us to load the Map and display the coffees but only AFTER they have been retrieved successfully - our <em>FBDBListener</em> will control when this is triggered.</p>
+<p>The changes that need to be made are very similar to how we implemented the <em>VolleyListener</em> interface, so have a go at making the necessary changes. If you simply replace the VolleyListener calls and code with the the FBDBListener implementation, you won&#39;t go too far wrong.</p>
+<p>You will probably need this code to convert your firebase <em>snapshot</em> into a list of coffees, to add to the Map</p>
+<pre><code class="lang-java">List &lt;Coffee&gt; coffeeList = new ArrayList&lt;Coffee&gt;();
+        for (DataSnapshot coffeeSnapshot: dataSnapshot.getChildren()) {
+            Coffee c = coffeeSnapshot.getValue(Coffee.class);
+            coffeeList.add(c);
+        }</code></pre>
+<p>Hopefully, you&#39;ll then see something like this</p>
+<p>Our Firebase coffees</p>
+<p><img src="img/labfb19.png" alt=""></p>
+<p>And the same coffees on the Map</p>
+<p><img src="img/labfb20.png" alt=""></p>
+<p><img src="img/labfb21.png" alt=""></p>
+<p>All Done!!!</p>
 
       </div>
      
@@ -885,7 +917,7 @@ updateUI();</code></pre>
         <h1>Solution</h1>
 <p>This is a solution to the lab:</p>
 <ul>
-<li><a href="archives/CoffeeMate.6.0.Solution.zip">CoffeeMate.6.0.Solution</a></li>
+<li><a href="archives/CoffeeMateFBI.1.0.Solution.zip">CoffeeMateFBI.1.0.Solution</a></li>
 </ul>
 
       </div>
