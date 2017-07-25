@@ -130,6 +130,10 @@ h3
       09
     </a>
     
+    <a class="item" data-tab="10">
+      10
+    </a>
+    
     <a class="item" data-tab="Solution">
       Solution
     </a>
@@ -780,14 +784,100 @@ updateUI();</code></pre>
 <p>This ensures that we bind the listener (and an onClick() event) specifically to the delete button inside our <strong>CoffeeListAdapter</strong>.</p>
 <p>Now, try and work out where <em>deleteACoffee</em> should be called and the minor changes that need to be made to the existing <em>onCoffeeDelete</em>.</p>
 <p>To finish this step, deleting multiple coffees is literally one line of code, so try and work that out too (at least without looking at the notes first :) )</p>
+<p>and you may find the following method useful?</p>
+<pre><code class="lang-java">listView.getChildAt()</code></pre>
 
       </div>
      
       <div  class="ui tab segment lab" data-tab="09">
-        <p>.
-.
-.
-.</p>
+        <h1>Firebase CRUD - Searching &amp; Filtering Coffees</h1>
+<p>At the time of writing (July/2017) there is still no way to search Firebase like you would a normal relational Database using SQL LIKE etc. For reference though and if you fancy seeing if you can integrate any of the following, I found some useful links worth a looking</p>
+<p><a href="https://github.com/xdrop/fuzzywuzzy">https://github.com/xdrop/fuzzywuzzy</a></p>
+<p><a href="https://support.google.com/firebase/answer/6318765?hl=en">https://support.google.com/firebase/answer/6318765?hl=en</a></p>
+<p><a href="https://cloud.google.com/bigquery/docs/reference/libraries">https://cloud.google.com/bigquery/docs/reference/libraries</a></p>
+<p><a href="https://groups.google.com/forum/#!topic/firebase-talk/kHFSfp7zNDk">https://groups.google.com/forum/#!topic/firebase-talk/kHFSfp7zNDk</a> (and subsequent links within)</p>
+<p>I&#39;ll revisit this once I have time (or if Firebase adds this functionality :) )</p>
+<p>As a result, we&#39;re a bit limited in what we can do in terms of searching our list, but we will implement some basic searching &amp; filtering on our &#39;Search&#39; screen to try and replicate what we had in the previous version of <strong>CoffeeMate</strong>.</p>
+<p>So, first, open your <strong>FBDBManager</strong> and add the following</p>
+<pre><code class="lang-java">public Query nameFilter(String s)
+  {
+      Query query = mFirebaseDatabase.child(&quot;user-coffees&quot;).child(mFBUserId)
+              .orderByChild(&quot;name&quot;).startAt(s).endAt(s+&quot;\uf8ff&quot;);
+
+      return query;
+  }</code></pre>
+<p>Next, open your <strong>CoffeeFilter</strong> and replace it with the following (and fix any import errors)</p>
+<pre><code class="lang-java">public class CoffeeFilter extends Filter {
+    private String                 filterText;
+    private CoffeeListAdapter     adapter;
+    private Query                query;
+    private CoffeeFragment        fragment;
+
+    public CoffeeFilter(Query originalCoffeeQuery, String filterText
+            ,CoffeeListAdapter adapter,CoffeeFragment fragment) {
+        super();
+        this.query = originalCoffeeQuery;
+        this.filterText = filterText;
+        this.adapter = adapter;
+        this.fragment = fragment;
+    }
+
+    public void setFilter(String filterText) {
+        this.filterText = filterText;
+    }
+
+    @Override
+    protected FilterResults performFiltering(CharSequence prefix) {
+        FilterResults results = new FilterResults();
+
+        if(prefix != null)
+            if (prefix.length() &gt; 0)
+                query = fragment.app.mFBDBManager.nameFilter(prefix.toString());
+
+        else {
+            if (filterText.equals(&quot;all&quot;)) {
+                query = fragment.app.mFBDBManager.getAllCoffees();
+            } else if (filterText.equals(&quot;favourites&quot;)) {
+                query = fragment.app.mFBDBManager.getFavouriteCoffees();
+            }
+        }
+        results.values = query;
+
+        return results;
+    }
+
+    @Override
+    protected void publishResults(CharSequence prefix, FilterResults results) {
+
+        fragment.updateUI((Query) results.values);
+    }
+}</code></pre>
+<p>Now this will trigger a list of errors so open your <strong>CoffeeFragment</strong> and <strong>SearchFragment</strong> classes and update your <em>coffeeilter</em> (in the relevant places) so that it takes a <em>query</em> as the first parameter, instead of the existing list. And do the same for the <em>updateUI()</em> method.</p>
+<p>Some refactoring of both classes is necessary at this stage so go ahead and carry out the following</p>
+<ul>
+<li>move the instantiation of your <em>coffeeFilter</em> from <strong>CoffeeFragment</strong>&#39;s <em>onResume()</em> to <strong>SearchFragment</strong>&#39;s <em>onResume()</em></li>
+<li>remove the following from <strong>CoffeeFragment</strong>&#39;s <em>onResume()</em><pre><code class="lang-java">    coffeeFilter.setFilter(&quot;favourites&quot;); // Set the filter text field from &#39;all&#39; to &#39;favourites&#39;
+    coffeeFilter.filter(null); // Filter the data, but don&#39;t use any prefix</code></pre>
+</li>
+<li>Add a call to <em>getFavouriteCoffees()</em> on your <em>query</em> reference BEFORE you create the filter in your <em>deleteCoffees()</em> method, while checking for &#39;favourites&#39;</li>
+</ul>
+<p>Run your app once again, and you should be able to see something like the following</p>
+<p>Our initial &#39;Search&#39; screen</p>
+<p><img src="img/labfb15.png" alt=""></p>
+<p>Filtering on &#39;Favourites&#39;</p>
+<p><img src="img/labfb16.png" alt=""></p>
+<p>Filtering on String name &#39;C&#39;</p>
+<p><img src="img/labfb17.png" alt=""></p>
+<p>Filtering on String name &#39;Cu&#39;</p>
+<p><img src="img/labfb17.png" alt=""></p>
+<p>If you wish, you can do some housekeeping on the entire project at this stage and remove the <strong>mSwipeRefreshLayout</strong> references, as we don&#39;t actually need it anymore due to the <strong>FirebaseUI</strong> api and the realtime nature of our database, but I&#39;ll leave it in the solution for reference.</p>
+<p>The last thing we need to do is make sure our Map is showing the correct marker locations, as currently we&#39;re still retrieving from the herokuapp server and not Firebase, so that&#39;s next.</p>
+
+      </div>
+     
+      <div  class="ui tab segment lab" data-tab="10">
+        <h1>Firebase CRUD - Managing our Coffee Map</h1>
+<p>Currently our <strong>MapsFragment</strong> is implementing the <em>VolleyListener</em> interface and requesting the list of coffees from the herokuapp server, so this step requires a refactoring of the interface to use and the call we need to make to get our coffees from Firebase.</p>
 
       </div>
      
