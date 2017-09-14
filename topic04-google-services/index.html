@@ -2,23 +2,27 @@
  <html>
    <head>
 
-     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-
      <meta charset="utf-8">
      <meta name="viewport" content="width=device-width, initial-scale=1">
 
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css" type="text/css">
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/solarized-light.min.css" rel="stylesheet" />
+     
+
+     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.css" type="text/css">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-light.min.css" rel="stylesheet" />
 
      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.address/1.6/jquery.address.min.js"></script>
-     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.js"></script>
-     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
-     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/languages/java.min.js"></script>
+     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
+     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/java.min.js"></script>
      <script>hljs.initHighlightingOnLoad();</script>
 
-      <style>
-        
+     
+
+     <style>
+       
 
 body 
 {
@@ -36,290 +40,370 @@ figcaption
   align-items: center;
 }
 
+.ui.segment.pushable
+{
+  margin: 0;
+  padding: 1rem 0;
+  overflow: visible;
+}
 
 
-    </style>
 
-  </head>
+     </style>
+
+   </head>
 
   <body>
     
 
+  
+  <header class="ui center aligned middle aligned stackable grid segment">
 
+    
+      
+  <a class="ui blue left corner label">
+    <div id="showTOC" class="popup" data-content="Reveal TOC">
+      <i id="toc" class="sitemap big  icon"></i>
+    </div>
+  </a>
 
+    
 
-
-
-
-  <header class="ui middle aligned center aligned stackable grid segment">
-
-    <a class="ui blue left corner label">
-  <div id="showTOC" class="popup" data-content="Reveal TOC">
-    <i id="toc" class="sitemap big  icon"></i>
-  </div>
-</a>
-
-    <div class="seven wide center aligned column">
+    <div class="ui five wide column">
       <h2> 4: Google Services </h2>
-      <p> Single Topic </p>
+    </div>
+
+    <div class="ui two wide column">
+      
+          
+  <div class="two wide column sitemap">
+    <div class="popup" data-content="To the top level Topics for this Module...">
+      <a href="../index.html"> <i class="huge home icon"></i> <br> Module Home </a>
+    </div>
+  </div>
+
+        
     </div>
 
     
-<div class="two wide column sitemap">
-  <div class="popup" data-content="Top Level Topic View">
-    <a href="../index.html"> <i class="huge home icon"></i> Topics </a>
-  </div>
-</div>
 
-    
-<div class="four wide column">
-  <div class="ui center aligned mini message segment">
-    David Drohan (ddrohan@wit.ie), Eamonn de Leastar (edeleastar@tssg.wit.ie) & John Fitzgerald (johnjfitzgerald@outlook.com).
-    <a  href="http://creativecommons.org/licenses/by-nc/4.0/" title="External link to http://creativecommons.org/licenses/by-nc/4.0/"
-        target="_blank">Creative Commons License
-    </a>
-  </div>
-</div>
-
-    
-<div class="ui two wide right aligned column">
-  <div class="ui left aligned middle aligned very basic grid">
-    <div class="row">
-      <div class="popup" data-content="All Slides in Course">
-        <a href="../talkwall.html"> <i class="large film icon"></i> All Slides </a>
-      </div>
-    </div>
-    <div class="row">
-      <div class="popup" data-content="All Labs in Course">
-        <a href="../labwall.html"> <i class="large lab icon"></i> All Labs </a>
-      </div>
+    <div class="ui three wide column">
+      
+  <div class="four wide column">
+    <div class="ui center aligned mini message segment">
+      David Drohan (ddrohan@wit.ie), Eamonn de Leastar (edeleastar@tssg.wit.ie) & John Fitzgerald (johnjfitzgerald@outlook.com).
+      <a href="http://creativecommons.org/licenses/by-nc/4.0/"
+         title="External link to http://creativecommons.org/licenses/by-nc/4.0/"
+         target="_blank">Creative Commons License
+      </a>
     </div>
   </div>
-</div>
+
+    </div>
+
+    <div class="three wide column">
+      
+    </div>
 
 
   </header>
+  
+  
 
 
-<div class="ui segment pushable">
-  <div class="ui inverted labeled icon left inline vertical sidebar menu">
-    <div class="header">
-      <a class="item" href="#">
-        4: Google Services
-      </a>
+
+  <div class="ui segment pushable">
+    <div class="ui inverted labeled icon left inline vertical sidebar menu">
+      <div class="header">
+        <a class="item" href="#">
+          
+        </a>
+      </div>
+      <div class="menu">
+        
+          <a class="item" href="talk-1-google-1/01.google.plus.pdf">
+            Google+ Sign-in Integration
+          </a>
+        
+          <a class="item" href="talk-2-google-2/01.location.pdf">
+            Google Location Services 
+          </a>
+        
+          <a class="item" href="talk-3-google-3/01.maps.pdf">
+            Google Maps
+          </a>
+        
+          <a class="item" href="talk-4-google-4/firebase.pdf">
+            Firebase
+          </a>
+        
+          <a class="item" href="book-coffeemate-lab-05/index.html">
+            Lab-06
+          </a>
+        
+          <a class="item" href="book-coffeemate-lab-06/index.html">
+            Lab-07
+          </a>
+        
+      </div>
     </div>
-    <div class="menu">
+    <div class="pusher">
+      <div class="ui basic container segment">
+       
+         
+  
+
+         
+         
+  
+    <section class="ui attached segment">
+      <a class="ui right ribbon label">talks</a>
+      <div class="ui centered four doubling stackable cards">
+        
+          
+            
+
+  
+     <a class="ui raised link card" href="talk-1-google-1/01.google.plus.pdf" target="_blank">
+  
+
+      <div class="center aligned content">
+        <div class="right floated meta"><i class="huge object group icon"></i></div>
+        <div class="header"> Google+ Sign-in Integration</div>
+      </div>
+
+      <div class="image">
+        <img class="ui bordered rounded image" src="talk-1-google-1/01.google.plus.jpg">
+      </div>
+
+      <div class="center aligned content">
+        <div class="description">
+          <p>Here we discuss the steps necessary to integrate Google+ Sign-in into an Android app, using our Case Study (CoffeeMate) and the labs to demonstrate.</p>
+
+        </div>
+      </div>
+
       
-        <a class="item" href="talk-1-google-1/01.google.plus.pdf">
-          Google+ Sign-in Integration
-        </a>
+
+    </a>
+
+
+          
+        
+          
+            
+
+  
+     <a class="ui raised link card" href="talk-2-google-2/01.location.pdf" target="_blank">
+  
+
+      <div class="center aligned content">
+        <div class="right floated meta"><i class="huge object group icon"></i></div>
+        <div class="header"> Google Location Services </div>
+      </div>
+
+      <div class="image">
+        <img class="ui bordered rounded image" src="talk-2-google-2/01.location.jpg">
+      </div>
+
+      <div class="center aligned content">
+        <div class="description">
+          <p>Here we discuss the steps necessary to integrate Google Location Services into an Android app, using our Case Study (CoffeeMate) and the labs to demonstrate.</p>
+
+        </div>
+      </div>
+
       
-        <a class="item" href="talk-2-google-2/01.location.pdf">
-          Google Location Services 
-        </a>
+
+    </a>
+
+
+          
+        
+          
+            
+
+  
+     <a class="ui raised link card" href="talk-3-google-3/01.maps.pdf" target="_blank">
+  
+
+      <div class="center aligned content">
+        <div class="right floated meta"><i class="huge object group icon"></i></div>
+        <div class="header"> Google Maps</div>
+      </div>
+
+      <div class="image">
+        <img class="ui bordered rounded image" src="talk-3-google-3/01.maps.jpg">
+      </div>
+
+      <div class="center aligned content">
+        <div class="description">
+          <p>Here we discuss the steps necessary to integrate Google Maps into an Android app, using our Case Study (CoffeeMate) and the labs to demonstrate.</p>
+
+        </div>
+      </div>
+
       
-        <a class="item" href="talk-3-google-3/01.maps.pdf">
-          Google Maps
-        </a>
+
+    </a>
+
+
+          
+        
+          
+            
+
+  
+     <a class="ui raised link card" href="talk-4-google-4/firebase.pdf" target="_blank">
+  
+
+      <div class="center aligned content">
+        <div class="right floated meta"><i class="huge object group icon"></i></div>
+        <div class="header"> Firebase</div>
+      </div>
+
+      <div class="image">
+        <img class="ui bordered rounded image" src="talk-4-google-4/firebase.png">
+      </div>
+
+      <div class="center aligned content">
+        <div class="description">
+          <p>Here we discuss the steps necessary to integrate Firebase into an Android app, using our Case Study (CoffeeMate) and the labs to demonstrate.</p>
+
+        </div>
+      </div>
+
       
-        <a class="item" href="talk-4-google-4/firebase.pdf">
-          Firebase
-        </a>
+
+    </a>
+
+
+          
+        
+      </div>
+    </section>
+  
+
+         
+         
+  
+    <section class="ui attached segment">
+      <a class="ui right ribbon label">labs</a>
+      <div class="ui centered four doubling stackable cards">
+        
+          
+            
+
+  
+    <a class="ui raised link card" href="book-coffeemate-lab-05/index.html">
+  
+
+      <div class="center aligned content">
+        <div class="right floated meta"><i class="huge lab icon"></i></div>
+        <div class="header"> Lab-06</div>
+      </div>
+
+      <div class="image">
+        <img class="ui bordered rounded image" src="book-coffeemate-lab-05/img/main.png">
+      </div>
+
+      <div class="center aligned content">
+        <div class="description">
+          <p>This lab continues our Case Study <b>CoffeeMate</b> and once again, yet another major refactoring of the app, where we introduce the ability to make API calls to our CoffeeMate Web App using <b>Volley</b> and introduce some basic security using <b>Google Sign-in</b>.</p>
+
+        </div>
+      </div>
+
       
-        <a class="item" href="book-coffeemate-lab-05/index.html">
-          Lab-06
-        </a>
+
+    </a>
+
+
+          
+        
+          
+            
+
+  
+    <a class="ui raised link card" href="book-coffeemate-lab-06/index.html">
+  
+
+      <div class="center aligned content">
+        <div class="right floated meta"><i class="huge lab icon"></i></div>
+        <div class="header"> Lab-07</div>
+      </div>
+
+      <div class="image">
+        <img class="ui bordered rounded image" src="book-coffeemate-lab-06/img/main.png">
+      </div>
+
+      <div class="center aligned content">
+        <div class="description">
+          <p>This lab is the final lab in the current version and completes our Case Study <b>CoffeeMate</b> with the introduction of <strong>Location Awareness</strong> and <strong>Google Maps</strong> in version <b>CoffeeMate.6.0</b>.</p>
+
+        </div>
+      </div>
+
       
-        <a class="item" href="book-coffeemate-lab-06/index.html">
-          Lab-07
-        </a>
-      
-        <a class="item" href="book-coffeemate-lab-07/index.html">
-          Lab-08
-        </a>
-      
+
+    </a>
+
+
+          
+        
+      </div>
+    </section>
+  
+
+         
+         
+  
+
+         
+         
+  
+
+         
+      </div>
     </div>
   </div>
-
-  <div class="pusher">
-    <div class="ui basic segment">
-      <div class="ui four doubling stackable cards">
-        
-        
-  <a class="ui raised link card" href="talk-1-google-1/01.google.plus.pdf">
-    <div class="content">
-        <div class="right floated meta"> <i class="film large icon"></i></div>
-        <div class="header"> Google+ Sign-in Integration </div>
-    </div>
-    <div class="image">
-      <img class="ui bordered rounded image" src="talk-1-google-1/01.google.plus.jpg">
-    </div>
-    <div class="content">
-      <div class="description">
-         <p>Here we discuss the steps necessary to integrate Google+ Sign-in into an Android app, using our Case Study (CoffeeMate) and the labs to demonstrate.</p>
-
-      </div>
-    </div>
-    
-  </a>
-
-        
-        
-  <a class="ui raised link card" href="talk-2-google-2/01.location.pdf">
-    <div class="content">
-        <div class="right floated meta"> <i class="film large icon"></i></div>
-        <div class="header"> Google Location Services  </div>
-    </div>
-    <div class="image">
-      <img class="ui bordered rounded image" src="talk-2-google-2/01.location.jpg">
-    </div>
-    <div class="content">
-      <div class="description">
-         <p>Here we discuss the steps necessary to integrate Google Location Services into an Android app, using our Case Study (CoffeeMate) and the labs to demonstrate.</p>
-
-      </div>
-    </div>
-    
-  </a>
-
-        
-        
-  <a class="ui raised link card" href="talk-3-google-3/01.maps.pdf">
-    <div class="content">
-        <div class="right floated meta"> <i class="film large icon"></i></div>
-        <div class="header"> Google Maps </div>
-    </div>
-    <div class="image">
-      <img class="ui bordered rounded image" src="talk-3-google-3/01.maps.jpg">
-    </div>
-    <div class="content">
-      <div class="description">
-         <p>Here we discuss the steps necessary to integrate Google Maps into an Android app, using our Case Study (CoffeeMate) and the labs to demonstrate.</p>
-
-      </div>
-    </div>
-    
-  </a>
-
-        
-        
-  <a class="ui raised link card" href="talk-4-google-4/firebase.pdf">
-    <div class="content">
-        <div class="right floated meta"> <i class="film large icon"></i></div>
-        <div class="header"> Firebase </div>
-    </div>
-    <div class="image">
-      <img class="ui bordered rounded image" src="talk-4-google-4/firebase.png">
-    </div>
-    <div class="content">
-      <div class="description">
-         <p>Here we discuss the steps necessary to integrate Firebase into an Android app, using our Case Study (CoffeeMate) and the labs to demonstrate.</p>
-
-      </div>
-    </div>
-    
-  </a>
-
-        
-        
-  <a class="ui raised link card" href="book-coffeemate-lab-05/index.html">
-    <div class="content">
-        <div class="right floated meta"> <i class="lab large icon"></i></div>
-        <div class="header"> Lab-06 </div>
-    </div>
-    <div class="image">
-      <img class="ui bordered rounded image" src="book-coffeemate-lab-05/img/main.png">
-    </div>
-    <div class="content">
-      <div class="description">
-         <p>This lab continues our Case Study <b>CoffeeMate</b> and once again, yet another major refactoring of the app, where we introduce the ability to make API calls to our CoffeeMate Web App using <b>Volley</b> and introduce some basic security using <b>Google Sign-in</b>.</p>
-
-      </div>
-    </div>
-    
-  </a>
-
-        
-        
-  <a class="ui raised link card" href="book-coffeemate-lab-06/index.html">
-    <div class="content">
-        <div class="right floated meta"> <i class="lab large icon"></i></div>
-        <div class="header"> Lab-07 </div>
-    </div>
-    <div class="image">
-      <img class="ui bordered rounded image" src="book-coffeemate-lab-06/img/main.png">
-    </div>
-    <div class="content">
-      <div class="description">
-         <p>This lab is the final lab in the current version and completes our Case Study <b>CoffeeMate</b> with the introduction of <strong>Location Awareness</strong> and <strong>Google Maps</strong> in version <b>CoffeeMate.6.0</b>.</p>
-
-      </div>
-    </div>
-    
-  </a>
-
-        
-        
-  <a class="ui raised link card" href="book-coffeemate-lab-07/index.html">
-    <div class="content">
-        <div class="right floated meta"> <i class="lab large icon"></i></div>
-        <div class="header"> Lab-08 </div>
-    </div>
-    <div class="image">
-      <img class="ui bordered rounded image" src="book-coffeemate-lab-07/img/main.png">
-    </div>
-    <div class="content">
-      <div class="description">
-         <p>This lab &#39;takes a big step forward&#39;, in that we refactor the previous version (6.0) of our Case Study <b>CoffeeMate</b> and introduce <strong>Firebase Support</strong> via <strong>Google Authentication</strong> and a <strong>Realtime Database</strong> in version <b>CoffeeMateFBI.1.0</b></p>
-
-      </div>
-    </div>
-    
-  </a>
-
-        
-
-      </div>
-    </div>
-   </div>
-</div>
 
 
     <footer>
 
     </footer>
     <script>
-      
-$(document).ready(function()
-{
-  $("img").addClass ("ui image");
+      $(document).ready(function() {
+  $('img').addClass('ui image');
+
   $('.ui.embed').embed();
 
-  var images = $(".lab img");
-  jQuery.each(images, function(i)  {
-    if((images[i].alt).length > 0)
-    {
-      var div_img = $(document.createElement("div")).addClass("ui segment");
-      $(images[i]).wrap(div_img);
-      var div_label = $(document.createElement("div")).addClass("ui ribbon teal top attached label");
-      div_label.append(images[i].alt);
-      $(div_label).insertBefore(images[i]);
+  const $images = $('.lab img');
+  jQuery.each($images, function(i) {
+    if ($images[i].alt.length > 0) {
+      const divImg = $(document.createElement('div')).addClass(
+        'ui basic segment',
+      );
+      $($images[i]).wrap(divImg);
+      const divLabel = $(document.createElement('div')).addClass(
+        'ui blue ribbon label',
+      );
+      divLabel.append($images[i].alt);
+      $(divLabel).insertBefore($images[i]);
     }
   });
 
-
-  $('.ui.menu .item')
-      .tab({
-        history: true,
-        historyType: 'hash',
-      });
+  $('.ui.menu .item').tab({
+    history: true,
+    historyType: 'hash',
+  });
 
   $('.popup').popup();
 
   $('.ui.sidebar')
-      .sidebar({ context: $('.pushable') })
-      .sidebar('setting', 'transition', 'slide out')
-      .sidebar('attach events', '#toc');
+    .sidebar({ context: $('.pushable') })
+    .sidebar('setting', 'transition', 'slide out')
+    .sidebar('attach events', '#toc');
 });
 
     </script>

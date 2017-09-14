@@ -2,23 +2,27 @@
  <html>
    <head>
 
-     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-
      <meta charset="utf-8">
      <meta name="viewport" content="width=device-width, initial-scale=1">
 
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css" type="text/css">
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/solarized-light.min.css" rel="stylesheet" />
+     
+
+     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.css" type="text/css">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-light.min.css" rel="stylesheet" />
 
      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.address/1.6/jquery.address.min.js"></script>
-     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.js"></script>
-     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
-     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/languages/java.min.js"></script>
+     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
+     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/java.min.js"></script>
      <script>hljs.initHighlightingOnLoad();</script>
 
-      <style>
-        
+     
+
+     <style>
+       
 
 body 
 {
@@ -36,71 +40,110 @@ figcaption
   align-items: center;
 }
 
+.ui.segment.pushable
+{
+  margin: 0;
+  padding: 1rem 0;
+  overflow: visible;
+}
 
 
-    </style>
 
-  </head>
+     </style>
+
+   </head>
 
   <body>
     
 
 
+  <header class="ui center aligned middle aligned stackable grid segment">
 
-
-
-
-
-<header class="ui middle aligned center aligned stackable grid segment">
-
+    
+      
   <a class="ui blue left corner label">
-  <div id="showTOC" class="popup" data-content="Reveal TOC">
-    <i id="toc" class="sitemap big  icon"></i>
-  </div>
-</a>
-
-  <div class="seven wide center aligned column">
-    <h2 class="headder"> Mobile Application Development</h2>
-    <p> Top Level Topics </p>
-  </div>
-
-  
-<div class="two wide column sitemap">
-  <div class="popup" data-content="Top Level Topic View">
-    <a href="#"> <i class="huge home icon"></i> Topics </a>
-  </div>
-</div>
-
-  
-<div class="four wide column">
-  <div class="ui center aligned mini message segment">
-    David Drohan (ddrohan@wit.ie), Eamonn de Leastar (edeleastar@tssg.wit.ie) & John Fitzgerald (johnjfitzgerald@outlook.com).
-    <a  href="http://creativecommons.org/licenses/by-nc/4.0/" title="External link to http://creativecommons.org/licenses/by-nc/4.0/"
-        target="_blank">Creative Commons License
-    </a>
-  </div>
-</div>
-
-
-  
-<div class="ui two wide right aligned column">
-  <div class="ui left aligned middle aligned very basic grid">
-    <div class="row">
-      <div class="popup" data-content="All Slides in Course">
-        <a href="talkwall.html"> <i class="large film icon"></i> All Slides </a>
-      </div>
+    <div id="showTOC" class="popup" data-content="Reveal TOC">
+      <i id="toc" class="sitemap big  icon"></i>
     </div>
-    <div class="row">
-      <div class="popup" data-content="All Labs in Course">
-        <a href="labwall.html"> <i class="large lab icon"></i> All Labs </a>
-      </div>
+  </a>
+
+    
+
+    <div class="ui five wide column">
+      <h2> Mobile Application Development </h2>
+    </div>
+
+    <div class="ui two wide column">
+      
+          
+  <div class="two wide column sitemap">
+    <div class="popup" data-content="To the top level Topics for this Module...">
+      <a href="index.html"> <i class="huge home icon"></i> <br> Module Home </a>
     </div>
   </div>
-</div>
+
+      
+    </div>
+
+    
+
+    <div class="ui three wide column">
+      
+  <div class="four wide column">
+    <div class="ui center aligned mini message segment">
+      David Drohan (ddrohan@wit.ie), Eamonn de Leastar (edeleastar@tssg.wit.ie) & John Fitzgerald (johnjfitzgerald@outlook.com).
+      <a href="http://creativecommons.org/licenses/by-nc/4.0/"
+         title="External link to http://creativecommons.org/licenses/by-nc/4.0/"
+         target="_blank">Creative Commons License
+      </a>
+    </div>
+  </div>
+
+    </div>
+
+    <div class="three wide column">
+      
+        
+  <div class="ui equal width center aligned grid segment">
+    
+      
+        <div class="column">
+          <div class="popup" data-content="All talk's in Course">
+            <a href="talkwall.html"> <i class="big object group icon"></i> </a>
+            <div class="ui blue mini circular label">
+              16
+            </div>
+          </div>
+        </div>
+      
+    
+      
+        <div class="column">
+          <div class="popup" data-content="All lab's in Course">
+            <a href="labwall.html"> <i class="big lab icon"></i> </a>
+            <div class="ui blue mini circular label">
+              8
+            </div>
+          </div>
+        </div>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+
+      
+    </div>
 
 
+  </header>
+  
+  
 
-</header>
 
 
 <div class="ui segment pushable">
@@ -254,22 +297,36 @@ figcaption
           Lab-07</a>
       </div>
       
+    </div>
+    
+    <div class="header">
+      <a class="item" href="topic05-firebase/index.html">
+        5: Firebase
+      </a>
+    </div>
+    <div class="menu">
+      
       <div class="menu">
-        <a class="item" href="topic04-google-services/book-coffeemate-lab-07/index.html">
+        <a class="item" href="topic05-firebase/talk-1-firebase/firebase.pdf">
+          Firebase</a>
+      </div>
+      
+      <div class="menu">
+        <a class="item" href="topic05-firebase/book-coffeemate-lab-07/index.html">
           Lab-08</a>
       </div>
       
     </div>
     
     <div class="header">
-      <a class="item" href="topic05-future-trends/index.html">
-        5: Future Trends
+      <a class="item" href="topic06-future-trends/index.html">
+        6: Future Trends
       </a>
     </div>
     <div class="menu">
       
       <div class="menu">
-        <a class="item" href="topic05-future-trends/talk-1-future/01.future.pdf">
+        <a class="item" href="topic06-future-trends/talk-1-future/01.future.pdf">
           Future Trends in Android</a>
       </div>
       
@@ -277,123 +334,207 @@ figcaption
     
   </div>
   <div class="pusher">
-    <div class="ui basic segment">
-      <div class="ui four doubling stackable cards">
-        
+    <div class="ui container">
+      <div class="ui basic segment">
+        <div class="ui centered four doubling stackable cards">
           
-  <a class="ui raised link card" href="./topic00-profile/index.html">
-    <div class="content">
-        <div class="right floated meta"> <i class="sitemap large icon"></i></div>
-        <div class="header">  Module Overview & Background </div>
-    </div>
-    <div class="image">
-      <img class="ui bordered rounded image" src="./topic00-profile/talk-1-intro/intro.jpeg">
-    </div>
-    <div class="content">
-      <div class="description">
-         <p>Here you&#39;ll find a brief talk about myself, my background and what this Module will cover in the different sections.</p>
+            
 
+  
+    <a class="ui raised link card" href="topic00-profile/index.html">
+  
+
+      <div class="center aligned content">
+        <div class="right floated meta"><i class="huge sitemap icon"></i></div>
+        <div class="header">  Module Overview & Background</div>
       </div>
-    </div>
-    
-  </a>
 
-        
+      <div class="image">
+        <img class="ui bordered rounded image" src="topic00-profile/talk-1-intro/intro.jpeg">
+      </div>
+
+      <div class="center aligned content">
+        <div class="description">
+          <p>Here you&#39;ll find a brief talk about myself, my background and what this Module will cover in the different sections.</p>
+
+        </div>
+      </div>
+
+      
+
+    </a>
+
+
           
-  <a class="ui raised link card" href="./topic01-overview-and-tools/index.html">
-    <div class="content">
-        <div class="right floated meta"> <i class="sitemap large icon"></i></div>
-        <div class="header"> 1: Android Overview & Tools </div>
-    </div>
-    <div class="image">
-      <img class="ui bordered rounded image" src="./topic01-overview-and-tools/talk-1-app-design/01.app.design.jpeg">
-    </div>
-    <div class="content">
-      <div class="description">
-         <p>Android introduced a new user interface language to the world, one that is gradually evolving in flexibility and expressiveness. The first application we will build exhibits a range of new concepts you may not have come across before. Here we tour this app in detail, exploring each of the artifacts we have composed, and attempt to get a sense of how they fit together to form a running app.</p>
+            
 
+  
+    <a class="ui raised link card" href="topic01-overview-and-tools/index.html">
+  
+
+      <div class="center aligned content">
+        <div class="right floated meta"><i class="huge sitemap icon"></i></div>
+        <div class="header"> 1: Android Overview & Tools</div>
       </div>
-    </div>
-    
-  </a>
 
-        
+      <div class="image">
+        <img class="ui bordered rounded image" src="topic01-overview-and-tools/talk-1-app-design/01.app.design.jpeg">
+      </div>
+
+      <div class="center aligned content">
+        <div class="description">
+          <p>Android introduced a new user interface language to the world, one that is gradually evolving in flexibility and expressiveness. The first application we will build exhibits a range of new concepts you may not have come across before. Here we tour this app in detail, exploring each of the artifacts we have composed, and attempt to get a sense of how they fit together to form a running app.</p>
+
+        </div>
+      </div>
+
+      
+
+    </a>
+
+
           
-  <a class="ui raised link card" href="./topic02-ui-design/index.html">
-    <div class="content">
-        <div class="right floated meta"> <i class="sitemap large icon"></i></div>
-        <div class="header"> 2: UI Design & App Structure </div>
-    </div>
-    <div class="image">
-      <img class="ui bordered rounded image" src="./topic02-ui-design/talk-1-ui-design-1/01.ui.design.1.jpg">
-    </div>
-    <div class="content">
-      <div class="description">
-         <p>Here we discuss app design in general, the frameworks available to the app developer and the different approaches that can be followed in the design and development of a mobile app. We begin with some of the more common widgets and complete the material with some of the more advanced UI artifacts used in the design of android apps, focusing on the android UI guidelines for effective navigation.</p>
+            
 
+  
+    <a class="ui raised link card" href="topic02-ui-design/index.html">
+  
+
+      <div class="center aligned content">
+        <div class="right floated meta"><i class="huge sitemap icon"></i></div>
+        <div class="header"> 2: UI Design & App Structure</div>
       </div>
-    </div>
-    
-  </a>
 
-        
+      <div class="image">
+        <img class="ui bordered rounded image" src="topic02-ui-design/talk-1-ui-design-1/01.ui.design.1.jpg">
+      </div>
+
+      <div class="center aligned content">
+        <div class="description">
+          <p>Here we discuss app design in general, the frameworks available to the app developer and the different approaches that can be followed in the design and development of a mobile app. We begin with some of the more common widgets and complete the material with some of the more advanced UI artifacts used in the design of android apps, focusing on the android UI guidelines for effective navigation.</p>
+
+        </div>
+      </div>
+
+      
+
+    </a>
+
+
           
-  <a class="ui raised link card" href="./topic03-networking/index.html">
-    <div class="content">
-        <div class="right floated meta"> <i class="sitemap large icon"></i></div>
-        <div class="header"> 3: Multithreading & Networking </div>
-    </div>
-    <div class="image">
-      <img class="ui bordered rounded image" src="./topic03-networking/talk-1-networking-1/01.networking.1.png">
-    </div>
-    <div class="content">
-      <div class="description">
-         <p>In this section we take a brief look at persistence within an Android app (via SQLite) but focus mainly on how the Android OS implements multithreading and deals with running tasks in the background. We also investigate the different approaches available to the developer for making http calls and API requests.</p>
+            
 
+  
+    <a class="ui raised link card" href="topic03-networking/index.html">
+  
+
+      <div class="center aligned content">
+        <div class="right floated meta"><i class="huge sitemap icon"></i></div>
+        <div class="header"> 3: Multithreading & Networking</div>
       </div>
-    </div>
-    
-  </a>
 
-        
+      <div class="image">
+        <img class="ui bordered rounded image" src="topic03-networking/talk-1-networking-1/01.networking.1.png">
+      </div>
+
+      <div class="center aligned content">
+        <div class="description">
+          <p>In this section we take a brief look at persistence within an Android app (via SQLite) but focus mainly on how the Android OS implements multithreading and deals with running tasks in the background. We also investigate the different approaches available to the developer for making http calls and API requests.</p>
+
+        </div>
+      </div>
+
+      
+
+    </a>
+
+
           
-  <a class="ui raised link card" href="./topic04-google-services/index.html">
-    <div class="content">
-        <div class="right floated meta"> <i class="sitemap large icon"></i></div>
-        <div class="header"> 4: Google Services </div>
-    </div>
-    <div class="image">
-      <img class="ui bordered rounded image" src="./topic04-google-services/talk-1-google-1/01.google.plus.jpg">
-    </div>
-    <div class="content">
-      <div class="description">
-         <p>Google Services is a layer of services Android apps can use. This includes location services, google sign-in, cloud, contacts, maps etc. Here we focus on just 3 of the services - Google+ Sign-in, Location and Maps.</p>
+            
 
+  
+    <a class="ui raised link card" href="topic04-google-services/index.html">
+  
+
+      <div class="center aligned content">
+        <div class="right floated meta"><i class="huge sitemap icon"></i></div>
+        <div class="header"> 4: Google Services</div>
       </div>
-    </div>
-    
-  </a>
 
-        
+      <div class="image">
+        <img class="ui bordered rounded image" src="topic04-google-services/talk-1-google-1/01.google.plus.jpg">
+      </div>
+
+      <div class="center aligned content">
+        <div class="description">
+          <p>Google Services is a layer of services Android apps can use. This includes location services, google sign-in, cloud, contacts, maps etc. Here we focus on just 3 of the services - Google+ Sign-in, Location and Maps.</p>
+
+        </div>
+      </div>
+
+      
+
+    </a>
+
+
           
-  <a class="ui raised link card" href="./topic05-future-trends/index.html">
-    <div class="content">
-        <div class="right floated meta"> <i class="sitemap large icon"></i></div>
-        <div class="header"> 5: Future Trends </div>
-    </div>
-    <div class="image">
-      <img class="ui bordered rounded image" src="./topic05-future-trends/talk-1-future/01.future.png">
-    </div>
-    <div class="content">
-      <div class="description">
-         <p>Here we take a look at the current, and more importantly, some of the future trends in Android technology.</p>
+            
 
+  
+    <a class="ui raised link card" href="topic05-firebase/index.html">
+  
+
+      <div class="center aligned content">
+        <div class="right floated meta"><i class="huge sitemap icon"></i></div>
+        <div class="header"> 5: Firebase</div>
       </div>
-    </div>
-    
-  </a>
 
-        
+      <div class="image">
+        <img class="ui bordered rounded image" src="topic05-firebase/topic.png">
+      </div>
+
+      <div class="center aligned content">
+        <div class="description">
+          <p>Firebase is a Backend-as-a-Service — BaaS — that began as a startup and grew into a next-generation app-development platform on Google Cloud Platform. Here we look at the main services provided by the platform and ultimately build our CoffeeMate app with Firebase support.</p>
+
+        </div>
+      </div>
+
+      
+
+    </a>
+
+
+          
+            
+
+  
+    <a class="ui raised link card" href="topic06-future-trends/index.html">
+  
+
+      <div class="center aligned content">
+        <div class="right floated meta"><i class="huge sitemap icon"></i></div>
+        <div class="header"> 6: Future Trends</div>
+      </div>
+
+      <div class="image">
+        <img class="ui bordered rounded image" src="topic06-future-trends/talk-1-future/01.future.png">
+      </div>
+
+      <div class="center aligned content">
+        <div class="description">
+          <p>Here we take a look at the current, and more importantly, some of the future trends in Android technology.</p>
+
+        </div>
+      </div>
+
+      
+
+    </a>
+
+
+          
+        </div>
       </div>
     </div>
   </div>
@@ -404,37 +545,37 @@ figcaption
 
     </footer>
     <script>
-      
-$(document).ready(function()
-{
-  $("img").addClass ("ui image");
+      $(document).ready(function() {
+  $('img').addClass('ui image');
+
   $('.ui.embed').embed();
 
-  var images = $(".lab img");
-  jQuery.each(images, function(i)  {
-    if((images[i].alt).length > 0)
-    {
-      var div_img = $(document.createElement("div")).addClass("ui segment");
-      $(images[i]).wrap(div_img);
-      var div_label = $(document.createElement("div")).addClass("ui ribbon teal top attached label");
-      div_label.append(images[i].alt);
-      $(div_label).insertBefore(images[i]);
+  const $images = $('.lab img');
+  jQuery.each($images, function(i) {
+    if ($images[i].alt.length > 0) {
+      const divImg = $(document.createElement('div')).addClass(
+        'ui basic segment',
+      );
+      $($images[i]).wrap(divImg);
+      const divLabel = $(document.createElement('div')).addClass(
+        'ui blue ribbon label',
+      );
+      divLabel.append($images[i].alt);
+      $(divLabel).insertBefore($images[i]);
     }
   });
 
-
-  $('.ui.menu .item')
-      .tab({
-        history: true,
-        historyType: 'hash',
-      });
+  $('.ui.menu .item').tab({
+    history: true,
+    historyType: 'hash',
+  });
 
   $('.popup').popup();
 
   $('.ui.sidebar')
-      .sidebar({ context: $('.pushable') })
-      .sidebar('setting', 'transition', 'slide out')
-      .sidebar('attach events', '#toc');
+    .sidebar({ context: $('.pushable') })
+    .sidebar('setting', 'transition', 'slide out')
+    .sidebar('attach events', '#toc');
 });
 
     </script>
